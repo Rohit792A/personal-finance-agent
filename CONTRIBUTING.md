@@ -5,7 +5,6 @@ Thanks for your interest. This is a personal project whose source is published f
 - **Issues are welcome**: bug reports, questions and suggestions. Please use the issue templates.
 - **Pull requests need agreement first.** Open an issue describing the change before writing code. Unsolicited PRs may be closed. By submitting a contribution, you agree that it may be used, changed and relicensed by the author as part of this project.
 - **Security problems** go through [SECURITY.md](SECURITY.md), never a public issue.
-- Please be respectful; see the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 The rest of this guide describes how the project itself is developed. Follow it if you're invited to contribute.
 
