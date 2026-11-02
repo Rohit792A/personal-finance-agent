@@ -1,0 +1,23 @@
+{
+  "_comment": "Example only (synthetic values). Copy to app/private/owner_profile.json, which is git-ignored, and fill in your own. See app/owner_profile.py.",
+  "own_account_numbers": ["1234567890", "6000000001"],
+  "own_name_tokens": ["asha verma", "asha v"],
+  "peer_inflow_tokens": ["ravi mehta", "neha verma"],
+  "peer_remark_tokens": ["dinner split", "trip share"],
+  "reconciled_monthly_balances": [
+    {
+      "month_key": "2026-09",
+      "kotak_sa_open": 25000.00,
+      "kotak_sa_close": 27500.50,
+      "kotak_am_open": 50000.00,
+      "kotak_am_close": 50000.00,
+      "hdfc_sa_open": 12000.00,
+      "hdfc_sa_close": 10250.00,
+      "hdfc_fd_open": 0.00,
+      "hdfc_fd_close": 0.00,
+      "opening_balance": 87000.00,
+      "closing_balance": 87750.50,
+      "source_note": "Kotak Sep 2026 statement + HDFC Sep 2026 statement"
+    }
+  ]
+}

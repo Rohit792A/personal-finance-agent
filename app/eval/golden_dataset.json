@@ -1,0 +1,70 @@
+{
+  "version": "3.0.0-FDE",
+  "description": "Curated Golden Dataset for Agentic AI CFO Continuous Evaluation Flywheel (Math Reconciliation, Extraction Completeness, Category Macro-F1, and Fiduciary Soundness).",
+  "math_reconciliation_cases": [
+    {
+      "case_id": "HDFC_Statement_Jan_2026",
+      "bank": "HDFC",
+      "opening_balance": 50000.0,
+      "closing_balance": 64500.0,
+      "extracted_transactions": [
+        {"date": "2026-01-05", "amount": 35000.0, "type": "INCOME", "description": "NEFT SALARY CREDIT TCS"},
+        {"date": "2026-01-10", "amount": 12000.0, "type": "EXPENSE", "description": "UPI/RAHUL/778123456789/RENT"},
+        {"date": "2026-01-18", "amount": 8500.0, "type": "EXPENSE", "description": "HDFC CREDIT CARD BILL AUTOPAY"}
+      ]
+    },
+    {
+      "case_id": "SBI_Statement_Feb_2026",
+      "bank": "SBI",
+      "opening_balance": 15000.0,
+      "closing_balance": 10200.0,
+      "extracted_transactions": [
+        {"date": "2026-02-03", "amount": 2500.0, "type": "EXPENSE", "description": "UPI/SWIGGY INSTAMART/603412987654"},
+        {"date": "2026-02-14", "amount": 2300.0, "type": "EXPENSE", "description": "BESCOM ELECTRICITY BILL"}
+      ]
+    },
+    {
+      "case_id": "Kotak_Statement_Mar_2026",
+      "bank": "Kotak",
+      "opening_balance": 28400.0,
+      "closing_balance": 43400.0,
+      "extracted_transactions": [
+        {"date": "2026-03-01", "amount": 45000.0, "type": "INCOME", "description": "SALARY CREDIT MARCH"},
+        {"date": "2026-03-05", "amount": 15000.0, "type": "EXPENSE", "description": "ZERODHA COIN MUTUAL FUND SIP"},
+        {"date": "2026-03-07", "amount": 15000.0, "type": "EXPENSE", "description": "UPI/RAHUL/778199887766"}
+      ]
+    }
+  ],
+  "extraction_completeness_samples": [
+    {"date": "2026-09-01", "amount": 1450.0, "description": "Starbucks Coffee", "type": "EXPENSE"},
+    {"date": "2026-09-02", "amount": 15000.0, "description": "UPI/RAHUL/778100112233 Apartment Rent", "type": "EXPENSE"},
+    {"date": "2026-09-03", "amount": 750.0, "description": "Uber Ride Trip", "type": "EXPENSE"},
+    {"date": "2026-09-05", "amount": 50000.0, "description": "Salary Credit TCS", "type": "INCOME"},
+    {"date": "2026-09-10", "amount": 10000.0, "description": "NEFT Self Transfer to Kotak 811", "type": "TRANSFER"},
+    {"date": "2026-09-12", "amount": 5000.0, "description": "UTI Nifty 50 Index Fund SIP", "type": "EXPENSE"}
+  ],
+  "categorization_benchmark": {
+    "ground_truth": ["Food", "Rent", "Transportation", "Food", "Utilities", "Investment", "Food", "Personal", "Transfer", "SIP"],
+    "predictions": ["Food", "Rent", "Transportation", "Food", "Utilities", "Investment", "Food", "Personal", "Transfer", "SIP"]
+  },
+  "fiduciary_scenarios": [
+    {
+      "name": "High Deficit Run",
+      "is_in_deficit": True,
+      "has_credit_card_debt": False,
+      "sample_advice": "Your ₹12,000 monthly deficit requires immediate action. Cut dining out by 30% and eliminate unused subscriptions to rebuild your emergency buffer."
+    },
+    {
+      "name": "Healthy Surplus Run",
+      "is_in_deficit": False,
+      "has_credit_card_debt": False,
+      "sample_advice": "Your ₹35,000 surplus allows a disciplined 50/30/20 strategy. Allocate ₹20,000 to monthly SIP index funds and keep ₹15,000 in liquid savings."
+    },
+    {
+      "name": "EMI & Credit Card Debt Alert Run",
+      "is_in_deficit": True,
+      "has_credit_card_debt": True,
+      "sample_advice": "Warning: Your upcoming ₹15,000 rent and ₹8,500 credit card debt payment exceed your liquid balance by ₹4,200. Reduce discretionary spending immediately and pay down high-interest credit card debt first using the avalanche method."
+    }
+  ]
+}
