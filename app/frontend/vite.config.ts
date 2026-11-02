@@ -1,6 +1,6 @@
 import type { IncomingMessage } from 'node:http';
 import react from '@vitejs/plugin-react';
-import { defineConfig, loadEnv, type ProxyOptions } from 'vite';
+import { defineConfig, loadEnv, type Plugin, type ProxyOptions } from 'vite';
 
 /**
  * Every FastAPI route prefix. Only used in same-origin mode (VITE_API_BASE_URL set to an empty value
@@ -22,9 +22,39 @@ function serveAppForPageLoads(req: IncomingMessage): string | undefined {
   return req.method === 'GET' && wantsHtml && !isApiDocs ? '/index.html' : undefined;
 }
 
+/** Where GitHub Pages serves the recorded demo unless PAGES_BASE_PATH says otherwise: /<repository>/. */
+const DEFAULT_PAGES_BASE_PATH = '/personal-finance-agent/';
+
+/** '/personal-finance-agent/' from 'personal-finance-agent' or '/personal-finance-agent'; '' -> '/'. */
+function basePath(raw: string): string {
+  const trimmed = raw.trim().replace(/^\/+|\/+$/g, '');
+  return trimmed ? `/${trimmed}/` : '/';
+}
+
+/**
+ * Recorded demo builds start from src/recorded/main.tsx instead of src/main.tsx, so Firebase sign-in
+ * and the backend URLs are never part of their bundle.
+ */
+function recordedDemoEntry(): Plugin {
+  return {
+    name: 'pfa-recorded-demo-entry',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html) {
+        if (!html.includes('/src/main.tsx')) {
+          throw new Error('index.html no longer loads /src/main.tsx; update recordedDemoEntry() in vite.config.ts.');
+        }
+        return html.replace('/src/main.tsx', '/src/recorded/main.tsx');
+      },
+    },
+  };
+}
+
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const backendUrl = env.BACKEND_URL ?? `http://127.0.0.1:${env.BACKEND_PORT ?? '8080'}`;
+  // Recorded demo (src/recorded/mode.ts): `--mode recorded` (npm run build:recorded) or VITE_RECORDED_DEMO=1.
+  const recordedDemo = mode === 'recorded' || env.VITE_RECORDED_DEMO === '1';
 
   if (command === 'build' && env.VITE_API_BASE_URL !== undefined) {
     console.warn(
@@ -47,22 +77,32 @@ export default defineConfig(({ command, mode }) => {
   // Cloud Shell web preview serves the dev server from *.cloudshell.dev.
   const allowedHosts = ['localhost', '127.0.0.1', '.cloudshell.dev'];
 
+  // The recorded demo calls no backend, so it gets no proxy.
+  const backendProxy: Record<string, ProxyOptions> = recordedDemo ? {} : proxy;
+
   return {
-    plugins: [react()],
+    // GitHub Pages serves the recorded demo from /<repository>/; every other build is served from the root.
+    base: recordedDemo ? basePath(env.PAGES_BASE_PATH ?? DEFAULT_PAGES_BASE_PATH) : '/',
+    // The recorded fixtures (recorded-demo/recorded/*.json) are copied into recorded demo builds only.
+    publicDir: recordedDemo ? 'recorded-demo' : 'public',
+    // Always defined, so `import.meta.env.VITE_RECORDED_DEMO === '1'` is a constant and normal builds
+    // leave the recorded demo's code out.
+    define: { 'import.meta.env.VITE_RECORDED_DEMO': JSON.stringify(recordedDemo ? '1' : '') },
+    plugins: recordedDemo ? [react(), recordedDemoEntry()] : [react()],
     server: {
       host: '0.0.0.0',
       port: 5173,
       strictPort: true,
       open: false,
       allowedHosts,
-      proxy,
+      proxy: backendProxy,
     },
     preview: {
       host: '0.0.0.0',
       port: 4173,
       strictPort: true,
       allowedHosts,
-      proxy,
+      proxy: backendProxy,
     },
     build: {
       outDir: 'dist',

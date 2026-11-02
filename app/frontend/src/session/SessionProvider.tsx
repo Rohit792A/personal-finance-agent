@@ -6,6 +6,7 @@ import { isApiError } from '../api/errors';
 import { getMe, type Me } from '../api/me';
 import { useAuth } from '../auth/AuthContext';
 import { resolveBackend, type BackendTarget } from '../config/backends';
+import { RECORDED_DEMO_URL } from '../recorded/mode';
 import { buttonClass } from '../ui/classes';
 import { CenteredMessage } from '../ui/CenteredMessage';
 import { Spinner } from '../ui/Spinner';
@@ -160,6 +161,15 @@ export function SessionProvider({ user, children }: { user: User; children: Reac
           }
         >
           <p>{phase.message}</p>
+          {RECORDED_DEMO_URL ? (
+            <p data-testid="recorded-demo-link">
+              The backend may be offline. You can still{' '}
+              <a href={RECORDED_DEMO_URL} className="font-medium text-accent-text underline underline-offset-2">
+                open the recorded demo
+              </a>
+              , which replays responses recorded from it.
+            </p>
+          ) : null}
         </CenteredMessage>
       );
     default:

@@ -8,14 +8,15 @@ import { defineConfig, devices } from '@playwright/test';
  *   E2E_BACKEND=http://127.0.0.1:8081 \
  *     npm run test:e2e -- integration        real local backend (dev-server override)
  *
- * Specs named *.integration.spec.ts need E2E_BACKEND; the others mock the backend.
+ * Specs named *.integration.spec.ts need E2E_BACKEND; the others mock the backend. The recorded demo's
+ * spec (*.recorded.spec.ts) has its own config: playwright.recorded.config.ts.
  */
 const backend = process.env.E2E_BACKEND;
 const port = 5173; // the backend's CORS allowlist contains http://localhost:5173
 
 export default defineConfig({
   testDir: './tests/e2e',
-  testMatch: backend ? /.*\.integration\.spec\.ts/ : /^(?!.*\.integration\.spec\.ts$).*\.spec\.ts$/,
+  testMatch: backend ? /.*\.integration\.spec\.ts/ : /^(?!.*\.(?:integration|recorded)\.spec\.ts$).*\.spec\.ts$/,
   timeout: 90_000,
   expect: { timeout: 20_000 },
   fullyParallel: false,

@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { LegacyBridge } from '../legacy/bridge';
 import { LegacyScreens } from '../legacy/LegacyScreens';
+import { RECORDED_DEMO } from '../recorded/mode';
+import { RecordedBanner } from '../recorded/RecordedBanner';
 import { useSession } from '../session/SessionContext';
 import { AgentRegistryScreen } from './AgentRegistryScreen';
+import { routerPathname } from './basePath';
 import { DemoBanner } from './DemoBanner';
 import { FeatureUnavailable } from './FeatureUnavailable';
 import { MasterCopilotDock } from './MasterCopilotDock';
@@ -14,7 +17,7 @@ import { TopBar } from './TopBar';
 import { parseUrlState, serializeUrlState } from './urlState';
 import { useMonths } from './useMonths';
 
-/** The signed-in application: sidebar, top bar, demo banner and the screens. */
+/** The signed-in application: sidebar, top bar, demo (or recorded demo) banner and the screens. */
 export function AppShell() {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
@@ -27,7 +30,8 @@ export function AppShell() {
     () =>
       new LegacyBridge(
         {
-          location: () => ({ pathname: window.location.pathname, search: window.location.search }),
+          // The router's path, without the recorded demo's base path on GitHub Pages.
+          location: () => ({ pathname: routerPathname(window.location.pathname), search: window.location.search }),
           navigate: (to, options) => {
             void navigate(to, options);
           },
@@ -133,7 +137,7 @@ export function AppShell() {
             setJarvisOpen((prev) => !prev);
           }}
         />
-        {me.environment === 'demo' ? <DemoBanner me={me} /> : null}
+        {RECORDED_DEMO ? <RecordedBanner /> : me.environment === 'demo' ? <DemoBanner me={me} /> : null}
         <main
           id="main-content"
           ref={mainRef}

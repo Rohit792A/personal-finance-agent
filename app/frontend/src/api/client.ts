@@ -8,7 +8,11 @@
  *   asked to re-check access (the account may have been removed from the allowlist).
  * - 429 and every other error: ApiError whose message is the backend's `detail`, so the legacy
  *   screens' toasts show it.
+ * - Recorded demo builds (src/recorded/mode.ts) never reach the network: every request is answered
+ *   from the recorded fixtures (src/recorded/transport.ts), with the same error handling.
  */
+import { RECORDED_DEMO } from '../recorded/mode';
+import { answerFromRecording } from '../recorded/transport';
 import { DEFAULT_TIMEOUT_MS } from './config';
 import { ApiError } from './errors';
 
@@ -183,7 +187,23 @@ async function sendOnce(
   }
 }
 
-async function request(endpoint: string, options: ApiRequestOptions, expectBlob: boolean): Promise<RawResult> {
+/**
+ * Recorded demo builds: the answer from the recorded fixtures, with the same error handling. The
+ * network code below isn't part of those builds at all.
+ */
+async function requestFromRecording(endpoint: string, options: ApiRequestOptions): Promise<RawResult> {
+  const recorded = await answerFromRecording(endpoint, options);
+  if (!recorded.response.ok) {
+    throw new ApiError(errorMessageFrom(recorded.response.status, recorded.data), recorded.response.status, recorded.data);
+  }
+  return recorded;
+}
+
+function request(endpoint: string, options: ApiRequestOptions, expectBlob: boolean): Promise<RawResult> {
+  return RECORDED_DEMO ? requestFromRecording(endpoint, options) : requestFromBackend(endpoint, options, expectBlob);
+}
+
+async function requestFromBackend(endpoint: string, options: ApiRequestOptions, expectBlob: boolean): Promise<RawResult> {
   const session = activeSession;
   if (!session) throw new ApiError(SIGNED_OUT_MESSAGE, 401);
 

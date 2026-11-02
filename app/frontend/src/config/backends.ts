@@ -6,6 +6,10 @@
  *   - email/password (the demo login)  -> demo backend (sample data, reset nightly)
  * The rule uses the token's `firebase.sign_in_provider` claim, so no email address is in the bundle.
  * Each backend also enforces its own allowlist, so a wrong routing can never expose data.
+ *
+ * A third option has no backend at all: the recorded demo (VITE_RECORDED_DEMO=1 at build time,
+ * src/recorded/), a static copy for GitHub Pages that answers from responses recorded from the demo
+ * backend. It skips sign-in and uses RECORDED_DEMO_BACKEND below.
  */
 import type { Environment } from '../api/me';
 
@@ -20,6 +24,12 @@ export interface BackendTarget {
   /** Environment the routing rule expects; null when a dev override is active. */
   expected: Environment | null;
 }
+
+/**
+ * The recorded demo's session target. No URL: the API client answers every request from the
+ * recorded fixtures (src/recorded/transport.ts) and never calls a backend.
+ */
+export const RECORDED_DEMO_BACKEND: BackendTarget = { baseUrl: '', expected: 'demo' };
 
 export function environmentForProvider(signInProvider: string | null): Environment | null {
   switch (signInProvider) {

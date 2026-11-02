@@ -5,9 +5,34 @@
  */
 
 import { getAiInsights, sendAdvisorChatMessage } from '../api/index.ts';
+import { recordedChatQuestions } from '../recorded/manifest.ts';
+import { RECORDED_DEMO } from '../recorded/mode.ts';
 import { escapeHtml } from '../utils/dom.js';
 import { renderMarkdown } from '../utils/markdown.js';
 import { toast } from './toast.js';
+
+const QUICK_PROMPT_CLASS =
+  'advisor-quick-prompt px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] border border-slate-700 transition-colors cursor-pointer';
+
+/**
+ * Recorded demo (src/recorded/): the chat's suggestion chips become the questions whose answers were
+ * recorded; other questions get a note listing them.
+ */
+function showRecordedQuestions(container) {
+  const intro = container.querySelector('#advisor-chat-starter p');
+  const chips = container.querySelector('#advisor-chat-starter .flex');
+  const input = container.querySelector('#advisor-chat-input');
+  if (intro) {
+    intro.innerHTML =
+      "💡 <strong>Recorded demo:</strong> pick a question to replay the AI CFO's answer, recorded from Gemini on the demo data.";
+  }
+  if (chips) {
+    chips.innerHTML = recordedChatQuestions()
+      .map((question) => `<button type="button" class="${QUICK_PROMPT_CLASS}">${escapeHtml(question)}</button>`)
+      .join('');
+  }
+  if (input) input.placeholder = 'This recorded demo replays the questions above';
+}
 
 /**
  * Mount the AI CFO Insights & Multi-Turn Conversational Component.
@@ -163,6 +188,9 @@ export function initInsightsComponent(container) {
       </div>
     </div>
   `;
+
+  // Before the quick-prompt buttons get their click handlers below.
+  if (RECORDED_DEMO) showRecordedQuestions(container);
 
   const fetchBtn = container.querySelector('#fetch-insights-btn');
   const emptyTriggerBtn = container.querySelector('#empty-state-trigger-btn');

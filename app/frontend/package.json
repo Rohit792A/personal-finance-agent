@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:recorded": "tsc -b && vite build --mode recorded",
     "preview": "vite preview",
+    "preview:recorded": "vite preview --mode recorded",
     "typecheck": "tsc -b",
     "lint": "eslint . --max-warnings=0",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:recorded": "playwright test --config playwright.recorded.config.ts"
   },
   "dependencies": {
     "dompurify": "^3.4.17",

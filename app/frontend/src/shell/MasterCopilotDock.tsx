@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import { sendJarvisCommand } from '../api/agents';
+import { recordedCopilotPrompts } from '../recorded/manifest';
+import { RECORDED_DEMO } from '../recorded/mode';
 import { buttonClass, inputClass } from '../ui/classes';
 import { Spinner } from '../ui/Spinner';
 import type { ScreenId } from './screens';
@@ -284,12 +286,15 @@ export function MasterCopilotDock({
 
   const periodBadge = month && month !== 'ALL' ? month : 'All Months (19m Avg)';
 
-  const quickPrompts = [
-    `Walk me through ${screenLabel} (${periodBadge})`,
-    'What is my true monthly salary & surplus?',
-    'Audit & resolve categories',
-    'Verify bank balance math',
-  ];
+  // The recorded demo offers the commands it can replay (src/recorded/transport.ts).
+  const quickPrompts = RECORDED_DEMO
+    ? recordedCopilotPrompts()
+    : [
+        `Walk me through ${screenLabel} (${periodBadge})`,
+        'What is my true monthly salary & surplus?',
+        'Audit & resolve categories',
+        'Verify bank balance math',
+      ];
 
   return (
     <>
