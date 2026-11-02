@@ -1,0 +1,63 @@
+# ---------------------------------------------------------------------------
+# Secrets and local configuration: never commit (see DEC-023 in decision.md).
+# Credentials live in Google Secret Manager, not in files.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*.json
+service-account*.json
+
+# ---------------------------------------------------------------------------
+# Personal financial data: real statements, receipts and uploads stay local.
+# ---------------------------------------------------------------------------
+data/
+temp_uploads/
+app/temp_uploads/
+
+# Screenshots and the pitch deck show real transactions, so they stay out of git
+# until they are re-captured from the demo environment (Phase 1).
+docs/assets/ux-audit/current_*.png
+*.pptx
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# ---------------------------------------------------------------------------
+# Frontend build output and tooling
+# ---------------------------------------------------------------------------
+node_modules/
+app/frontend/dist/
+app/frontend/.firebase/
+app/frontend/.deployed_tunnel_url
+firebase-debug.log
+
+# ---------------------------------------------------------------------------
+# Logs and OS files
+# ---------------------------------------------------------------------------
+*.log
+nohup.out
+.DS_Store
+
+# ---------------------------------------------------------------------------
+# Owner-only data (DEC-062): own account numbers, family/friend payee names and the
+# reconciled monthly balances. Shipped in the backend image, never committed.
+# See app/owner_profile.py and docs/examples/owner_profile.example.json.
+# ---------------------------------------------------------------------------
+app/private/
+
+# ---------------------------------------------------------------------------
+# Personal notes kept on disk but out of the public repository (DEC-062).
+# ---------------------------------------------------------------------------
+docs/INTERVIEW_PREPARATION_GUIDE.md
+docs/RESUME_PROJECT_DOCUMENTATION.md
+# Its placeholder rows reused real figures.
+docs/assets/ux-audit/mockup_transactions_light.jpg

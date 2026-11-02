@@ -1,0 +1,6 @@
+# Playwright output (screenshots can show account data)
+playwright-report/
+test-results/
+blob-report/
+
+# TypeScript incremental build info lives in node_modules/.tmp; nothing else to ignore here.

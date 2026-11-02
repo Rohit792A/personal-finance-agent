@@ -1,0 +1,15 @@
+# Upload ONLY what the backend Docker build needs to Cloud Build (DEC-025). Everything else
+# stays on this machine: data/ (real statements), docs/ (screenshots), *.pptx, .env files,
+# backups and the frontend.
+/*
+!/Dockerfile
+!/.dockerignore
+!/requirements.txt
+!/app/
+/app/frontend/
+/app/temp_uploads/
+**/__pycache__/
+**/*.pyc
+**/node_modules/
+**/.env
+**/.env.*

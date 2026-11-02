@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+.git/
+.env
+.env.*
+temp_uploads/
+node_modules/
+.DS_Store
+# The backend image doesn't serve the frontend (Firebase Hosting does) and never contains data.
+app/frontend/
+app/temp_uploads/
+data/
+docs/
+*.pptx

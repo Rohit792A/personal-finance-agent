@@ -1,0 +1,23 @@
+Copyright (c) 2026 Rohit Kushwaha. All rights reserved.
+
+This repository is published so that its source code can be read and evaluated. It is
+not open source. No license is granted to copy, modify, merge, publish, distribute,
+sublicense, sell, deploy or otherwise use this software or any part of it without the
+prior written permission of the copyright holder.
+
+Publishing on GitHub does not change this, except for the rights that GitHub's Terms of
+Service (section D.5, "License Grant to Other Users") give every GitHub user: to view
+this public repository and to fork it on GitHub.
+https://docs.github.com/en/site-policy/github-terms/github-terms-of-service
+
+Third-party software used by this project (the Python packages in requirements.txt and
+the npm packages in app/frontend/package.json) remains under its own licenses.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE. NOTHING IN THIS REPOSITORY IS
+FINANCIAL ADVICE.
+
+Permission requests: rkushwaha8610@gmail.com
