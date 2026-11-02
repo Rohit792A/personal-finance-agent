@@ -21,6 +21,10 @@ REPO=asia-northeast1-docker.pkg.dev/$P/pfa/finance-backend
 PERSONAL_REGION=asia-northeast1
 DEMO_REGION=asia-northeast3
 SCHEDULER_REGION=asia-northeast1
+# Model Armor templates (DEC-065) live in us-central1: on 2026-11-02 the Model Armor API refused
+# asia-northeast1, asia-northeast3, asia-southeast1 and europe-west4 for this account, and only
+# us-central1 answered. Both backends call it there (one template per environment).
+MODEL_ARMOR_REGION=us-central1
 PERSONAL_URL=https://finance-backend-$PN.$PERSONAL_REGION.run.app
 DEMO_URL=https://finance-backend-demo-$PN.$DEMO_REGION.run.app
 SCHED_SA=pfa-scheduler@$P.iam.gserviceaccount.com
@@ -55,7 +59,7 @@ if [[ "$TARGET" != "demo" ]]; then
   gcloud run deploy finance-backend --project $P --region $PERSONAL_REGION --image "$IMAGE" \
     --service-account "pfa-backend-personal@$P.iam.gserviceaccount.com" \
     --allow-unauthenticated \
-    --set-env-vars "^|^APP_ENV=personal|INTERNAL_AUDIENCE=$PERSONAL_URL|SCHEDULER_SA_EMAIL=$SCHED_SA|STATEMENT_BUCKET=$P-statements|CORS_ALLOWED_ORIGINS=$CORS" \
+    --set-env-vars "^|^APP_ENV=personal|INTERNAL_AUDIENCE=$PERSONAL_URL|SCHEDULER_SA_EMAIL=$SCHED_SA|STATEMENT_BUCKET=$P-statements|CORS_ALLOWED_ORIGINS=$CORS|MODEL_ARMOR_TEMPLATE=projects/$P/locations/$MODEL_ARMOR_REGION/templates/pfa-guard-personal|SDP_ENABLED=1|ENABLE_CLOUD_TRACE=1" \
     --set-secrets "DB_PASS=pfa-db-password-personal:latest" \
     --memory 2Gi --cpu 1 --concurrency 20 --timeout 900 \
     --min-instances 0 --max-instances 3 --cpu-boost \
@@ -70,7 +74,7 @@ if [[ "$TARGET" != "personal" ]]; then
   gcloud run deploy finance-backend-demo --project $P --region $DEMO_REGION --image "$IMAGE" \
     --service-account "pfa-backend-demo@$P.iam.gserviceaccount.com" \
     --allow-unauthenticated \
-    --set-env-vars "^|^APP_ENV=demo|INTERNAL_AUDIENCE=$DEMO_URL|SCHEDULER_SA_EMAIL=$SCHED_SA|CORS_ALLOWED_ORIGINS=$CORS" \
+    --set-env-vars "^|^APP_ENV=demo|INTERNAL_AUDIENCE=$DEMO_URL|SCHEDULER_SA_EMAIL=$SCHED_SA|CORS_ALLOWED_ORIGINS=$CORS|MODEL_ARMOR_TEMPLATE=projects/$P/locations/$MODEL_ARMOR_REGION/templates/pfa-guard-demo|SDP_ENABLED=1|ENABLE_CLOUD_TRACE=1" \
     --set-secrets "DB_PASS=pfa-db-password-demo:latest" \
     --memory 1Gi --cpu 1 --concurrency 20 --timeout 600 \
     --min-instances 0 --max-instances 2 --cpu-boost \
