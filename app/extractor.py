@@ -20,6 +20,7 @@ from date_guard import fix_years, prompt_context
 from gemini import reply_text
 from models import ReceiptData
 from exceptions import ExtractionError
+from telemetry.tracer import model_call_span
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +66,13 @@ class ReceiptExtractor:
             Return ONLY a raw JSON object with keys: "date" (YYYY-MM-DD), "amount" (number), "description" (string), "category" (string), and "confidence" (number 0-100) and "is_self_transfer" (boolean).
             """ + prompt_context(gcs_uri) + DatabaseManager.format_learned_rules_prompt()
 
-            response = self.model.generate_content(
-                [image_part, prompt],
-                generation_config={"response_mime_type": "application/json"}
-            )
+            # One span per Gemini call, with its token usage (DEC-063).
+            with model_call_span("vertex_ai.receipt_reader", MODEL_NAME, "receipt_reader") as call:
+                response = self.model.generate_content(
+                    [image_part, prompt],
+                    generation_config={"response_mime_type": "application/json"}
+                )
+                call.record(response)
 
             raw_data = json.loads(reply_text(response))
 

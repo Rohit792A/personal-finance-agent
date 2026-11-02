@@ -29,6 +29,7 @@ FDE Pillar 1 (BUILD):
   split as usual.
 """
 import io
+import contextvars
 import json
 import logging
 import math
@@ -49,6 +50,7 @@ from date_guard import fix_years, prompt_context
 from gemini import reply_text
 from models import StatementData
 from exceptions import ExtractionError, PasswordRequiredError
+from telemetry.tracer import model_call_span
 
 logger = logging.getLogger(__name__)
 
@@ -340,7 +342,9 @@ class StatementExtractor:
             pool = ThreadPoolExecutor(max_workers=min(PARALLEL_CALLS, len(spans)),
                                       thread_name_prefix="statement-pages")
             try:
-                futures = [pool.submit(self._read_span, pdf_bytes, span, context, counts) for span in spans]
+                # Each call runs in a copy of this context, so its trace span joins the upload's trace (DEC-063).
+                futures = [pool.submit(contextvars.copy_context().run, self._read_span, pdf_bytes, span, context, counts)
+                           for span in spans]
                 results = [future.result() for future in futures]
             finally:
                 # On a failure, calls that haven't started are dropped; running ones finish.
@@ -399,11 +403,15 @@ class StatementExtractor:
         started = time.monotonic()
         for attempt in range(1, CALL_ATTEMPTS + 1):
             try:
-                response = self.model.generate_content(
-                    [document_part, prompt],
-                    generation_config={"response_mime_type": "application/json",
-                                       "max_output_tokens": MAX_OUTPUT_TOKENS},
-                )
+                # One span per Gemini call, with its token usage (DEC-063).
+                with model_call_span("vertex_ai.statement_reader", MODEL_NAME, "statement_reader",
+                                     {"pages": label, "attempt": attempt}) as call:
+                    response = self.model.generate_content(
+                        [document_part, prompt],
+                        generation_config={"response_mime_type": "application/json",
+                                           "max_output_tokens": MAX_OUTPUT_TOKENS},
+                    )
+                    call.record(response)
                 break
             except _TRANSIENT_ERRORS as e:
                 if attempt == CALL_ATTEMPTS:
