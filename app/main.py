@@ -118,10 +118,27 @@ def process_file(file_path_or_uri: str, pdf_password: str = ""):
     """Dispatches a local file or GCS URI to the appropriate extractor agent and persists results.
 
     `pdf_password` (uploads only) opens a password-protected PDF; it is never stored.
+    The whole import is one trace (root span `ingestion.process_file`, DEC-063).
     """
+    tracer = AgentTracer(workflow_name="process_file_ingestion")
+    file_type = os.path.splitext(str(file_path_or_uri).lower())[1]
+    with tracer.request_span("ingestion.process_file", {"file_type": file_type}):
+        return _process_file(file_path_or_uri, pdf_password, tracer)
+
+
+def _guardrail_attributes(armor_results, dlp_results) -> dict:
+    """Span attributes: how many rows each Model Armor / redaction layer decided (DEC-063)."""
+    attributes = {f"model_armor.rows.{layer}": count for layer, count in ModelArmor.summarize_layers(armor_results).items()}
+    for result in dlp_results:
+        key = f"dlp.rows.{getattr(result, 'decision_layer', 'regex')}"
+        attributes[key] = attributes.get(key, 0) + 1
+    return attributes
+
+
+def _process_file(file_path_or_uri: str, pdf_password: str, tracer: AgentTracer):
+    """The body of `process_file`."""
     logger.info(f"--- Triggering Workflow for {file_path_or_uri} ---")
     db_manager = None
-    tracer = AgentTracer(workflow_name="process_file_ingestion")
 
     user_messages = []
 
@@ -165,15 +182,22 @@ def process_file(file_path_or_uri: str, pdf_password: str = ""):
 
             flagged_count = 0
             learned_applied = 0
-            with tracer.start_span("clarification_and_reconciliation.screen_rows", {"rows": len(statement_data.transactions)}):
-                for tx in statement_data.transactions:
+            with tracer.start_span("clarification_and_reconciliation.screen_rows", {"rows": len(statement_data.transactions)}) as screen_span:
+                # Model Armor + DLP results for every narration, computed up front (DEC-063): with the
+                # Google APIs on, a few batched requests cover all rows; without them each row gets
+                # the same regex screen as before.
+                raw_descs = [getattr(tx, "description", "") or "" for tx in statement_data.transactions]
+                armor_results = ModelArmor.inspect_prompts(raw_descs)
+                safe_rows = [i for i, res in enumerate(armor_results) if res.is_safe]
+                dlp_results = dict(zip(safe_rows, FinancialDLPPipeline.redact_texts([raw_descs[i] for i in safe_rows])))
+                tracer.add_attributes(screen_span, _guardrail_attributes(armor_results, dlp_results.values()))
+                for row, tx in enumerate(statement_data.transactions):
                     # 1. Ingestion Agent Guardrails: Model Armor + DLP screening on narration
-                    raw_desc = getattr(tx, "description", "") or ""
-                    armor_res = ModelArmor.inspect_prompt(raw_desc)
+                    armor_res = armor_results[row]
                     if not armor_res.is_safe:
                         tx.description = "[REDACTED_UNSAFE_NARRATION]"
                     else:
-                        dlp_res = FinancialDLPPipeline.redact_text(raw_desc)
+                        dlp_res = dlp_results[row]
                         if dlp_res.redacted_count > 0:
                             tx.description = dlp_res.sanitized_text
 

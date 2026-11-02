@@ -4,6 +4,10 @@
 FDE Pillar 2: GOVERN.
 Implements per-agent cryptographic identity (SPIFFE IDs), least-privilege MCP tool allowlists,
 and Human-in-the-Loop (HITL) approval gates for mutating operations.
+
+What this is (DEC-063): a local stand-in. The SPIFFE IDs are names, and the workload tokens are
+HMAC-SHA256 tokens signed and checked inside this process. No SPIFFE runtime (SPIRE) and no
+Google Cloud Workload Identity Federation is involved.
 """
 import hashlib
 import hmac

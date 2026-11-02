@@ -26,7 +26,7 @@ from database import DatabaseManager
 from security.auth import AgentIdentityManager
 from security.dlp import FinancialDLPPipeline
 from security.model_armor import ModelArmor
-from telemetry.tracer import AgentTracer
+from telemetry.tracer import AgentTracer, traced_request
 from voice_agent import VoiceAgent
 
 from .agent_registry import AgentCard, AgentRegistry, _build_default_agent_cards
@@ -156,24 +156,33 @@ class A2AOrchestrator:
             armor_report = ModelArmor.screen_transaction_batch(raw_txs)
 
             # Sanitize any injection attempts inside descriptions rather than crashing the batch
+            # (one batched screen for all rows, DEC-063: regex, plus the Model Armor API when on)
+            armor_results = ModelArmor.inspect_prompts([str(tx.get("description") or "") for tx in raw_txs])
             sanitized_txs: List[Dict[str, Any]] = []
-            for tx in raw_txs:
+            for tx, res in zip(raw_txs, armor_results):
                 clean_tx = dict(tx)
-                desc = str(clean_tx.get("description") or "")
-                res = ModelArmor.inspect_prompt(desc)
                 if not res.is_safe:
                     clean_tx["description"] = "[REDACTED_UNSAFE_NARRATION]"
                     clean_tx["security_flagged"] = True
                 sanitized_txs.append(clean_tx)
 
             # Redact PII (PAN, Aadhaar, Card numbers, Emails) while preserving 12-digit UPI ref IDs
-            redacted_txs, pii_count = FinancialDLPPipeline.redact_transaction_descriptions(sanitized_txs)
-            return {
+            dlp_report: Dict[str, Any] = {}
+            redacted_txs, pii_count = FinancialDLPPipeline.redact_transaction_descriptions(sanitized_txs, report=dlp_report)
+            result = {
                 "transactions": redacted_txs,
                 "total_rows": len(redacted_txs),
                 "model_armor": armor_report,
                 "dlp_redacted_rows": pii_count,
             }
+            if ModelArmor.api_enabled() or dlp_report.get("decision_layer") != "regex":
+                # Which layers decided, only when a Google API is configured (DEC-063).
+                result["guardrail_layers"] = {
+                    "model_armor": ModelArmor.summarize_layers(armor_results),
+                    "dlp": dlp_report.get("decision_layer"),
+                    "sdp_entities_added": dlp_report.get("sdp_entities_added", 0),
+                }
+            return result
 
         elif intent == "INGEST_DOCUMENT":
             file_path = payload.get("file_path")
@@ -539,6 +548,7 @@ class AgenticCFOOrchestrator:
             )
         return {"error": f"Unknown intent '{intent}' for orchestrator."}
 
+    @traced_request("a2a.four_agent_workflow")
     def run_four_agent_workflow(
         self,
         transactions: List[Dict[str, Any]],
@@ -1147,6 +1157,7 @@ class AgenticCFOOrchestrator:
             return default
         return float(balances[max(balances)]["closing_balance"])
 
+    @traced_request("a2a.master_resolve_transactions")
     def master_resolve_transactions(
         self,
         month: Optional[str] = None,
@@ -1475,6 +1486,7 @@ class AgenticCFOOrchestrator:
         concise = " ".join(sentences[:4]).strip()
         return concise[:520] if concise else "Ready for your next command."
 
+    @traced_request("a2a.copilot_command")
     def handle_omnipresent_command(
         self,
         message: str,
