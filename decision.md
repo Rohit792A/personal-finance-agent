@@ -19,6 +19,50 @@ Every time `agy` makes changes to the codebase, append or prepend an entry using
 
 > **ATS Resume Tailor decisions live in [`ats-resume-tailor/decision.md`](file:///home/rkushwaha8610/ats-resume-tailor/decision.md)** (moved there on 2026-10-20 at the owner's request: DEC-040, DEC-039, DEC-038, DEC-037, DEC-036, DEC-002). DEC numbers stay unique across both logs.
 
+### [DEC-065] Go-Live of the DEC-063 Governance Layers: Model Armor (us-central1 Templates), Sensitive Data Protection and Cloud Trace On in Both Backends (`personal-finance-agent`)
+- **Date**: `2026-11-02 09:07 UTC`
+- **Scope**: `personal-finance-agent`
+  - The deploy script and project `personal-finance-agent-507010`.
+  - The owner approved go-live explicitly ("approve go-live").
+- **Files Changed**: [`scripts/deploy_backend.sh`](file:///home/rkushwaha8610/personal-finance-agent/scripts/deploy_backend.sh): new `MODEL_ARMOR_REGION`, plus three variables on each service: `MODEL_ARMOR_TEMPLATE`, `SDP_ENABLED=1`, `ENABLE_CLOUD_TRACE=1`. They go in the script because `--set-env-vars` replaces every variable on each deploy.
+- **Google Cloud changes (owner-approved)**:
+  - Enabled `modelarmor.googleapis.com` and `dlp.googleapis.com`.
+  - Created two Model Armor templates in `us-central1`, `pfa-guard-personal` and `pfa-guard-demo`:
+    - prompt-injection & jailbreak filter at `MEDIUM_AND_ABOVE`;
+    - malicious-URI filter;
+    - responsible-AI filters (hate speech, harassment, dangerous, sexually explicit), each at `MEDIUM_AND_ABOVE`;
+    - Model Armor's SDP basic config disabled (the app does its own reversible SDP redaction);
+    - sanitize-operation logging off, so prompts and narrations never reach Cloud Logging.
+  - IAM, 6 bindings at project level, no conditions: `roles/modelarmor.user`, `roles/dlp.user` and `roles/cloudtrace.agent` for `pfa-backend-personal` and `pfa-backend-demo`.
+  - Deployed image `a3045ca-20261102-090118`, demo first: `finance-backend-demo-00015-kqt` (Seoul), then `finance-backend-00014-dkt` (Tokyo).
+- **Decision & Rationale**:
+  - **Templates in `us-central1`, not next to the services**:
+    - On 2026-11-02 the Model Armor API answered `PERMISSION_DENIED` ("Read access to project … denied") for `asia-northeast1`, `asia-northeast3`, `asia-southeast1` and `europe-west4`. The same happened in `ats-resume-tailor-510019`, where the API had been on for weeks, so propagation wasn't the cause. Only `us-central1` answered.
+    - Screening therefore adds a round trip across the Pacific. The app's 5 s timeout and regex fallback cover slow calls.
+    - Prompts and narrations are screened in the US. Gemini already runs on the `global` endpoint.
+  - **One template per environment**: separate labels, and each service account can later be limited to its own template with an IAM condition.
+  - **`ENABLE_VERTEX_CONTEXT_CACHE` left unset**: the persona is under the 4,096-token minimum for explicit caching (measured in DEC-063).
+- **Verification**:
+  - **Model Armor**: a direct `sanitizeUserPrompt` call on `pfa-guard-demo` returned `NO_MATCH_FOUND` for a normal finance question and `MATCH_FOUND` (`pi_and_jailbreak`) for an injection attempt.
+  - **DLP**: the five default infoTypes (India PAN and Aadhaar, email, phone, card) all exist among the 262 the API supports.
+  - **IAM**: the six bindings are listed in the project policy.
+  - **Each service**:
+    - The deploy script's checks passed: `/health` 200, `/me` 401, `/transactions` 401.
+    - The three variables are on the serving revision.
+    - No application warnings after start-up; the only warnings were the smoke checks' 401s.
+  - **Still to do**: an end-to-end check of a signed-in chat (Cloud Trace spans, `decision_layer`). It needs the owner's login.
+- **Incident during go-live**:
+  - Between about 08:41 and 09:00 UTC, Cloud Shell's built-in credential service returned account details without an email. gcloud lost its active account, and Python ADC failed with `RefreshError`.
+  - The account was selected again with `gcloud config set account` (session config only). ADC recovered by itself at about 09:00.
+  - Running agents paused paid calls during the outage.
+- **Rollback**:
+  - `gcloud run services update <service> --region <region> --remove-env-vars=MODEL_ARMOR_TEMPLATE,SDP_ENABLED,ENABLE_CLOUD_TRACE`, then revert this script change.
+  - The app goes back to the regex layers immediately.
+- **Lifetime**: these layers run until the free-trial credit ends (about 27 Nov 2026). The owner won't upgrade, so both services stop then.
+- **Flow Impact**: [`flow.md`](file:///home/rkushwaha8610/flow.md): the `deploy_backend.sh` row now lists the three variables. No new file connections.
+
+---
+
 ### [DEC-064] Credit-End Backup: Read-Only Export of Both Google Cloud Projects to Local Disk, With a Reusable Script for the Final Run (`workspace`)
 - **Date**: `2026-11-02 08:45 UTC`
 - **Scope**: `workspace`
