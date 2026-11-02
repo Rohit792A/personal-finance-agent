@@ -19,6 +19,88 @@ Every time `agy` makes changes to the codebase, append or prepend an entry using
 
 > **ATS Resume Tailor decisions live in [`ats-resume-tailor/decision.md`](file:///home/rkushwaha8610/ats-resume-tailor/decision.md)** (moved there on 2026-10-20 at the owner's request: DEC-040, DEC-039, DEC-038, DEC-037, DEC-036, DEC-002). DEC numbers stay unique across both logs.
 
+### [DEC-063] Real Google Cloud Governance Behind Flags: Model Armor API, Sensitive Data Protection, Cloud Trace Export and Explicit Context Caching (`personal-finance-agent`)
+- **Date**: `2026-11-02 08:27 UTC`
+- **Scope**: `personal-finance-agent` (security, telemetry and caching layers; with the four flags unset the behaviour is unchanged; no deploy, no API enabled, no IAM change)
+- **Request ("Week 1 truth fixes", via the parent agent)**: the owner's resume names Model Armor, Cloud DLP, Cloud Trace and context caching, but the code only had local stand-ins. Make the four real, each behind a flag that defaults off.
+- **What the code did before (checked)**:
+  - `security/model_armor.py` was a regex screen; it called no Google API.
+  - `security/dlp.py` was regex redaction with reversible tokens; it called no Google API.
+  - `telemetry/tracer.py` used the OpenTelemetry SDK with an `InMemorySpanExporter` only (unbounded, read by nothing), and every span was its own trace.
+  - `context_cache.py` created a Vertex `CachedContent` only with `ENABLE_VERTEX_CONTEXT_CACHE` (never set), and nothing passed it to a model; the "hits" were a local counter.
+  - Also found: the README said the app used `google-genai`; generation actually uses the `vertexai` SDK (`google-cloud-aiplatform`), and `google-genai` is imported nowhere.
+- **Files Changed**:
+  - **Created:**
+    - [`app/security/model_armor_api.py`](file:///home/rkushwaha8610/personal-finance-agent/app/security/model_armor_api.py), [`app/security/sdp_api.py`](file:///home/rkushwaha8610/personal-finance-agent/app/security/sdp_api.py), [`app/telemetry/usage.py`](file:///home/rkushwaha8610/personal-finance-agent/app/telemetry/usage.py)
+    - [`tests/test_guardrails_unchanged.py`](file:///home/rkushwaha8610/personal-finance-agent/tests/test_guardrails_unchanged.py) + [`tests/fixtures/guardrails_golden.json`](file:///home/rkushwaha8610/personal-finance-agent/tests/fixtures/guardrails_golden.json), [`tests/test_model_armor_api.py`](file:///home/rkushwaha8610/personal-finance-agent/tests/test_model_armor_api.py), [`tests/test_sdp.py`](file:///home/rkushwaha8610/personal-finance-agent/tests/test_sdp.py), [`tests/test_tracing.py`](file:///home/rkushwaha8610/personal-finance-agent/tests/test_tracing.py), [`tests/test_context_cache.py`](file:///home/rkushwaha8610/personal-finance-agent/tests/test_context_cache.py)
+  - **Modified:**
+    - [`app/security/model_armor.py`](file:///home/rkushwaha8610/personal-finance-agent/app/security/model_armor.py), [`app/security/dlp.py`](file:///home/rkushwaha8610/personal-finance-agent/app/security/dlp.py), [`app/telemetry/tracer.py`](file:///home/rkushwaha8610/personal-finance-agent/app/telemetry/tracer.py), [`app/telemetry/__init__.py`](file:///home/rkushwaha8610/personal-finance-agent/app/telemetry/__init__.py), [`app/context_cache.py`](file:///home/rkushwaha8610/personal-finance-agent/app/context_cache.py)
+    - [`app/security/auth.py`](file:///home/rkushwaha8610/personal-finance-agent/app/security/auth.py), [`app/security/__init__.py`](file:///home/rkushwaha8610/personal-finance-agent/app/security/__init__.py) (docstrings only: the HMAC tokens are a local stand-in for SPIFFE / Workload Identity)
+    - [`app/advisor.py`](file:///home/rkushwaha8610/personal-finance-agent/app/advisor.py), [`app/main.py`](file:///home/rkushwaha8610/personal-finance-agent/app/main.py), [`app/mcp/a2a_orchestrator.py`](file:///home/rkushwaha8610/personal-finance-agent/app/mcp/a2a_orchestrator.py)
+    - [`app/statement_agent.py`](file:///home/rkushwaha8610/personal-finance-agent/app/statement_agent.py), [`app/extractor.py`](file:///home/rkushwaha8610/personal-finance-agent/app/extractor.py), [`app/ai_importer.py`](file:///home/rkushwaha8610/personal-finance-agent/app/ai_importer.py), [`app/voice_agent.py`](file:///home/rkushwaha8610/personal-finance-agent/app/voice_agent.py) (one span per Gemini call)
+    - [`requirements.txt`](file:///home/rkushwaha8610/personal-finance-agent/requirements.txt), [`.env.example`](file:///home/rkushwaha8610/personal-finance-agent/.env.example), [`README.md`](file:///home/rkushwaha8610/personal-finance-agent/README.md), [`CHANGELOG.md`](file:///home/rkushwaha8610/personal-finance-agent/CHANGELOG.md), this log, [`flow.md`](file:///home/rkushwaha8610/flow.md)
+- **Decision & Rationale**:
+  - **Model Armor API (`MODEL_ARMOR_TEMPLATE` = full template name)**:
+    - The regex screen still runs first, always. Only text it passes goes to the official `google-cloud-modelarmor` client on the template's regional endpoint, `modelarmor.{location}.rep.googleapis.com`: chat prompts (`screen_prompt`, advisor and copilot), document text (`inspect_prompt` / `inspect_prompts`: statement rows, receipts, the ingestion agent) and, new, the advisor's replies (`screen_model_response`, step 6b).
+    - One attempt with a 5 s timeout (`MODEL_ARMOR_TIMEOUT_SECONDS`), no client retries (the default retry runs up to 60 s). Any error, or an invocation `FAILURE`, logs a warning and keeps the regex result, so Model Armor being down never fails a request.
+    - Blocking depends on the use. Prompts and replies are blocked by any matched filter except `sdp`: sensitive data is tokenised by the SDP layer, and blocking on it would refuse ordinary questions about one's own accounts. Document rows are flagged only by `pi_and_jailbreak` and `malicious_uris` (what the regex document screen looks for), so a responsible-AI false positive can't wipe a ledger narration.
+    - Statement rows go in batches (≤ 50 rows / 8,000 characters per request), and a flagged batch is split in halves until the matching rows are found. Per-row calls would have added tens of seconds to a 300-row import.
+    - The deciding layer (`regex`, `model_armor_api`, `regex_fallback`) is recorded on the existing spans (`model_armor_screen_prompt`, new `model_armor_screen_response`, the ingestion `screen_rows` span), on the API call's own span, and in the ingestion agent's result as `guardrail_layers`. That key is added only when a Google API is configured.
+  - **Sensitive Data Protection (`SDP_ENABLED=1`)**:
+    - The regex layer runs first, unchanged. Its output goes to `dlp_v2.DlpServiceClient.inspect_content` (project `config.PROJECT_ID`, `SDP_LOCATION` default `global`, `SDP_MIN_LIKELIHOOD` default LIKELY, quotes not requested).
+    - InfoTypes: built-in India PAN and Aadhaar, email, phone and credit card (configurable via `SDP_INFO_TYPES`, because the names can only be confirmed with `infoTypes.list` once the API is on), plus two custom regex types: `PFA_UPI_ID`, and `PFA_BANK_ACCOUNT_NUMBER` (9-18 digits, reported only with a hotword such as "A/c" nearby).
+    - Each finding becomes the same kind of `[TYPE_n]` token in the same token map (numbering continues after the regex tokens), so `restore()` de-tokenises replies exactly as before. SDP never sees values the regex already tokenised.
+    - Reference numbers: in document rows with `preserve_reference_numbers`, the bank-account type is not requested and any finding that touches a 12-digit RRN (`database._REFERENCE_NUMBER`, DEC-034) or a 9-12 digit reference token (`_extract_reference_id`) is dropped. SDP's Aadhaar detector matches 12-digit numbers, and reconciliation needs them; a bare 12-digit Aadhaar therefore stays as today (the regex doesn't mask it either). A test pins the regex to the database's.
+    - Rows are inspected in one batched request; a truncated result is re-inspected in halves. Any API error keeps the regex result.
+  - **Cloud Trace (`ENABLE_CLOUD_TRACE=1`)**:
+    - A `BatchSpanProcessor` with the official `CloudTraceSpanExporter` is added next to the in-memory exporter, into `config.PROJECT_ID`. If it can't start, a warning is logged and traces stay in memory.
+    - Spans are now linked. One root span per request (`advisor.chat`, `advisor.generate_insights`, `ingestion.process_file`, and `@traced_request` on the four-agent workflow, master resolve and copilot command); `with tracer.start_span(...)` and `tracer.activate()` make a span the parent of what runs inside. MCP tool calls, the Model Armor / SDP API calls and every Gemini call (`model_call_span`, with token usage) join the request's trace. The parallel statement-page calls run in a copy of the caller's context.
+    - The root span is not added to the in-memory summaries, so `GET /telemetry/traces` and `find_weakest_step()` rank the same steps; the response gains `cloud_trace_export` only with the flag set.
+    - The in-memory exporter is now bounded (last 2,048 spans). The SDK's version kept every span for the life of the process, and this change adds spans.
+  - **Context caching that actually saves tokens (`ENABLE_VERTEX_CONTEXT_CACHE=1`)**:
+    - Explicit caches are created with the same `vertexai` SDK the advisor generates with (`vertexai.caching.CachedContent.create`): one per model (tiers on one model share it), lazily, holding the static persona, recreated 2 minutes before expiry.
+    - The advisor then builds the model with `GenerativeModel.from_cached_content` and sends no system instruction (the API rejects one next to `cached_content`). The per-turn context (ledger summary, compacted history, guidelines) goes into the user message.
+    - Failed creation, or a failed request with the cache, switches explicit caching off for that model, and the request goes out exactly as before. The uncached prompts are byte-identical to the old ones (golden test).
+    - `usage_metadata` from every Gemini reply is always recorded (`telemetry/usage.py`): on the model call's span and in totals that `PrefixContextCacheManager.get_stats()` returns (`vertex_usage`), including `cached_content_token_count`, which also counts implicit caching. The local registry's "hits" stay, documented as bookkeeping.
+    - **Measured**: gemini-3.5-flash only caches 4,096+ tokens and the persona is 167, so with today's prompt explicit caching won't activate. Enabling the flag costs one rejected create per model per instance. The code is ready for a larger static prefix.
+  - **Docstrings and docs say what is local and what calls Google**: the HMAC workload tokens are called a stand-in for SPIFFE; the regex layers are called local. The README's `google-genai` claim is corrected.
+  - **Rejected**:
+    - Model Armor's own SDP filter instead of the DLP API: no reversible tokens, and blocking on it refuses normal questions.
+    - Caching the per-turn ledger summary: it would put personal data in cache resources and change every turn.
+    - Migrating to `google-genai`: out of scope, although the `vertexai` generative-models SDK prints deprecation warnings.
+    - `gcloud run services update --update-env-vars` for go-live: `deploy_backend.sh` uses `--set-env-vars`, which removes every other variable on the next deploy.
+- **Verification**:
+  - Backend: **248 passed, 15 skipped**: the 188 / 15 baseline plus 60 new tests. The golden test compares regex screens, redaction/restore and the exact advisor prompts with output captured from the old code, and fails if any Google client is created with the flags unset. The API tests use real `modelarmor_v1` / `dlp_v2` message types.
+  - Dependencies: `google-cloud-modelarmor==0.7.4`, `google-cloud-dlp==3.40.0`, `opentelemetry-exporter-gcp-trace==1.15.0` (+ `google-cloud-trace==1.21.0`, `opentelemetry-resourcedetector-gcp==1.14.0`) were installed in `venv/` with the existing pins as constraints. A fresh-install resolution of `requirements-dev.txt` matches all 98 pins, and `pip check` is clean.
+  - Real Vertex AI, synthetic text only (project `personal-finance-agent-507010`, `global`, gemini-3.5-flash):
+    - The persona counted 167 tokens; creating a cache from it was rejected ("minimum token count to start explicit caching is 4096").
+    - A synthetic 6,674-token persona was cached (5-minute TTL), and two advisor chat turns through it reported `cached_content_token_count` 6,675 of 6,805 prompt tokens each.
+    - A third turn without the cache reported 0 cached tokens.
+    - The cache was deleted, and a list showed none left. Cost well under ₹10.
+  - Read-only checks:
+    - `roles/modelarmor.user`, `roles/dlp.user` and `roles/cloudtrace.agent` exist with the expected permissions.
+    - Both backend service accounts exist.
+    - `modelarmor.asia-northeast1.rep.googleapis.com` and `modelarmor.asia-northeast3.rep.googleapis.com` resolve in DNS; an invented region doesn't.
+- **Not verified**:
+  - Model Armor and DLP calls against the live APIs (not enabled).
+  - The SDP infoType names.
+  - Model Armor's region list in the docs (the documentation tool returned Forbidden).
+  - Cloud Trace export against the live API.
+- **Go-live (needs the owner's approval; nothing was executed)**:
+  - Enable `modelarmor.googleapis.com` and `dlp.googleapis.com`.
+  - Create a `pfa-guard` template in `asia-northeast1` (personal) and `asia-northeast3` (demo).
+  - Grant the three roles to `pfa-backend-personal` and `pfa-backend-demo`.
+  - Add the variables to the `--set-env-vars` lists in `scripts/deploy_backend.sh`.
+  - Deploy demo first, then personal. Rollback: remove the variables and redeploy; the code paths go back to the regex layers.
+- **Deployment**: none.
+- **Flow Impact**: Updated [`flow.md`](file:///home/rkushwaha8610/flow.md):
+  - new nodes for `model_armor_api.py`, `sdp_api.py`, `telemetry/usage.py`, the Model Armor, Sensitive Data Protection and Cloud Trace services, and the explicit-cache link from `context_cache.py` to Vertex AI;
+  - spans from the readers;
+  - table rows for the new modules and tests;
+  - DEC-063 notes on the `advisor.py`, `main.py`, statement reader, orchestrator, `context_cache.py` and `tracer.py` rows.
+
+---
+
 ### [DEC-062] Public GitHub Release: Personal Data Moved Out of the Code, Clean Public History, Standard Repository Docs and CI (`personal-finance-agent`)
 - **Date**: `2026-11-02 06:15 UTC`
 - **Scope**: `personal-finance-agent` (repository publication; small behaviour-preserving code changes)
