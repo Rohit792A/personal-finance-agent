@@ -4,7 +4,7 @@
 FDE Pillar 3 (SCALE):
 - Manages pooled SQLAlchemy (`pg8000`) connections supporting both Supabase PostgreSQL URIs
   and Google Cloud SQL Connector (`get_cloud_sql_credentials`).
-- Guarantees 100% ledger idempotency via three mechanisms:
+- Prevents duplicate rows with three mechanisms:
   1. Deterministic SHA-256 `row_signature` (`date|amount|description|type`) and `file_hash`
      (`ingested_files`: a statement file is imported once, claimed inside the import transaction).
   2. Cross-Source Reconciliation (`find_reconcilable_transaction`, rules in `reconcile_rule`):

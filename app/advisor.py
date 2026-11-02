@@ -2,7 +2,9 @@
 """Strategic AI Personal CFO Advisor Agent (`advisor-agent`).
 
 Refactored to FDE Production Standard (Four Pillars: Build, Govern, Scale, Optimize):
-- Pillar 1 (Build): MCP Client tool plane integration + Gemini function-call tool execution + proactive EMI/cash-shortfall alerts.
+- Pillar 1 (Build): ledger context from in-process MCP tool calls (`MCPClient.get_context_snapshot`: four
+  tools), put into the prompt; no tools are passed to Gemini, so there is no function calling. Proactive
+  EMI/cash-shortfall alerts come from the MCP calculator tool.
 - Pillar 2 (Govern): agent identity `advisor-agent` (HMAC-signed workload tokens, a local stand-in for
   SPIFFE, security/auth.py), prompt screening (regex, plus the Google Cloud Model Armor API on prompts
   and replies when MODEL_ARMOR_TEMPLATE is set) and PII tokenization (regex, plus Google Sensitive
@@ -16,7 +18,8 @@ Refactored to FDE Production Standard (Four Pillars: Build, Govern, Scale, Optim
   then); otherwise, or if the cache can't be created, requests are sent exactly as before. Every
   reply's `usage_metadata` (including `cached_content_token_count`, which also counts implicit
   caching) is recorded on the model call's span and in the process totals.
-- Gemini 3 (DEC-042): each tier's model comes from config (`MODEL_LITE`, `MODEL_NAME`, `MODEL_PRO`).
+- Gemini 3 (DEC-042): each tier's model comes from config (`MODEL_LITE`, `MODEL_NAME`, `MODEL_PRO`); by
+  default Standard and Pro both use gemini-3.5-flash.
   Requests set no temperature and no thinking budget: Gemini 3 is tuned for its default
   temperature, and it chooses its own thinking depth.
 """
@@ -258,7 +261,7 @@ Format in clean Markdown with bold numbers and clear action steps."""
         2. Cloud DLP: Redact sensitive financial/PII entities before LLM transmission.
         3. Dynamic Tiering: Route query to the Lite, Standard, or Pro tier's model (config.py).
         4. Prefix Context Caching & Context Compaction: Cache static prefix and compact older history.
-        5. MCP Context & Tool Execution: Ground in verified MCP tools.
+        5. MCP Context: four in-process MCP tool calls; their results go into the prompt (no function calling).
         6. Cloud Model Execution: Vertex AI start_chat.
         7. Cloud DLP Restore: De-tokenize and rehydrate responses for client presentation.
 

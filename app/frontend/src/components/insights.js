@@ -1,7 +1,8 @@
 /**
  * AI CFO Insights Component
  * Fetches GET /insights, renders loading spinner, parses markdown via `marked` (sanitized with DOMPurify),
- * and provides a stateless Multi-Turn chat interface backed by Vertex AI Gemini 2.5 Flash.
+ * and provides a stateless Multi-Turn chat interface backed by Gemini on Vertex AI (Flash-Lite / Flash tiers,
+ * chosen by the backend's advisor; Gemini 3.5 by default).
  */
 
 import { getAiInsights, sendAdvisorChatMessage } from '../api/index.ts';

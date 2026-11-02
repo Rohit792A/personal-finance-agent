@@ -2,8 +2,13 @@
 """Model Context Protocol (MCP) Client Adapter.
 
 FDE Pillar 1: BUILD & Pillar 2: GOVERN.
-Connects reasoning agents to the decoupled MCP tool plane with SPIFFE caller identity,
-JSON-RPC 2.0 invocation, and translation to Vertex AI Gemini `FunctionDeclaration`s.
+Connects reasoning agents to the decoupled MCP tool plane with the caller agent's identity
+(SPIFFE-style ID), JSON-RPC 2.0 invocation, and translation to Vertex AI Gemini `FunctionDeclaration`s.
+
+What the agents use today: `call_tool()` (and `get_context_snapshot()`, built on it), an
+in-process call to `LedgerMCPServer.execute_tool()` that checks the caller agent's tool allowlist.
+`call_tool_jsonrpc()` and `get_vertex_tools()` exist, but nothing calls them, and no tools are
+passed to Gemini: the advisor puts the tool results in its prompt instead (no function calling).
 """
 import logging
 import os

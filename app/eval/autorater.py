@@ -4,10 +4,14 @@ FDE Pillar 3: SCALE.
 Replaces subjective 'vibe-checking' with automated benchmark pipelines and objective scoring
 loaded from `app/eval/golden_dataset.json`:
 1. Mathematical Reconciliation Autorater (Exact determinism)
-2. Extraction Completeness Autorater (Recall, schema validity)
+2. Extraction Completeness Autorater (share of rows with a valid date, amount and description)
 3. Categorization F1 Autorater (Precision, recall, macro-F1)
-4. Fiduciary Soundness Autorater (Rule adherence + optional Gemini LLM-as-a-Judge rubric)
+4. Fiduciary Soundness Autorater (keyword rules; there is no LLM judge)
 5. OpenTelemetry Trace Trajectory Analyzer (Identifies weakest step to fix first)
+
+What it scores: the fixed examples stored in the golden dataset (balance cases, extracted rows,
+category predictions, sample advice). It calls no model, so it checks the scoring rules rather
+than live Gemini output; the stored category predictions equal the ground truth.
 """
 import json
 import logging

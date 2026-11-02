@@ -14,6 +14,13 @@ Implements the multi-agent architecture from the Agentic AI CFO proposal:
     whenever the user resolves a category (HITL governance gate).
   - Specialist Agent 4 (`advisor-agent`): Answers financial questions over MCP tools and
     raises proactive cash/EMI shortfall alerts before due dates.
+
+What the bus is: in-process. Each agent is a Python handler found through its Agent Card in
+`AgentRegistry`; nothing is sent over the network between agents, and the A2A protocol's
+JSON-RPC methods are not implemented. The specialists are deterministic code (keyword rules,
+reference matching, learned rules, MCP calculators); Gemini is called only for the advisor's
+answers (`advisor.py`) and, when keyword rules can't map a user's reply to a category, by the
+voice agent's Flash-Lite classifier.
 """
 import logging
 import re
@@ -36,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 class AgentMessage(BaseModel):
-    """Standardized cross-agent communication envelope (A2A protocol)."""
+    """Standardized cross-agent communication envelope (A2A-style; delivered in-process)."""
 
     task_id: str = Field(default_factory=lambda: str(uuid.uuid4())[:8])
     sender_agent: str = Field(..., description="ID of delegating agent, e.g. 'orchestrator'")
