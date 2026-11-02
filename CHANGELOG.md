@@ -5,7 +5,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 ## [Unreleased]
 
 ### Added
-- Opt-in Google Cloud governance (DEC-063), each off by default:
+- Opt-in Google Cloud governance (DEC-063), off by default locally and enabled on both deployed Cloud Run backends in DEC-065 (`us-central1` Model Armor templates `pfa-guard-personal` and `pfa-guard-demo`):
   - `MODEL_ARMOR_TEMPLATE`: the Model Armor API screens chat prompts, statement and receipt text, and the advisor's replies, after the local regex screen.
   - `SDP_ENABLED=1`: Sensitive Data Protection findings are added to the local PII tokens, and statement reference numbers are kept.
   - `ENABLE_CLOUD_TRACE=1`: the OpenTelemetry spans are exported to Cloud Trace.
@@ -16,6 +16,9 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 - `ENABLE_VERTEX_CONTEXT_CACHE=1` now creates one explicit Vertex AI cache per model and actually passes it to the advisor's Gemini calls. Today's persona is below gemini-3.5-flash's 4,096-token minimum, so the advisor falls back to normal requests.
 - Each chat, insights request and upload is one trace, with the Model Armor, DLP, MCP tool and Gemini calls as child spans.
 - The in-memory span store is bounded.
+
+### Fixed
+- The public documentation now says what the code does. The architecture, pitch, handover and audit documents, the README, SECURITY.md and a few module docstrings no longer present local stand-ins (HMAC agent tokens, rule-based autoraters), inactive caching (`ENABLE_VERTEX_CONTEXT_CACHE`), retired infrastructure (the `us-central1` backend, the Cloudflare tunnel) or unmeasured numbers as current facts, and clearly distinguish local defaults from the DEC-065 Cloud Run governance flags. Each pitch-style document starts with a dated accuracy note.
 
 ## 2026-11-02: First public release (DEC-062)
 
@@ -49,7 +52,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 - A copilot dock (voice and text) on every screen. Salary and summary figures are normalised to one month.
 
 ### 2026-10-22 to 2026-10-23: Agent platform (DEC-049 to DEC-053)
-- A four-agent CFO workflow over A2A with Agent Cards, and a Ledger MCP server on the official MCP SDK with a JSON-RPC endpoint.
+- A four-agent CFO workflow with A2A Agent Cards (the orchestrator delegates in-process), and a Ledger MCP server with a JSON-RPC endpoint built with the official MCP SDK's types.
 - Agents registered in Google Cloud Agent Registry, plus an Agent Registry screen in the web app.
 - Closed-loop categorisation learning (`learned_rules`).
 - Start- and end-of-month balance KPIs. "Previous Balance" rows no longer count as income.

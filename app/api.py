@@ -5,8 +5,8 @@ Serves as the Tier-2 Serverless API Gateway (Google Cloud Run / Uvicorn) connect
 Frontend SPA (`app/frontend/src`) to the 5-Tier FDE Agent Fleet:
 
 Route Map & Architectural Responsibilities:
-1. Health & Readiness (`GET /health`): Liveness probe for Cloud Run and SPA auto-failover.
-2. Multimodal Document Ingestion (`POST /upload`): Screens files and dispatches to `process_file()`.
+1. Health & Readiness (`GET /health`): Liveness probe for Cloud Run (the only public API route).
+2. Multimodal Document Ingestion (`POST /upload`): Checks type and size, then dispatches to `process_file()`.
 3. 4-Stage Progressive Disclosure Vault (`GET /transactions/months`, `GET /transactions`):
    Pre-aggregates Year & Month cashflow rollups, top categories, and review counts.
 4. Ledger CRUD & Human-in-the-Loop Voice Resolution (`POST /transactions/{id}/resolve`,
@@ -16,13 +16,16 @@ Route Map & Architectural Responsibilities:
    `GET /recurring`): SQL-backed portfolio metrics and subscription detection.
 6. Multi-Horizon Future Cost Predictor (`GET /forecast`): Weighted 30-day category forecast
    (45% MoM + 35% Historical Avg + 20% YoY Seasonal) and Indian household preparedness plan.
-7. AI Personal CFO & Model Armor Gate (`GET /insights`, `POST /insights/chat`):
-   Screens prompts via `ModelArmor`, redacts PII via `FinancialDLPPipeline`, and routes to
-   `FinancialAdvisor` (Gemini 3 Lite/Standard/Pro tiers from config.py, DEC-042, + MCP tools).
-8. MCP & Evaluation Endpoints (`GET /mcp/tools`, `POST /mcp/execute`, `GET /eval/run`):
-   Exposes `LedgerMCPServer` JSON-RPC tools and `run_full_evaluation_suite()` benchmarks.
+7. AI Personal CFO & Model Armor Gate (`GET /insights`, `POST /insights/chat`): routes to
+   `FinancialAdvisor`, which screens prompts via `ModelArmor` (local regex; the Model Armor API only
+   with MODEL_ARMOR_TEMPLATE), redacts PII via `FinancialDLPPipeline` (local regex; Sensitive Data
+   Protection only with SDP_ENABLED=1) and puts ledger context from in-process MCP tool calls into
+   the prompt (Gemini 3 Lite/Standard/Pro tiers from config.py, DEC-042).
+8. MCP & Evaluation Endpoints (`GET /mcp/tools`, `POST /mcp/execute`, `POST /mcp/jsonrpc`,
+   `GET /eval/benchmark`): Exposes the `LedgerMCPServer` tools and the rule-based
+   `run_full_evaluation_suite()` benchmarks.
 9. Automated Gmail Bank Sync & Statement Vault (`GET/POST /api/gmail/*`):
-   Background IMAP sync task, password-protected PDF statement unlocking, and ledger reconciliation.
+   IMAP sync (on demand, or Cloud Scheduler's hourly tick), password-protected PDF statement unlocking, and ledger reconciliation.
 10. Sign-in & Environment (Phase 1, DEC-025): `FirebaseAuthMiddleware` (app/auth.py) requires a
     Firebase ID token from an allowed account on every route except `/health`; `GET /me`
     returns the account, environment (personal / demo), enabled features and demo AI limits.

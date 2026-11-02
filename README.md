@@ -1,6 +1,6 @@
 # Personal Finance AI
 
-**An AI-assisted personal finance ledger for Indian bank accounts.** It reads bank statements, receipts, spreadsheets and Gmail bank alerts with Google Gemini, reconciles them into one deduplicated ledger, and adds analytics, budgets, forecasts, an AI "CFO" chat and voice clarification on top. A small fleet of cooperating agents (A2A) and an MCP server sit behind the same API.
+**An AI-assisted personal finance ledger for Indian bank accounts.** It reads bank statements, receipts, spreadsheets and Gmail bank alerts with Google Gemini, reconciles them into one deduplicated ledger, and adds analytics, budgets, forecasts, an AI "CFO" chat and voice clarification on top. An orchestrator with four specialist agents (A2A Agent Cards, in-process delegation) and a Ledger MCP server sit behind the same API.
 
 ![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.141-009688?logo=fastapi&logoColor=white)
@@ -37,9 +37,9 @@
 
 **Getting data in**
 - **Bank statement PDFs** (HDFC, Kotak, SBI and others). Long statements are read a few pages per Gemini call in parallel, with checks for cut-off replies and missing rows, so a partial read never imports silently.
-- **Password-protected PDFs** are unlocked in memory before the model sees them: with the password typed on the Upload screen, or with the statement passwords stored in Secret Manager. Passwords are never logged or stored.
+- **Password-protected PDFs** are unlocked before the model sees them, with the password typed on the Upload screen (used in memory only, never logged or stored) or the statement passwords saved in Secret Manager. Uploads are deleted after processing; Bank Sync keeps the unlocked copy of a statement in its private bucket.
 - **Receipts and bills** (images) and **spreadsheets** (`.xlsx`/`.xls`) through dedicated AI importers.
-- **Gmail Bank Sync**: bank alert emails and monthly statement attachments arrive over IMAP, either hourly through Cloud Scheduler or on demand.
+- **Gmail Bank Sync**: bank alert emails and monthly statement attachments arrive over IMAP, on demand or through an hourly Cloud Scheduler check that syncs once the interval set on Bank Sync has passed.
 
 **Keeping the ledger correct**
 - **Deduplication at import time.** An incoming row that is already in the ledger (a Gmail alert, an overlapping statement, a re-import, the other side of a transfer between your own accounts) updates that row instead of adding a copy. The evidence is a shared 12-digit UPI/IMPS reference number or matching amount and wording. Each statement file is imported only once (SHA-256).
@@ -49,13 +49,13 @@
 - **Closed-loop learning.** Every confirmed category becomes a learned payee rule. The rule is applied to matching unverified rows, used as few-shot memory in extraction prompts and enforced on later imports.
 
 **Understanding your money**
-- Transactions, Analytics (month start and end balances, category breakdown), Budgets, Recurring & Forecast, and an **AI CFO** chat grounded in the ledger through MCP tools, with model tiering (Flash-Lite for look-ups, Flash for analysis and planning).
+- Transactions, Analytics (month start and end balances, category breakdown), Budgets, Recurring & Forecast, and an **AI CFO** chat grounded in the ledger: the backend calls four MCP tools and puts their results in the prompt (Gemini isn't given tools to call). Model tiering sends simple look-ups to Flash-Lite and everything else, planning questions included, to Flash.
 - **A copilot dock** on every screen that answers voice or text commands about the current page.
 
 **Agents and governance**
-- **A four-agent workflow**: ingestion, reconciliation, clarification and advisor agents, behind an orchestrator. They talk over an Agent2Agent (A2A) bus with published Agent Cards and are mirrored to Google Cloud Agent Registry.
-- **A Ledger MCP server** (official `mcp` SDK, JSON-RPC 2.0) that exposes the ledger as tools.
-- **Guardrails**: per-agent identities with least-privilege tool allowlists (HMAC-signed workload tokens, a local stand-in for SPIFFE), human approval for writes, an audit log, prompt-injection screening (local regex; plus the Google Cloud Model Armor API on prompts, document text and replies when configured), PII masking before prompts (local regex with reversible tokens; plus Sensitive Data Protection when enabled), OpenTelemetry traces (optionally exported to Cloud Trace) and an autorater against a golden dataset.
+- **A four-agent workflow**: ingestion, reconciliation, clarification and advisor agents, behind an orchestrator. Each has an A2A Agent Card, served at `/.well-known/agent.json` and registered in Google Cloud Agent Registry. The orchestrator delegates to them in-process through that card registry; the agents don't call each other over the A2A protocol.
+- **A Ledger MCP server** with 12 tools (ledger queries and updates, statements, sync status, calculators), served as JSON-RPC 2.0 at `POST /mcp/jsonrpc` with the official `mcp` SDK's message types. The agents call it in-process.
+- **Guardrails**: per-agent identities with least-privilege MCP tool allowlists (HMAC-signed workload tokens with SPIFFE-style IDs, issued and checked in one process: a local stand-in for SPIFFE / Workload Identity), an approval flag that write tools require (sent when the user applies a change or asks the copilot for one), an audit log, prompt-injection screening (local regex; plus the Google Cloud Model Armor API on prompts, extracted document text and replies when configured), PII masking of chat messages before Gemini sees them and of extracted narrations before they're saved (local regex tokens; plus Sensitive Data Protection when enabled), OpenTelemetry traces (exported to Cloud Trace when enabled) and a rule-based autorater over a small golden dataset. Each Google Cloud layer is behind an opt-in flag that defaults off locally and is enabled on both deployed Cloud Run backends (`DEC-065`; see [Configuration](#configuration)).
 
 **Two environments from one codebase**
 - **Personal**: Google sign-in, owner only.
@@ -86,7 +86,7 @@ flowchart LR
     P -.->|"sync Agent Cards"| AR["Agent Registry"]
 ```
 
-Inside the backend, uploads flow through `main.process_file` (unlock, hash check, extraction, date guard, reconciliation, batch save). The agents in `mcp/` reach the ledger only through the MCP server's tools. [docs/APPLICATION_ARCHITECTURE.md](docs/APPLICATION_ARCHITECTURE.md) has the detailed diagrams. [flow.md](flow.md) maps every file-to-file connection.
+Inside the backend, uploads flow through `main.process_file` (hash check, unlock, extraction, date guard, narration screening, reconciliation, batch save). The agents in `mcp/` make their ledger writes through the MCP server's tools, where the allowlist and approval checks apply; some reads (the master resolver's ledger scan, learned rules, reconciled balances) query the database directly. [docs/APPLICATION_ARCHITECTURE.md](docs/APPLICATION_ARCHITECTURE.md) has the detailed diagrams. [flow.md](flow.md) maps every file-to-file connection.
 
 ---
 
@@ -97,11 +97,11 @@ Inside the backend, uploads flow through `main.process_file` (unlock, hash check
 | Backend | Python 3.12, FastAPI, Uvicorn, SQLAlchemy 2 + `pg8000`, Pydantic 2 |
 | AI | Gemini 3.5 Flash and Flash-Lite on Vertex AI (`vertexai` SDK from `google-cloud-aiplatform`, global endpoint), Cloud Speech-to-Text, Text-to-Speech |
 | Documents | `pypdf` (page splitting, decryption), pandas + openpyxl/xlrd (spreadsheets), Pillow (images) |
-| Agents | Official `mcp` SDK (MCP server and JSON-RPC), A2A Agent Cards, Google Cloud Agent Registry |
+| Agents | Ledger MCP server (JSON-RPC 2.0 with the official `mcp` SDK's types), A2A Agent Cards, Google Cloud Agent Registry |
 | Frontend | React 19, TypeScript 5.9, Vite 5, Tailwind CSS 3, React Router 7, Firebase Auth, DOMPurify + marked |
 | Data | Supabase Postgres (row-level security on every table), Cloud Storage for statement PDFs |
 | Platform | Cloud Run (two services, one image), Cloud Build, Artifact Registry, Secret Manager, Cloud Scheduler, Firebase Hosting |
-| Governance (opt-in) | Model Armor API, Sensitive Data Protection (Cloud DLP API), Cloud Trace via OpenTelemetry; each behind a flag (see [Configuration](#configuration)) |
+| Governance (opt-in flags; on in prod) | Model Armor API (`us-central1` templates), Sensitive Data Protection (Cloud DLP API), Cloud Trace via OpenTelemetry; each defaults off locally and is enabled on both deployed backends (`DEC-065`; see [Configuration](#configuration)) |
 | Quality | pytest, ESLint (`typescript-eslint` strict, type-checked), Playwright + axe-core, GitHub Actions |
 
 ---
@@ -198,7 +198,7 @@ The backend reads environment variables, plus an optional git-ignored `.env` in 
 | `ENABLE_CLOUD_TRACE` | `0` | `1` also exports the OpenTelemetry spans (one trace per chat, insights request or upload) to Cloud Trace |
 | `ENABLE_VERTEX_CONTEXT_CACHE` | `0` | `1` puts the advisor's static persona in an explicit Vertex AI cache per model. gemini-3.5-flash only caches 4,096+ tokens, so with today's ~170-token persona creation fails once and requests go out as usual. Token usage (including implicit-cache hits) is recorded regardless |
 
-The Google APIs above stay off until their flags are set, and the app behaves exactly as without them. Each service account then needs the matching role: `roles/modelarmor.user`, `roles/dlp.user`, `roles/cloudtrace.agent`.
+The Google APIs above stay off until their flags are set, and the app behaves exactly as without them. None of the four flags is set on the deployed Cloud Run services yet ([`scripts/deploy_backend.sh`](scripts/deploy_backend.sh)), so production runs the local regex layers and keeps its spans in memory. Each service account then needs the matching role: `roles/modelarmor.user`, `roles/dlp.user`, `roles/cloudtrace.agent`.
 
 **Secrets** live in Google Secret Manager and are never committed: `pfa-db-password-personal`, `pfa-db-password-demo`, `pfa-gmail-app-password`, `pfa-statement-passwords`. Store one with `scripts/set_secret.sh <name>`. The script uses a hidden prompt, so the value never appears in shell history.
 
@@ -227,7 +227,7 @@ npm run test:e2e                # Playwright + axe; real demo sign-in, mocked ba
 
 The Playwright suite signs in to Firebase with the demo account. It reads the credentials at runtime from `~/.config/personal-finance-agent/demo-login.txt` and never prints them. `E2E_BACKEND=http://127.0.0.1:8081 npm run test:e2e -- integration` runs the integration spec against a local backend instead of mocks.
 
-GitHub Actions runs the backend unit tests and the frontend type-check, lint and build on every push and pull request ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). The suites that need credentials (Postgres, live and Playwright) run locally.
+GitHub Actions runs the backend unit tests and the frontend type-check, lint and build on every push to `main` and every pull request ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). The suites that need credentials (Postgres, live and Playwright) run locally.
 
 ---
 
@@ -251,7 +251,7 @@ Each deploy records its image tag and a one-line rollback command in [decision.m
 - **No credentials in code.** Database, Gmail and statement passwords come from Secret Manager. Cloud Run mounts the database password as a secret.
 - **The database is locked down.** Every table has row-level security, Supabase's anon and authenticated roles get no access, and views run as the caller (`security_invoker`).
 - **Uploads are constrained**: a type allowlist, a 25 MB cap, a random folder per upload and sanitised file names. PDF passwords stay in memory only.
-- **AI guardrails**: prompt-injection screening (local regex, plus the Model Armor API when `MODEL_ARMOR_TEMPLATE` is set), PII masking before prompts (local regex, plus Sensitive Data Protection when `SDP_ENABLED=1`), least-privilege agent tools and human approval for writes.
+- **AI guardrails**: prompt-injection screening (local regex, plus the Model Armor API when `MODEL_ARMOR_TEMPLATE` is set), PII masking of chat messages before they reach Gemini and of extracted narrations before they're saved (local regex, plus Sensitive Data Protection when `SDP_ENABLED=1`), least-privilege agent tools and an approval flag on writes. Uploaded documents themselves go to Gemini unredacted; the screening applies to the text read from them.
 - **Personal data stays out of git.** Statements (`data/`), uploads, screenshots of real transactions and the owner profile (`app/private/`) are all git-ignored. The public history starts from a scrubbed snapshot.
 
 Found a vulnerability? Please follow [SECURITY.md](SECURITY.md) and don't open a public issue.
@@ -274,7 +274,7 @@ Found a vulnerability? Please follow [SECURITY.md](SECURITY.md) and don't open a
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Development workflow and conventions |
 
 > [!TIP]
-> Links in `decision.md` and `flow.md` use local `file:///` paths for the author's editor. On GitHub they show as plain text, and every path is relative to the repository root.
+> Links in `decision.md`, `flow.md` and the two dated planning documents (`docs/UX_ENTERPRISE_AUDIT.md`, `docs/OVERHAUL_PLAN.md`) use local `file:///` paths for the author's editor. On GitHub they show as plain text, and every path is relative to the repository root.
 
 ---
 

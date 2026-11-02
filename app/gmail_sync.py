@@ -7,17 +7,17 @@ revocable Google App Password. The App Password and bank-statement PDF passwords
 are stored in Google Secret Manager (via `secret_store`), never in Supabase.
 
 Features:
-1. Daily / Real-Time Bank Alert Ingestion:
+1. Bank Alert Ingestion (on demand, or Cloud Scheduler's hourly tick once the interval set on Bank Sync has passed):
    Reads transaction alert emails from Indian banks (HDFC, SBI, ICICI, Axis,
    Kotak, IDFC, PNB, BOB, Yes Bank, etc.), extracts date, amount, debit/credit
    type, merchant/VPA, and 12-digit UPI/IMPS/NEFT Reference (UTR/RRN).
 2. Monthly Statement Attachment Ingestion:
    Detects PDF / Excel statement attachments in bank emails and routes them
    through the AI Statement Extractor.
-3. Zero-Duplicate Cross-Source Reconciliation:
-   Works seamlessly with DatabaseManager's 3-layer reconciliation engine so
-   that daily email alerts and end-of-month bank statements never duplicate
-   transactions.
+3. Cross-Source Reconciliation:
+   Works with DatabaseManager's 3-layer reconciliation engine, so a daily email
+   alert and the matching end-of-month statement row are merged into one
+   transaction instead of being counted twice.
 """
 
 import os

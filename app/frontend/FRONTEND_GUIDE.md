@@ -3,8 +3,9 @@
 The frontend is a **React 19 + TypeScript** single-page app built with **Vite 5** and **Tailwind CSS 3**, with
 **Firebase Authentication** for sign-in and **react-router 7** for URL state. It is hosted on Firebase Hosting.
 
-The seven screens are still the original vanilla-JS components (`src/components/*.js`). Since Phase 1 they run
-unchanged inside the React shell. Each one moves to React in Phase 3 (see `docs/OVERHAUL_PLAN.md`).
+Seven of the eight screens are still the original vanilla-JS components (`src/components/*.js`). Since Phase 1 they
+run inside the React shell with small integration hooks, and each moves to React in Phase 3 (see
+`docs/OVERHAUL_PLAN.md`). The Agent Registry screen (`/agents`, DEC-052) is React.
 
 ---
 
@@ -31,8 +32,9 @@ app/frontend/
     │   └── backends.ts        # sign-in method → backend URL; VITE_API_BASE_URL dev override
     ├── auth/                  # AuthProvider (Firebase state), SignInScreen, error messages
     ├── session/               # SessionProvider: picks the backend, binds the API client, loads /me
-    ├── shell/                 # AppShell, Sidebar, TopBar, PeriodPicker, SearchBox, UserMenu,
-    │                          # DemoBanner, FeatureUnavailable, AgentRegistryScreen, NotFound, screens.ts, urlState.ts
+    ├── shell/                 # AppShell, Sidebar, TopBar, PeriodPicker, SearchBox, UserMenu, DemoBanner,
+    │                          # FeatureUnavailable, AgentRegistryScreen, MasterCopilotDock, NotFound,
+    │                          # screens.ts, urlState.ts, useMonths.ts
     ├── legacy/
     │   ├── index.js           # the only entry to the legacy screens (loaded after sign-in)
     │   ├── index.d.ts         # types for the legacy init functions and instances
@@ -96,7 +98,7 @@ Every backend call, from React and from the legacy screens, goes through this on
 
 | Part | Meaning |
 | :--- | :--- |
-| Path | One per screen: `/transactions` (home), `/analytics`, `/budgets`, `/forecast`, `/upload`, `/ai-cfo`, `/bank-sync`. `/` redirects to `/transactions`; unknown paths show Not found. |
+| Path | One per screen: `/transactions` (home), `/analytics`, `/budgets`, `/forecast`, `/upload`, `/ai-cfo`, `/agents`, `/bank-sync`. `/` redirects to `/transactions`; unknown paths show Not found. |
 | `?month=YYYY-MM` | The global period (absent = all time). Shared by Transactions, Analytics and Budgets and by the period picker. |
 | `?q=text` | Transactions search (the top-bar search box navigates to `/transactions?q=…`; Ctrl/⌘+K focuses it). |
 | `?view=overview\|years\|months&year=YYYY` | The ledger's statement overview stages instead of the table. |

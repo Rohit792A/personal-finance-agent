@@ -16,6 +16,10 @@ so that the Orchestrator, all 4 Specialist Agents, and the Ledger MCP Server:
   3. Are discovered and invoked **via their `AgentCard`** (`get_agent_card` / `discover_by_skill`
      -> validate `skill` in `card.skills` -> verify SPIFFE workload token against
      `card.authentication` -> dispatch to `card.url` endpoint).
+The dispatch is in-process: `card.url` is the key of a registered Python handler, not an HTTP
+call, and the workload token is an HMAC token issued and checked in this process (a local
+stand-in for SPIFFE; see security/auth.py). Google Cloud Agent Registry holds catalogue entries
+for the cards; no agent traffic goes through it.
 """
 import json
 import logging

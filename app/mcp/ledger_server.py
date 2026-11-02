@@ -2,18 +2,21 @@
 """Official Model Context Protocol (MCP) Server for Personal Finance Ledger.
 
 FDE Pillar 1 (BUILD) & Pillar 2 (GOVERN):
-- Built on the official Model Context Protocol Python SDK (`mcp` / `mcp_types`) with
-  standardized `mcp_types.Tool` definitions, `MCPServer` registration, and a full
-  JSON-RPC 2.0 protocol dispatcher (`initialize`, `ping`, `tools/list`, `tools/call`).
-- Exposes all 4 tool domains from the FDE architecture:
+- Uses the official Model Context Protocol Python SDK's types (`mcp_types`, from `mcp` /
+  `mcp-types` 2.3.0) for its `mcp_types.Tool` definitions and protocol messages. `handle_jsonrpc`
+  below is the JSON-RPC 2.0 dispatcher behind `POST /mcp/jsonrpc` (`initialize`, `ping`,
+  `tools/list`, `tools/call`). An official `MCPServer` instance is also created and the handlers
+  are registered on it best-effort, but it doesn't serve any requests.
+- Exposes 12 tools in the 4 tool domains from the FDE architecture:
   1. Ledger DB (`get_financial_summary`, `get_recent_transactions`, `check_budget_health`,
-     `get_learned_rules`, `save_learned_rule`)
+     `get_learned_rules`, `save_learned_rule`, `resolve_and_update_transactions`)
   2. Document Store (`list_statements`, `get_ingested_files`)
   3. Bank & E-mail Connectors (`get_bank_sync_status`)
   4. Deterministic Financial Calculators (`calculate_balance_reconciliation`,
      `calculate_emi_and_shortfall`, `project_savings_capacity`)
-- Enforces Zero-Trust per-agent tool authorization via `AgentIdentityManager` and records
-  OpenTelemetry spans and governance audit logs on every tool call.
+- Enforces per-agent tool allowlists and the approval flag on write tools via
+  `AgentIdentityManager` (keyed on the caller's agent ID), and records OpenTelemetry spans and
+  governance audit logs on every tool call. The agents call `execute_tool` in-process.
 """
 import asyncio
 import json
