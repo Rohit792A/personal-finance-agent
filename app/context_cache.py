@@ -2,9 +2,11 @@
 """Vertex AI Context Caching (Prefix Caching) Manager.
 
 FDE Pillar 4: OPTIMIZE.
-Caches static fiduciary persona instructions, Indian tax/financial guidelines, and MCP tool
-definitions across turns with a configurable TTL (default: 2 hours / 7200s) to slash input
-token cost (up to 75% on cached prefixes) and reduce Time-to-First-Token (TTFT).
+Caches the advisor's static fiduciary persona across turns with a configurable TTL (default:
+2 hours / 7200s). Vertex AI bills tokens it serves from a cache at a discount, and caching can
+lower Time-to-First-Token (TTFT). An explicit cache must hold at least the model's minimum
+(4,096 tokens for gemini-3.5-flash, measured in DEC-063); today's persona is about 170 tokens,
+so it falls back to normal requests until the static prefix grows.
 
 What saves tokens and what is bookkeeping (DEC-063):
 - `get_explicit_cache()`: with `ENABLE_VERTEX_CONTEXT_CACHE=1`, creates an explicit Vertex AI
