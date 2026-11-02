@@ -25,6 +25,7 @@ app/frontend/
 └── src/
     ├── main.tsx               # entry: renders <App /> in StrictMode
     ├── App.tsx                # ErrorBoundary → ThemeProvider → router → AuthProvider → AuthGate
+    ├── recorded/              # recorded demo build only (section 11): entry, transport, banner
     ├── styles.css             # design tokens (light + dark), legacy-screen styles, markdown styles
     ├── config/
     │   ├── firebase.ts        # Firebase web config (public by design) and the auth instance
@@ -161,7 +162,10 @@ Requires Node 24 (Cloud Shell: `/usr/local/nvm/versions/node/v24.21.0`). From `a
 | `npm run lint` | ESLint, zero warnings allowed |
 | `npm run build` | type-check, then the production build in `dist/` |
 | `npm run preview` | serves `dist/` on port 4173 |
+| `npm run build:recorded` | the recorded demo build (section 11) in `dist/` |
+| `npm run preview:recorded` | serves it on http://localhost:4173/personal-finance-agent/ |
 | `npm run test:e2e` | Playwright (see section 9) |
+| `npm run test:e2e:recorded` | Playwright against the recorded demo build (section 11) |
 
 **Which backend the dev server uses.** Without settings, the same routing as production (section 2). To use a
 local backend, put the override in `.env.development.local` (git-ignored, read only by `npm run dev`):
@@ -217,3 +221,39 @@ npm run build && firebase deploy --only hosting
   changed file always has a new URL. When two rules set the same header, Firebase applies the later one.
 
 Check a preview first with `firebase hosting:channel:deploy <name> --expires 1h` if you change these rules.
+
+---
+
+## 11. Recorded demo (static, no backend)
+
+A second build of the same app for GitHub Pages that keeps working without Cloud Run, Firebase or Google Cloud
+(README, "Try the recorded demo"). `npm run build:recorded` (`vite build --mode recorded`; `VITE_RECORDED_DEMO=1`
+works too) changes four things in `vite.config.ts`:
+
+- `index.html` loads `src/recorded/main.tsx` instead of `src/main.tsx`, so `App.tsx`, `AuthProvider` and
+  `config/firebase.ts` (and with them the Firebase SDK and the backend URLs) are not in the bundle;
+- `base` is `/personal-finance-agent/` (or `PAGES_BASE_PATH`); the router's basename follows it
+  (`shell/basePath.ts`), and the legacy bridge reads its location without it;
+- `publicDir` is `recorded-demo/`, so the fixtures are served at `<base>/recorded/`;
+- `import.meta.env.VITE_RECORDED_DEMO` is `'1'`. It is defined in every build (`''` in normal ones), so
+  `RECORDED_DEMO` (`src/recorded/mode.ts`) is a constant and normal builds drop the recorded code paths.
+
+What runs in the browser:
+
+| File | Role |
+| :--- | :--- |
+| `src/recorded/RecordedApp.tsx` | Router and theme as in `App.tsx`, then loads the manifest and the recorded `/me` (the fake user `demo@example.com`) and renders the normal `AppShell`. Sign out shows a notice. |
+| `src/recorded/manifest.ts` | Loads `recorded/manifest.json` and the response files, once each. |
+| `src/recorded/transport.ts` | `api/client.ts` hands it every request. GETs return the recorded response for the same path and query; the AI CFO chat and Jarvis replay recorded answers (other questions get a note); Agent Registry actions replay theirs; writes get a success answer shaped like the backend's, nothing is stored, and a notice says so. Gmail routes answer 403 as in the demo. |
+| `src/recorded/ledger.ts` | `GET /transactions` for any month, type, sort or limit, computed from the one recorded ledger with the backend's rules. |
+| `src/recorded/RecordedBanner.tsx` | Replaces the demo banner: recording date, links from `VITE_REPO_URL` and `VITE_VIDEO_URL`. |
+| `src/recorded/notice.ts` | The small "nothing was saved" notice (plain DOM, usable from the legacy screens). |
+
+`components/insights.js` and `shell/MasterCopilotDock.tsx` show the recorded questions as their suggestion chips in
+this build. The fixtures come from `scripts/record_demo.py`; `tests/test_recorded_fixtures.py` checks them, and
+`scripts/check-recorded-build.mjs` fails the Pages workflow if the built code contains a backend, Firebase or Google
+URL. `npm run test:e2e:recorded` (Playwright, no credentials) opens every screen of the build served by
+`vite preview` and checks that no request leaves the page's origin.
+
+In normal builds, `VITE_RECORDED_DEMO_URL` adds a link to the recorded demo on the "Couldn't connect to your
+workspace" screen.
