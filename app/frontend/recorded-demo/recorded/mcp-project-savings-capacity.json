@@ -1,0 +1,7 @@
+{
+ "is_error": false,
+ "data": {"month": "MONTHLY_AVERAGE_ACROSS_LEDGER", "active_months_count": 18, "typical_monthly_salary": 147265.0, "monthly_income": 147265.0, "monthly_expense": 102451.37, "monthly_surplus": 44813.63, "savings_rate_pct": 30.4, "recommended_monthly_sip": 26888.18, "emergency_reserve_allocation": 17925.45, "cumulative_all_months_income": 2650770.0, "cumulative_all_months_expense": 1844124.74},
+ "mcp_content": [
+  {"type": "text", "text": "{\"month\": \"MONTHLY_AVERAGE_ACROSS_LEDGER\", \"active_months_count\": 18, \"typical_monthly_salary\": 147265.0, \"monthly_income\": 147265.0, \"monthly_expense\": 102451.37, \"monthly_surplus\": 44813.63, \"savings_rate_pct\": 30.4, \"recommended_monthly_sip\": 26888.18, \"emergency_reserve_allocation\": 17925.45, \"cumulative_all_months_income\": 2650770.0, \"cumulative_all_months_expense\": 1844124.74}", "annotations": null, "meta": null}
+ ]
+}

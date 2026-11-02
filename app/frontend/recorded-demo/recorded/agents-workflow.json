@@ -1,0 +1,209 @@
+{
+ "workflow_id": "3fec1c4a-7b88-444e-a045-f7497dd68471",
+ "status": "COMPLETED",
+ "agents_invoked": ["ingestion-agent", "reconciliation-agent", "clarification-agent", "advisor-agent"],
+ "agent_cards_invoked": [
+  {"agent_id": "ingestion-agent", "name": "Ingestion Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/ingestion-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/ingestion-agent/tasks/send", "well_known_url": "/a2a/agents/ingestion-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-ingestion-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-ingestion-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/ingestion-agent", "skill_id": "SCREEN_AND_SANITIZE_TRANSACTIONS", "skill_name": "Model Armor & Cloud DLP Batch Screening"},
+  {"agent_id": "reconciliation-agent", "name": "Reconciliation Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/reconciliation-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/reconciliation-agent/tasks/send", "well_known_url": "/a2a/agents/reconciliation-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-reconciliation-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-reconciliation-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/reconciliation-agent", "skill_id": "RECONCILE_BATCH", "skill_name": "Cross-Source Batch Reconciliation"},
+  {"agent_id": "clarification-agent", "name": "Clarification & Memory Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/clarification-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/clarification-agent/tasks/send", "well_known_url": "/a2a/agents/clarification-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-clarification-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-clarification-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/clarification-agent", "skill_id": "RESOLVE_AMBIGUOUS_BATCH", "skill_name": "Learned-Rule Matching & HITL Clarification Gating"},
+  {"agent_id": "advisor-agent", "name": "Strategic CFO Advisor Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/advisor-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/advisor-agent/tasks/send", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-advisor-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent", "skill_id": "CHECK_PROACTIVE_ALERTS", "skill_name": "Proactive EMI/Rent Cash-Shortfall Alerting"}
+ ],
+ "transactions": [
+  {"date": "2026-10-22", "amount": 15000, "description": "UPI/RAHUL/778192837182/Monthly", "category": "Other", "confidence": 45, "transaction_type": "EXPENSE", "requires_human_review": true, "clarification_question": "I found a ₹15,000.00 transaction for UPI/RAHUL/778192837182/Monthly. The current category is Uncategorized, which needs clarification. What should I categorize this as?"},
+  {"date": "2026-10-22", "amount": 450, "description": "SWIGGY INSTAMART ORDER 99812", "category": "Food", "confidence": 96, "transaction_type": "EXPENSE", "requires_human_review": false}
+ ],
+ "ingestion_report": {
+  "transactions": [
+   {"date": "2026-10-22", "amount": 15000, "description": "UPI/RAHUL/778192837182/Monthly", "category": "Other", "confidence": 45, "transaction_type": "EXPENSE"},
+   {"date": "2026-10-22", "amount": 450, "description": "SWIGGY INSTAMART ORDER 99812", "category": "Food", "confidence": 96, "transaction_type": "EXPENSE"}
+  ],
+  "total_rows": 2,
+  "model_armor": {"screened": 2, "flagged": 0},
+  "dlp_redacted_rows": 0
+ },
+ "reconciliation_report": {
+  "self_transfers_marked": 0,
+  "duplicates_removed": 0,
+  "alerts_reconciled": 0,
+  "total_credits": 0.0,
+  "total_debits": 15450.0,
+  "math_verification": {"opening_balance": 100000.0, "closing_balance": 84550.0, "total_credits": 0.0, "total_debits": 15450.0, "calculated_closing_balance": 84550.0, "delta": 0.0, "is_balanced": true, "discrepancy_flag": false}
+ },
+ "clarification_report": {
+  "resolved_by_learned_rules": 0,
+  "flagged_for_human_review": 1,
+  "questions": [
+   {"row_index": 0, "description": "UPI/RAHUL/778192837182/Monthly", "payee_pattern": "UPI/RAHUL", "amount": 15000.0, "current_category": "Other", "confidence": 45.0, "question": "I found a ₹15,000.00 transaction for UPI/RAHUL/778192837182/Monthly. The current category is Uncategorized, which needs clarification. What should I categorize this as?"}
+  ]
+ },
+ "advisor_report": {
+  "shortfall_analysis": {
+   "available_balance": 22000.0,
+   "upcoming_commitments": [
+    {"name": "HDFC Home Loan EMI", "amount": 35000, "due_in_days": 5}
+   ],
+   "total_upcoming_due": 35000.0,
+   "projected_balance_after_bills": -13000.0,
+   "shortfall_amount": 13000.0,
+   "will_fall_short": true,
+   "alerts": ["CASH SHORTFALL ALERT: Upcoming commitments (HDFC Home Loan EMI: ₹35,000.00) exceed available balance (₹22,000.00) by ₹13,000.00."]
+  },
+  "budget_health": {
+   "month": "MONTHLY_AVERAGE_ACROSS_LEDGER",
+   "active_months_count": 18,
+   "budget_analysis": {
+    "Food": {"monthly_budget_limit": 16000.0, "budget_limit": 16000.0, "monthly_spent": 15331.64, "spent": 15331.64, "cumulative_all_months_spent": 275969.43, "utilization_pct": 95.8, "status": "WARNING"},
+    "Transportation": {"monthly_budget_limit": 4000.0, "budget_limit": 4000.0, "monthly_spent": 4589.83, "spent": 4589.83, "cumulative_all_months_spent": 82617.0, "utilization_pct": 114.7, "status": "EXCEEDED"},
+    "Utilities": {"monthly_budget_limit": 4500.0, "budget_limit": 4500.0, "monthly_spent": 3668.16, "spent": 3668.16, "cumulative_all_months_spent": 66026.94, "utilization_pct": 81.5, "status": "WARNING"},
+    "Personal": {"monthly_budget_limit": 9000.0, "budget_limit": 9000.0, "monthly_spent": 8226.33, "spent": 8226.33, "cumulative_all_months_spent": 148074.0, "utilization_pct": 91.4, "status": "WARNING"},
+    "Health/Medical": {"monthly_budget_limit": 3000.0, "budget_limit": 3000.0, "monthly_spent": 3250.93, "spent": 3250.93, "cumulative_all_months_spent": 58516.73, "utilization_pct": 108.4, "status": "EXCEEDED"},
+    "Home": {"monthly_budget_limit": 6500.0, "budget_limit": 6500.0, "monthly_spent": 7210.75, "spent": 7210.75, "cumulative_all_months_spent": 129793.58, "utilization_pct": 110.9, "status": "EXCEEDED"},
+    "Travel": {"monthly_budget_limit": 4000.0, "budget_limit": 4000.0, "monthly_spent": 4903.78, "spent": 4903.78, "cumulative_all_months_spent": 88268.0, "utilization_pct": 122.6, "status": "EXCEEDED"},
+    "Other": {"monthly_budget_limit": 5000.0, "budget_limit": 5000.0, "monthly_spent": 4811.61, "spent": 4811.61, "cumulative_all_months_spent": 86609.06, "utilization_pct": 96.2, "status": "WARNING"}
+   }
+  }
+ },
+ "a2a_steps": [
+  {
+   "task_id": "e3c5e41c",
+   "sender_agent": "orchestrator",
+   "target_agent": "ingestion-agent",
+   "intent": "SCREEN_AND_SANITIZE_TRANSACTIONS",
+   "status": "COMPLETED",
+   "agent_card": {"agent_id": "ingestion-agent", "name": "Ingestion Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/ingestion-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/ingestion-agent/tasks/send", "well_known_url": "/a2a/agents/ingestion-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-ingestion-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-ingestion-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/ingestion-agent", "skill_id": "SCREEN_AND_SANITIZE_TRANSACTIONS", "skill_name": "Model Armor & Cloud DLP Batch Screening"},
+   "result": {
+    "transactions": [
+     {"date": "2026-10-22", "amount": 15000, "description": "UPI/RAHUL/778192837182/Monthly", "category": "Other", "confidence": 45, "transaction_type": "EXPENSE"},
+     {"date": "2026-10-22", "amount": 450, "description": "SWIGGY INSTAMART ORDER 99812", "category": "Food", "confidence": 96, "transaction_type": "EXPENSE"}
+    ],
+    "total_rows": 2,
+    "model_armor": {"screened": 2, "flagged": 0},
+    "dlp_redacted_rows": 0
+   }
+  },
+  {
+   "task_id": "c7e7ead9",
+   "sender_agent": "orchestrator",
+   "target_agent": "reconciliation-agent",
+   "intent": "RECONCILE_BATCH",
+   "status": "COMPLETED",
+   "agent_card": {"agent_id": "reconciliation-agent", "name": "Reconciliation Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/reconciliation-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/reconciliation-agent/tasks/send", "well_known_url": "/a2a/agents/reconciliation-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-reconciliation-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-reconciliation-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/reconciliation-agent", "skill_id": "RECONCILE_BATCH", "skill_name": "Cross-Source Batch Reconciliation"},
+   "result": {
+    "transactions": [
+     {"date": "2026-10-22", "amount": 15000, "description": "UPI/RAHUL/778192837182/Monthly", "category": "Other", "confidence": 45, "transaction_type": "EXPENSE"},
+     {"date": "2026-10-22", "amount": 450, "description": "SWIGGY INSTAMART ORDER 99812", "category": "Food", "confidence": 96, "transaction_type": "EXPENSE"}
+    ],
+    "self_transfers_marked": 0,
+    "duplicates_removed": 0,
+    "alerts_reconciled": 0,
+    "total_credits": 0.0,
+    "total_debits": 15450.0,
+    "math_verification": {"opening_balance": 100000.0, "closing_balance": 84550.0, "total_credits": 0.0, "total_debits": 15450.0, "calculated_closing_balance": 84550.0, "delta": 0.0, "is_balanced": true, "discrepancy_flag": false}
+   }
+  },
+  {
+   "task_id": "5ddd5259",
+   "sender_agent": "orchestrator",
+   "target_agent": "clarification-agent",
+   "intent": "RESOLVE_AMBIGUOUS_BATCH",
+   "status": "COMPLETED",
+   "agent_card": {"agent_id": "clarification-agent", "name": "Clarification & Memory Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/clarification-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/clarification-agent/tasks/send", "well_known_url": "/a2a/agents/clarification-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-clarification-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-clarification-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/clarification-agent", "skill_id": "RESOLVE_AMBIGUOUS_BATCH", "skill_name": "Learned-Rule Matching & HITL Clarification Gating"},
+   "result": {
+    "transactions": [
+     {"date": "2026-10-22", "amount": 15000, "description": "UPI/RAHUL/778192837182/Monthly", "category": "Other", "confidence": 45, "transaction_type": "EXPENSE", "requires_human_review": true, "clarification_question": "I found a ₹15,000.00 transaction for UPI/RAHUL/778192837182/Monthly. The current category is Uncategorized, which needs clarification. What should I categorize this as?"},
+     {"date": "2026-10-22", "amount": 450, "description": "SWIGGY INSTAMART ORDER 99812", "category": "Food", "confidence": 96, "transaction_type": "EXPENSE", "requires_human_review": false}
+    ],
+    "resolved_by_learned_rules": 0,
+    "flagged_for_human_review": 1,
+    "questions": [
+     {"row_index": 0, "description": "UPI/RAHUL/778192837182/Monthly", "payee_pattern": "UPI/RAHUL", "amount": 15000.0, "current_category": "Other", "confidence": 45.0, "question": "I found a ₹15,000.00 transaction for UPI/RAHUL/778192837182/Monthly. The current category is Uncategorized, which needs clarification. What should I categorize this as?"}
+    ]
+   }
+  },
+  {
+   "task_id": "6bd1dbe1",
+   "sender_agent": "orchestrator",
+   "target_agent": "advisor-agent",
+   "intent": "CHECK_PROACTIVE_ALERTS",
+   "status": "COMPLETED",
+   "agent_card": {"agent_id": "advisor-agent", "name": "Strategic CFO Advisor Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/advisor-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/advisor-agent/tasks/send", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-advisor-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent", "skill_id": "CHECK_PROACTIVE_ALERTS", "skill_name": "Proactive EMI/Rent Cash-Shortfall Alerting"},
+   "result": {
+    "shortfall_analysis": {
+     "available_balance": 22000.0,
+     "upcoming_commitments": [
+      {"name": "HDFC Home Loan EMI", "amount": 35000, "due_in_days": 5}
+     ],
+     "total_upcoming_due": 35000.0,
+     "projected_balance_after_bills": -13000.0,
+     "shortfall_amount": 13000.0,
+     "will_fall_short": true,
+     "alerts": ["CASH SHORTFALL ALERT: Upcoming commitments (HDFC Home Loan EMI: ₹35,000.00) exceed available balance (₹22,000.00) by ₹13,000.00."]
+    },
+    "budget_health": {
+     "month": "MONTHLY_AVERAGE_ACROSS_LEDGER",
+     "active_months_count": 18,
+     "budget_analysis": {
+      "Food": {"monthly_budget_limit": 16000.0, "budget_limit": 16000.0, "monthly_spent": 15331.64, "spent": 15331.64, "cumulative_all_months_spent": 275969.43, "utilization_pct": 95.8, "status": "WARNING"},
+      "Transportation": {"monthly_budget_limit": 4000.0, "budget_limit": 4000.0, "monthly_spent": 4589.83, "spent": 4589.83, "cumulative_all_months_spent": 82617.0, "utilization_pct": 114.7, "status": "EXCEEDED"},
+      "Utilities": {"monthly_budget_limit": 4500.0, "budget_limit": 4500.0, "monthly_spent": 3668.16, "spent": 3668.16, "cumulative_all_months_spent": 66026.94, "utilization_pct": 81.5, "status": "WARNING"},
+      "Personal": {"monthly_budget_limit": 9000.0, "budget_limit": 9000.0, "monthly_spent": 8226.33, "spent": 8226.33, "cumulative_all_months_spent": 148074.0, "utilization_pct": 91.4, "status": "WARNING"},
+      "Health/Medical": {"monthly_budget_limit": 3000.0, "budget_limit": 3000.0, "monthly_spent": 3250.93, "spent": 3250.93, "cumulative_all_months_spent": 58516.73, "utilization_pct": 108.4, "status": "EXCEEDED"},
+      "Home": {"monthly_budget_limit": 6500.0, "budget_limit": 6500.0, "monthly_spent": 7210.75, "spent": 7210.75, "cumulative_all_months_spent": 129793.58, "utilization_pct": 110.9, "status": "EXCEEDED"},
+      "Travel": {"monthly_budget_limit": 4000.0, "budget_limit": 4000.0, "monthly_spent": 4903.78, "spent": 4903.78, "cumulative_all_months_spent": 88268.0, "utilization_pct": 122.6, "status": "EXCEEDED"},
+      "Other": {"monthly_budget_limit": 5000.0, "budget_limit": 5000.0, "monthly_spent": 4811.61, "spent": 4811.61, "cumulative_all_months_spent": 86609.06, "utilization_pct": 96.2, "status": "WARNING"}
+     }
+    }
+   }
+  }
+ ],
+ "telemetry": {
+  "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471",
+  "workflow_name": "agentic_cfo_4_agent_workflow",
+  "otel_sdk_active": true,
+  "total_spans": 4,
+  "total_duration_ms": 60.33,
+  "weakest_step": {"step_name": "a2a.advisor-agent.CHECK_PROACTIVE_ALERTS", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 42.09},
+  "spans": [
+   {
+    "span_id": "f1164104",
+    "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471",
+    "name": "a2a.ingestion-agent.SCREEN_AND_SANITIZE_TRANSACTIONS",
+    "start_time": 1793610700.3402023,
+    "end_time": 1793610700.340675,
+    "duration_ms": 0.47,
+    "attributes": {"task_id": "e3c5e41c", "sender_agent": "orchestrator", "target_agent": "ingestion-agent", "agent_card_url": "/a2a/agents/ingestion-agent/tasks/send", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-ingestion-agent", "well_known_url": "/a2a/agents/ingestion-agent/.well-known/agent.json", "skill_id": "SCREEN_AND_SANITIZE_TRANSACTIONS", "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471"},
+    "status": "OK"
+   },
+   {
+    "span_id": "a5e3227a",
+    "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471",
+    "name": "a2a.reconciliation-agent.RECONCILE_BATCH",
+    "start_time": 1793610700.3430932,
+    "end_time": 1793610700.346444,
+    "duration_ms": 3.35,
+    "attributes": {"task_id": "c7e7ead9", "sender_agent": "orchestrator", "target_agent": "reconciliation-agent", "agent_card_url": "/a2a/agents/reconciliation-agent/tasks/send", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-reconciliation-agent", "well_known_url": "/a2a/agents/reconciliation-agent/.well-known/agent.json", "skill_id": "RECONCILE_BATCH", "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471"},
+    "status": "OK"
+   },
+   {
+    "span_id": "f338f690",
+    "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471",
+    "name": "a2a.clarification-agent.RESOLVE_AMBIGUOUS_BATCH",
+    "start_time": 1793610700.3485422,
+    "end_time": 1793610700.3629634,
+    "duration_ms": 14.42,
+    "attributes": {"task_id": "5ddd5259", "sender_agent": "orchestrator", "target_agent": "clarification-agent", "agent_card_url": "/a2a/agents/clarification-agent/tasks/send", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-clarification-agent", "well_known_url": "/a2a/agents/clarification-agent/.well-known/agent.json", "skill_id": "RESOLVE_AMBIGUOUS_BATCH", "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471"},
+    "status": "OK"
+   },
+   {
+    "span_id": "5c2aa976",
+    "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471",
+    "name": "a2a.advisor-agent.CHECK_PROACTIVE_ALERTS",
+    "start_time": 1793610700.3655295,
+    "end_time": 1793610700.4076195,
+    "duration_ms": 42.09,
+    "attributes": {"task_id": "6bd1dbe1", "sender_agent": "orchestrator", "target_agent": "advisor-agent", "agent_card_url": "/a2a/agents/advisor-agent/tasks/send", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "skill_id": "CHECK_PROACTIVE_ALERTS", "trace_id": "3fec1c4a-7b88-444e-a045-f7497dd68471"},
+    "status": "OK"
+   }
+  ]
+ }
+}

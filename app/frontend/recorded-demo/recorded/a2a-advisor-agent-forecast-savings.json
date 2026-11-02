@@ -1,0 +1,9 @@
+{
+ "task_id": "c2faebb0",
+ "sender_agent": "orchestrator",
+ "target_agent": "advisor-agent",
+ "intent": "FORECAST_SAVINGS",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "advisor-agent", "name": "Strategic CFO Advisor Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/advisor-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/advisor-agent/tasks/send", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-advisor-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent", "skill_id": "FORECAST_SAVINGS", "skill_name": "Savings & SIP Capacity Forecaster"},
+ "result": {"month": "MONTHLY_AVERAGE_ACROSS_LEDGER", "active_months_count": 18, "typical_monthly_salary": 147265.0, "monthly_income": 147265.0, "monthly_expense": 102451.37, "monthly_surplus": 44813.63, "savings_rate_pct": 30.4, "recommended_monthly_sip": 26888.18, "emergency_reserve_allocation": 17925.45, "cumulative_all_months_income": 2650770.0, "cumulative_all_months_expense": 1844124.74}
+}

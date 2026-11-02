@@ -1,0 +1,26 @@
+{
+ "total_recurring_items": 20,
+ "estimated_monthly_burn": 31250.29,
+ "items": [
+  {"description": "POS 4521XXXXXXXX1234 DMART AVENUE", "category": "Food", "average_amount": 1355.18, "frequency": 26, "first_seen": "2025-06-14", "last_seen": "2026-10-25", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 CULTFIT CUREFIT HEALTHCARE", "category": "Personal", "average_amount": 1899.0, "frequency": 18, "first_seen": "2025-06-02", "last_seen": "2026-11-02", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "ACH D- BAJAJ FINANCE LTD-P400PL07385516", "category": "Debt", "average_amount": 6850.0, "frequency": 17, "first_seen": "2025-06-05", "last_seen": "2026-10-05", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "ACH D- INDIAN CLEARING CORP-ICCL0000ZRD4471209", "category": "SIP", "average_amount": 5000.0, "frequency": 17, "first_seen": "2025-06-16", "last_seen": "2026-10-15", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "RD INSTALLMENT DEBIT RD A/C XXXXXXXX4417", "category": "Savings", "average_amount": 2000.0, "frequency": 17, "first_seen": "2025-06-10", "last_seen": "2026-10-10", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 ACT FIBERNET BANGALORE", "category": "Utilities", "average_amount": 1179.0, "frequency": 17, "first_seen": "2025-06-07", "last_seen": "2026-10-07", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 AIRTEL POSTPAID BLR", "category": "Utilities", "average_amount": 706.82, "frequency": 17, "first_seen": "2025-06-09", "last_seen": "2026-10-09", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 NETFLIX.COM", "category": "Personal", "average_amount": 649.0, "frequency": 17, "first_seen": "2025-06-03", "last_seen": "2026-10-03", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 GOOGLE YOUTUBE PREMIUM", "category": "Personal", "average_amount": 149.0, "frequency": 17, "first_seen": "2025-06-22", "last_seen": "2026-10-22", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 SPOTIFY INDIA", "category": "Personal", "average_amount": 139.0, "frequency": 17, "first_seen": "2025-06-14", "last_seen": "2026-10-14", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 SPAR HYPERMARKET", "category": "Food", "average_amount": 1346.32, "frequency": 16, "first_seen": "2025-07-28", "last_seen": "2026-09-26", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 APOLLO PHARMACY HSR LAYOUT", "category": "Health/Medical", "average_amount": 1084.83, "frequency": 13, "first_seen": "2025-07-17", "last_seen": "2026-10-14", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 HP PETROL PUMP HSR LAYOUT", "category": "Transportation", "average_amount": 527.27, "frequency": 11, "first_seen": "2025-06-24", "last_seen": "2026-10-30", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 INDIAN OIL KORAMANGALA", "category": "Transportation", "average_amount": 500.0, "frequency": 8, "first_seen": "2025-08-06", "last_seen": "2026-06-26", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 AMAZON PAY INDIA PRIVA", "category": "Personal", "average_amount": 1584.71, "frequency": 7, "first_seen": "2025-08-05", "last_seen": "2026-10-09", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 SHELL SARJAPUR ROAD", "category": "Transportation", "average_amount": 514.29, "frequency": 7, "first_seen": "2025-11-20", "last_seen": "2026-10-16", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 COASTAL CURRY HOUSE HSR", "category": "Food", "average_amount": 1529.22, "frequency": 6, "first_seen": "2025-11-16", "last_seen": "2026-10-09", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 ROOFTOP 27 BREWERY", "category": "Food", "average_amount": 1197.78, "frequency": 6, "first_seen": "2025-08-29", "last_seen": "2026-10-31", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 HAPPY BELLY CAFE", "category": "Food", "average_amount": 1926.46, "frequency": 5, "first_seen": "2025-11-08", "last_seen": "2026-11-01", "estimated_cadence": "Monthly / Recurring"},
+  {"description": "POS 4521XXXXXXXX1234 MANGO LEAF BISTRO KORAMANGALA", "category": "Food", "average_amount": 1112.41, "frequency": 5, "first_seen": "2025-06-01", "last_seen": "2026-03-27", "estimated_cadence": "Monthly / Recurring"}
+ ]
+}

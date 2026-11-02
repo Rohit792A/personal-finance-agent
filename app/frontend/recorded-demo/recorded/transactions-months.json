@@ -1,0 +1,69 @@
+{
+ "months": [
+  {"month": "2026-11", "year": "2026", "label": "November 2026", "month_name": "November", "month_short": "Nov", "count": 10, "income": 140000.0, "expense": 50590.38, "net": 89409.62, "opening_balance": 717235.64, "closing_balance": 806645.26, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Personal"},
+  {"month": "2026-10", "year": "2026", "label": "October 2026", "month_name": "October", "month_short": "Oct", "count": 94, "income": 141250.0, "expense": 113291.82, "net": 27958.179999999993, "opening_balance": 689277.46, "closing_balance": 717235.64, "reconciled": false, "bank_breakdown": null, "review_count": 6, "top_category": "Rent"},
+  {"month": "2026-09", "year": "2026", "label": "September 2026", "month_name": "September", "month_short": "Sep", "count": 76, "income": 144352.0, "expense": 94240.83, "net": 50111.17, "opening_balance": 639166.29, "closing_balance": 689277.46, "reconciled": false, "bank_breakdown": null, "review_count": 1, "top_category": "Rent"},
+  {"month": "2026-08", "year": "2026", "label": "August 2026", "month_name": "August", "month_short": "Aug", "count": 74, "income": 140000.0, "expense": 108059.38, "net": 31940.619999999995, "opening_balance": 607225.67, "closing_balance": 639166.29, "reconciled": false, "bank_breakdown": null, "review_count": 1, "top_category": "Rent"},
+  {"month": "2026-07", "year": "2026", "label": "July 2026", "month_name": "July", "month_short": "Jul", "count": 77, "income": 140622.0, "expense": 96054.05, "net": 44567.95, "opening_balance": 562657.72, "closing_balance": 607225.67, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2026-06", "year": "2026", "label": "June 2026", "month_name": "June", "month_short": "Jun", "count": 100, "income": 254876.0, "expense": 138991.04, "net": 115884.95999999999, "opening_balance": 446772.76, "closing_balance": 562657.72, "reconciled": false, "bank_breakdown": null, "review_count": 1, "top_category": "Stocks"},
+  {"month": "2026-05", "year": "2026", "label": "May 2026", "month_name": "May", "month_short": "May", "count": 73, "income": 141250.0, "expense": 87360.6, "net": 53889.399999999994, "opening_balance": 392883.36, "closing_balance": 446772.76, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2026-04", "year": "2026", "label": "April 2026", "month_name": "April", "month_short": "Apr", "count": 66, "income": 132091.0, "expense": 82001.31, "net": 50089.69, "opening_balance": 342793.67, "closing_balance": 392883.36, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2026-03", "year": "2026", "label": "March 2026", "month_name": "March", "month_short": "Mar", "count": 80, "income": 132761.0, "expense": 105665.46, "net": 27095.539999999994, "opening_balance": 315698.13, "closing_balance": 342793.67, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2026-02", "year": "2026", "label": "February 2026", "month_name": "February", "month_short": "Feb", "count": 82, "income": 131445.0, "expense": 95735.05, "net": 35709.95, "opening_balance": 279988.18, "closing_balance": 315698.13, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2026-01", "year": "2026", "label": "January 2026", "month_name": "January", "month_short": "Jan", "count": 83, "income": 130841.0, "expense": 96259.73, "net": 34581.270000000004, "opening_balance": 245406.91, "closing_balance": 279988.18, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2025-12", "year": "2025", "label": "December 2025", "month_name": "December", "month_short": "Dec", "count": 90, "income": 132150.0, "expense": 104644.53, "net": 27505.47, "opening_balance": 217901.44, "closing_balance": 245406.91, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2025-11", "year": "2025", "label": "November 2025", "month_name": "November", "month_short": "Nov", "count": 83, "income": 131191.0, "expense": 82445.93, "net": 48745.07000000001, "opening_balance": 169156.37, "closing_balance": 217901.44, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2025-10", "year": "2025", "label": "October 2025", "month_name": "October", "month_short": "Oct", "count": 89, "income": 130421.0, "expense": 160295.77, "net": -29874.76999999999, "opening_balance": 199031.14, "closing_balance": 169156.37, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Home"},
+  {"month": "2025-09", "year": "2025", "label": "September 2025", "month_name": "September", "month_short": "Sep", "count": 87, "income": 132831.0, "expense": 101506.03, "net": 31324.97, "opening_balance": 167706.17, "closing_balance": 199031.14, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2025-08", "year": "2025", "label": "August 2025", "month_name": "August", "month_short": "Aug", "count": 94, "income": 132040.0, "expense": 116945.08, "net": 15094.919999999998, "opening_balance": 152611.25, "closing_balance": 167706.17, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2025-07", "year": "2025", "label": "July 2025", "month_name": "July", "month_short": "Jul", "count": 78, "income": 131740.0, "expense": 90825.85, "net": 40914.149999999994, "opening_balance": 111697.1, "closing_balance": 152611.25, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+  {"month": "2025-06", "year": "2025", "label": "June 2025", "month_name": "June", "month_short": "Jun", "count": 76, "income": 230909.0, "expense": 119211.9, "net": 111697.1, "opening_balance": 0.0, "closing_balance": 111697.1, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Stocks"}
+ ],
+ "years": [
+  {
+   "year": "2026",
+   "months_count": 11,
+   "count": 815,
+   "income": 1629488.0,
+   "expense": 1068249.65,
+   "net": 561238.35,
+   "opening_balance": 245406.91,
+   "closing_balance": 806645.26,
+   "review_count": 9,
+   "months": [
+    {"month": "2026-11", "year": "2026", "label": "November 2026", "month_name": "November", "month_short": "Nov", "count": 10, "income": 140000.0, "expense": 50590.38, "net": 89409.62, "opening_balance": 717235.64, "closing_balance": 806645.26, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Personal"},
+    {"month": "2026-10", "year": "2026", "label": "October 2026", "month_name": "October", "month_short": "Oct", "count": 94, "income": 141250.0, "expense": 113291.82, "net": 27958.179999999993, "opening_balance": 689277.46, "closing_balance": 717235.64, "reconciled": false, "bank_breakdown": null, "review_count": 6, "top_category": "Rent"},
+    {"month": "2026-09", "year": "2026", "label": "September 2026", "month_name": "September", "month_short": "Sep", "count": 76, "income": 144352.0, "expense": 94240.83, "net": 50111.17, "opening_balance": 639166.29, "closing_balance": 689277.46, "reconciled": false, "bank_breakdown": null, "review_count": 1, "top_category": "Rent"},
+    {"month": "2026-08", "year": "2026", "label": "August 2026", "month_name": "August", "month_short": "Aug", "count": 74, "income": 140000.0, "expense": 108059.38, "net": 31940.619999999995, "opening_balance": 607225.67, "closing_balance": 639166.29, "reconciled": false, "bank_breakdown": null, "review_count": 1, "top_category": "Rent"},
+    {"month": "2026-07", "year": "2026", "label": "July 2026", "month_name": "July", "month_short": "Jul", "count": 77, "income": 140622.0, "expense": 96054.05, "net": 44567.95, "opening_balance": 562657.72, "closing_balance": 607225.67, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2026-06", "year": "2026", "label": "June 2026", "month_name": "June", "month_short": "Jun", "count": 100, "income": 254876.0, "expense": 138991.04, "net": 115884.95999999999, "opening_balance": 446772.76, "closing_balance": 562657.72, "reconciled": false, "bank_breakdown": null, "review_count": 1, "top_category": "Stocks"},
+    {"month": "2026-05", "year": "2026", "label": "May 2026", "month_name": "May", "month_short": "May", "count": 73, "income": 141250.0, "expense": 87360.6, "net": 53889.399999999994, "opening_balance": 392883.36, "closing_balance": 446772.76, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2026-04", "year": "2026", "label": "April 2026", "month_name": "April", "month_short": "Apr", "count": 66, "income": 132091.0, "expense": 82001.31, "net": 50089.69, "opening_balance": 342793.67, "closing_balance": 392883.36, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2026-03", "year": "2026", "label": "March 2026", "month_name": "March", "month_short": "Mar", "count": 80, "income": 132761.0, "expense": 105665.46, "net": 27095.539999999994, "opening_balance": 315698.13, "closing_balance": 342793.67, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2026-02", "year": "2026", "label": "February 2026", "month_name": "February", "month_short": "Feb", "count": 82, "income": 131445.0, "expense": 95735.05, "net": 35709.95, "opening_balance": 279988.18, "closing_balance": 315698.13, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2026-01", "year": "2026", "label": "January 2026", "month_name": "January", "month_short": "Jan", "count": 83, "income": 130841.0, "expense": 96259.73, "net": 34581.270000000004, "opening_balance": 245406.91, "closing_balance": 279988.18, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"}
+   ]
+  },
+  {
+   "year": "2025",
+   "months_count": 7,
+   "count": 597,
+   "income": 1021282.0,
+   "expense": 775875.09,
+   "net": 245406.91,
+   "opening_balance": 0.0,
+   "closing_balance": 245406.91,
+   "review_count": 0,
+   "months": [
+    {"month": "2025-12", "year": "2025", "label": "December 2025", "month_name": "December", "month_short": "Dec", "count": 90, "income": 132150.0, "expense": 104644.53, "net": 27505.47, "opening_balance": 217901.44, "closing_balance": 245406.91, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2025-11", "year": "2025", "label": "November 2025", "month_name": "November", "month_short": "Nov", "count": 83, "income": 131191.0, "expense": 82445.93, "net": 48745.07000000001, "opening_balance": 169156.37, "closing_balance": 217901.44, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2025-10", "year": "2025", "label": "October 2025", "month_name": "October", "month_short": "Oct", "count": 89, "income": 130421.0, "expense": 160295.77, "net": -29874.76999999999, "opening_balance": 199031.14, "closing_balance": 169156.37, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Home"},
+    {"month": "2025-09", "year": "2025", "label": "September 2025", "month_name": "September", "month_short": "Sep", "count": 87, "income": 132831.0, "expense": 101506.03, "net": 31324.97, "opening_balance": 167706.17, "closing_balance": 199031.14, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2025-08", "year": "2025", "label": "August 2025", "month_name": "August", "month_short": "Aug", "count": 94, "income": 132040.0, "expense": 116945.08, "net": 15094.919999999998, "opening_balance": 152611.25, "closing_balance": 167706.17, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2025-07", "year": "2025", "label": "July 2025", "month_name": "July", "month_short": "Jul", "count": 78, "income": 131740.0, "expense": 90825.85, "net": 40914.149999999994, "opening_balance": 111697.1, "closing_balance": 152611.25, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Rent"},
+    {"month": "2025-06", "year": "2025", "label": "June 2025", "month_name": "June", "month_short": "Jun", "count": 76, "income": 230909.0, "expense": 119211.9, "net": 111697.1, "opening_balance": 0.0, "closing_balance": 111697.1, "reconciled": false, "bank_breakdown": null, "review_count": 0, "top_category": "Stocks"}
+   ]
+  }
+ ],
+ "all": {"month": "ALL", "label": "All Time", "count": 1412, "income": 2650770.0, "expense": 1844124.74, "net": 806645.26, "opening_balance": 0.0, "closing_balance": 806645.26, "review_count": 9, "years_count": 2}
+}

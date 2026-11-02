@@ -1,0 +1,74 @@
+name: Recorded demo (GitHub Pages)
+
+# Publishes the recorded demo: the frontend built in recorded mode (npm run build:recorded), which needs
+# no backend, Firebase or Google Cloud. Its responses are the fixtures in
+# app/frontend/recorded-demo/recorded/, made with scripts/record_demo.py (see README, "Try the recorded demo").
+#
+# One-time setup: Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+# Optional repository variables (Settings -> Secrets and variables -> Actions -> Variables):
+#   DEMO_VIDEO_URL   link to the demo video, shown in the demo's banner
+#   DEMO_REPO_URL    source link in the banner (default: this repository)
+#   PAGES_BASE_PATH  path the site is served from (default: what GitHub Pages reports, /<repository>)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a newer push doesn't cancel a deployment that has started.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the recorded demo
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/frontend/package-lock.json
+      - name: Read the Pages settings
+        id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+      - name: Build in recorded mode
+        env:
+          PAGES_BASE_PATH: ${{ vars.PAGES_BASE_PATH || steps.pages.outputs.base_path }}
+          VITE_REPO_URL: ${{ vars.DEMO_REPO_URL || format('{0}/{1}', github.server_url, github.repository) }}
+          VITE_VIDEO_URL: ${{ vars.DEMO_VIDEO_URL }}
+        run: npm run build:recorded
+      - name: Check the build calls no backend, Firebase or Google service
+        run: node scripts/check-recorded-build.mjs dist
+      # GitHub Pages answers unknown paths with 404.html; the app itself then shows the right screen,
+      # so deep links (e.g. /budgets) and reloads work.
+      - name: Serve deep links
+        run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: app/frontend/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

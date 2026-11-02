@@ -1,0 +1,38 @@
+{
+ "task_id": "8a6c341d",
+ "sender_agent": "orchestrator",
+ "target_agent": "advisor-agent",
+ "intent": "CHECK_PROACTIVE_ALERTS",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "advisor-agent", "name": "Strategic CFO Advisor Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/advisor-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/advisor-agent/tasks/send", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-advisor-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent", "skill_id": "CHECK_PROACTIVE_ALERTS", "skill_name": "Proactive EMI/Rent Cash-Shortfall Alerting"},
+ "result": {
+  "shortfall_analysis": {
+   "available_balance": 250000.0,
+   "upcoming_commitments": [
+    {"name": "ACH D- BAJAJ FINANCE LTD-P400PL07385516", "category": "Debt", "amount": 6850.0, "frequency": 17},
+    {"name": "ACH D- INDIAN CLEARING CORP-ICCL0000ZRD4471209", "category": "SIP", "amount": 5000.0, "frequency": 17},
+    {"name": "POS 4521XXXXXXXX1234 ACT FIBERNET BANGALORE", "category": "Utilities", "amount": 1179.0, "frequency": 17},
+    {"name": "POS 4521XXXXXXXX1234 AIRTEL POSTPAID BLR", "category": "Utilities", "amount": 706.82, "frequency": 17}
+   ],
+   "total_upcoming_due": 13735.82,
+   "projected_balance_after_bills": 236264.18,
+   "shortfall_amount": 0.0,
+   "will_fall_short": false,
+   "alerts": []
+  },
+  "budget_health": {
+   "month": "MONTHLY_AVERAGE_ACROSS_LEDGER",
+   "active_months_count": 18,
+   "budget_analysis": {
+    "Food": {"monthly_budget_limit": 16000.0, "budget_limit": 16000.0, "monthly_spent": 15331.64, "spent": 15331.64, "cumulative_all_months_spent": 275969.43, "utilization_pct": 95.8, "status": "WARNING"},
+    "Transportation": {"monthly_budget_limit": 4000.0, "budget_limit": 4000.0, "monthly_spent": 4589.83, "spent": 4589.83, "cumulative_all_months_spent": 82617.0, "utilization_pct": 114.7, "status": "EXCEEDED"},
+    "Utilities": {"monthly_budget_limit": 4500.0, "budget_limit": 4500.0, "monthly_spent": 3668.16, "spent": 3668.16, "cumulative_all_months_spent": 66026.94, "utilization_pct": 81.5, "status": "WARNING"},
+    "Personal": {"monthly_budget_limit": 9000.0, "budget_limit": 9000.0, "monthly_spent": 8226.33, "spent": 8226.33, "cumulative_all_months_spent": 148074.0, "utilization_pct": 91.4, "status": "WARNING"},
+    "Health/Medical": {"monthly_budget_limit": 3000.0, "budget_limit": 3000.0, "monthly_spent": 3250.93, "spent": 3250.93, "cumulative_all_months_spent": 58516.73, "utilization_pct": 108.4, "status": "EXCEEDED"},
+    "Home": {"monthly_budget_limit": 6500.0, "budget_limit": 6500.0, "monthly_spent": 7210.75, "spent": 7210.75, "cumulative_all_months_spent": 129793.58, "utilization_pct": 110.9, "status": "EXCEEDED"},
+    "Travel": {"monthly_budget_limit": 4000.0, "budget_limit": 4000.0, "monthly_spent": 4903.78, "spent": 4903.78, "cumulative_all_months_spent": 88268.0, "utilization_pct": 122.6, "status": "EXCEEDED"},
+    "Other": {"monthly_budget_limit": 5000.0, "budget_limit": 5000.0, "monthly_spent": 4811.61, "spent": 4811.61, "cumulative_all_months_spent": 86609.06, "utilization_pct": 96.2, "status": "WARNING"}
+   }
+  }
+ }
+}

@@ -1,0 +1,9 @@
+{
+ "task_id": "0030be9d",
+ "sender_agent": "orchestrator",
+ "target_agent": "reconciliation-agent",
+ "intent": "VERIFY_MATH_INTEGRITY",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "reconciliation-agent", "name": "Reconciliation Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/reconciliation-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/reconciliation-agent/tasks/send", "well_known_url": "/a2a/agents/reconciliation-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-reconciliation-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-reconciliation-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/reconciliation-agent", "skill_id": "VERIFY_MATH_INTEGRITY", "skill_name": "Statement Balance Math Verification"},
+ "result": {"opening_balance": 100000.0, "closing_balance": 110250.5, "total_credits": 50000.0, "total_debits": 39749.5, "calculated_closing_balance": 110250.5, "delta": 0.0, "is_balanced": true, "discrepancy_flag": false}
+}

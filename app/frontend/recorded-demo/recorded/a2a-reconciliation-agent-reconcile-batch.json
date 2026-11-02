@@ -1,0 +1,19 @@
+{
+ "task_id": "1c93edd7",
+ "sender_agent": "orchestrator",
+ "target_agent": "reconciliation-agent",
+ "intent": "RECONCILE_BATCH",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "reconciliation-agent", "name": "Reconciliation Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/reconciliation-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/reconciliation-agent/tasks/send", "well_known_url": "/a2a/agents/reconciliation-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-reconciliation-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-reconciliation-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/reconciliation-agent", "skill_id": "RECONCILE_BATCH", "skill_name": "Cross-Source Batch Reconciliation"},
+ "result": {
+  "transactions": [
+   {"date": "2026-08-01", "amount": 10000, "description": "UPI/DEMO USER/657928664113/To be back", "category": "Other", "transaction_type": "EXPENSE"}
+  ],
+  "self_transfers_marked": 0,
+  "duplicates_removed": 0,
+  "alerts_reconciled": 0,
+  "total_credits": 0.0,
+  "total_debits": 10000.0,
+  "math_verification": null
+ }
+}

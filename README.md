@@ -11,6 +11,8 @@
 
 **Live app:** [personal-finance-agent-507010.web.app](https://personal-finance-agent-507010.web.app) (sign-in required). A demo account with synthetic data is available on request.
 
+**Recorded demo:** [OWNER.github.io/personal-finance-agent](https://OWNER.github.io/personal-finance-agent/) (placeholder until the first GitHub Pages deployment). No sign-in and no backend: it replays responses recorded from the real backend and Gemini. See [Try the recorded demo](#try-the-recorded-demo).
+
 > [!NOTE]
 > This is a personal project that runs in production for its author. The code is published so you can read and evaluate it; it is **not open source** (see [License](#license)). Real financial data never enters this repository: statements, uploads and owner-specific values are git-ignored (see [Privacy](#security-and-privacy)).
 
@@ -23,6 +25,7 @@
 - [Tech stack](#tech-stack)
 - [Repository layout](#repository-layout)
 - [Getting started](#getting-started)
+- [Try the recorded demo](#try-the-recorded-demo)
 - [Configuration](#configuration)
 - [Testing](#testing)
 - [Deployment](#deployment)
@@ -60,6 +63,7 @@
 **Two environments from one codebase**
 - **Personal**: Google sign-in, owner only.
 - **Demo**: email and password sign-in, an 18-month synthetic ledger that resets nightly, Gmail off and daily AI limits.
+- Plus a **recorded demo**: a static copy of the app for GitHub Pages that replays responses recorded from the demo environment ([details](#try-the-recorded-demo)).
 
 ---
 
@@ -128,8 +132,10 @@ Inside the backend, uploads flow through `main.process_file` (hash check, unlock
 │   ├── telemetry/, eval/       # Traces; autorater and golden dataset
 │   ├── frontend.py             # Legacy Streamlit dashboard (not used by the deployed app)
 │   └── frontend/               # React + TypeScript SPA (Vite), Firebase Hosting config, Playwright tests
+│       ├── src/recorded/       # Recorded demo mode: replays recorded responses, no sign-in or backend
+│       └── recorded-demo/      # The recorded responses (written by scripts/record_demo.py)
 ├── tests/                      # pytest suite (unit, Postgres-backed, opt-in live suite)
-├── scripts/                    # Infra, deploy, secrets, demo reset, dedupe and migration tools
+├── scripts/                    # Infra, deploy, secrets, demo reset and recording, dedupe and migration tools
 ├── docs/                       # Architecture, audit, overhaul plan, handover, examples
 ├── decision.md                 # Architecture decision log (DEC-001 …)
 ├── flow.md                     # File-to-file code flow diagrams
@@ -176,6 +182,49 @@ npm run dev                              # http://localhost:5173
 ```
 
 Or start the demo backend and the dev server together with `./start_services.sh demo --frontend`.
+
+---
+
+## Try the recorded demo
+
+**[Open the recorded demo](https://OWNER.github.io/personal-finance-agent/)** (placeholder: replace `OWNER` once GitHub Pages has deployed it). No sign-in needed.
+
+The recorded demo is this React app built so that it needs no backend, no Firebase and no Google Cloud, so it keeps working after the Cloud Run services are switched off. It is a static site on GitHub Pages.
+
+- Every screen shows responses recorded from the real backend on the demo environment's synthetic data: the 18-month ledger and its review queue, analytics, budgets, recurring payments and the forecast, the Agent Registry with its skills and MCP tools, and the upload of a synthetic statement.
+- The AI CFO chat offers the recorded questions as suggestion chips and replays Gemini's recorded answers; other questions get a note listing the recorded ones. The Jarvis copilot works the same way.
+- Changes (edits, budgets, category answers, rules, uploads) are acknowledged but not saved.
+- A banner shows the recording date, with links to this repository and the demo video.
+
+How it works: [`scripts/record_demo.py`](scripts/record_demo.py) runs the real FastAPI app in-process (FastAPI `TestClient`) against a throwaway local PostgreSQL seeded with the demo data, calls the endpoints the screens use, and saves the responses in [`app/frontend/recorded-demo/recorded/`](app/frontend/recorded-demo/recorded/) with a manifest (recording date, commit, Gemini token usage). `npm run build:recorded` builds the frontend from `src/recorded/main.tsx`; its API client answers every request from those files ([`src/recorded/transport.ts`](app/frontend/src/recorded/transport.ts)). The normal build is unchanged and contains none of this code.
+
+**Preview it locally:**
+
+```bash
+cd app/frontend
+npm run build:recorded      # served from /personal-finance-agent/ (set PAGES_BASE_PATH to change it)
+npm run preview:recorded    # http://localhost:4173/personal-finance-agent/
+npm run test:e2e:recorded   # optional: Playwright checks every screen and that no request leaves the site
+```
+
+**Re-record it** (for example after a feature change):
+
+```bash
+venv/bin/python scripts/record_demo.py           # temporary local PostgreSQL + Gemini on Vertex AI (ADC)
+venv/bin/python scripts/record_demo.py --no-ai   # everything except the Gemini calls; costs nothing
+venv/bin/python -m pytest tests/test_recorded_fixtures.py -q
+```
+
+The recorder needs the PostgreSQL server binaries (`initdb`, `pg_ctl`) or `--database-url` for an empty local database, and Application Default Credentials with Vertex AI access for the AI answers. It never touches Supabase, Secret Manager or the owner profile, and it refuses to run next to a `.env` file. It prints the Gemini token usage and stops at `--max-spend-inr` (default ₹300); a full recording is 13 Gemini calls, about 52,000 tokens. `tests/test_recorded_fixtures.py` (part of the normal test run) checks the files: complete, real AI answers, and nothing that looks like a credential or personal data.
+
+**Publish it on GitHub Pages:** [`.github/workflows/pages.yml`](.github/workflows/pages.yml) builds the recorded demo, checks that its code calls no backend, Firebase or Google service, and deploys it on every push to `main` (or from **Actions → Recorded demo (GitHub Pages) → Run workflow**).
+
+1. Push the repository to GitHub.
+2. In the repository, open **Settings → Pages** and under **Build and deployment** set **Source** to **GitHub Actions**.
+3. Run the workflow (or re-run its first, failed run). The site appears at `https://<owner>.github.io/personal-finance-agent/`; replace the placeholder links above with it.
+4. Optional, under **Settings → Secrets and variables → Actions → Variables**: `DEMO_VIDEO_URL` (shown in the banner), `DEMO_REPO_URL` (defaults to this repository), `PAGES_BASE_PATH` (defaults to the path GitHub Pages reports).
+
+To point the live app at the recorded demo when its backend is unreachable, build it with `VITE_RECORDED_DEMO_URL=https://<owner>.github.io/personal-finance-agent/ npm run build`.
 
 ---
 
@@ -227,7 +276,7 @@ npm run test:e2e                # Playwright + axe; real demo sign-in, mocked ba
 
 The Playwright suite signs in to Firebase with the demo account. It reads the credentials at runtime from `~/.config/personal-finance-agent/demo-login.txt` and never prints them. `E2E_BACKEND=http://127.0.0.1:8081 npm run test:e2e -- integration` runs the integration spec against a local backend instead of mocks.
 
-GitHub Actions runs the backend unit tests and the frontend type-check, lint and build on every push to `main` and every pull request ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). The suites that need credentials (Postgres, live and Playwright) run locally.
+GitHub Actions runs the backend unit tests and the frontend type-check, lint and build on every push to `main` and every pull request ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). The suites that need credentials (Postgres, live and Playwright) run locally. The recorded demo has its own Playwright spec, which needs no credentials: `npm run build:recorded && npm run test:e2e:recorded`.
 
 ---
 
@@ -238,6 +287,7 @@ GitHub Actions runs the backend unit tests and the frontend type-check, lint and
 | One-time infrastructure | `scripts/phase1_infra.sh` creates Artifact Registry, least-privilege service accounts, secret access and the private statement bucket (idempotent) |
 | Backend (both Cloud Run services, one image, plus Scheduler jobs) | `scripts/deploy_backend.sh build`, or demo first: `scripts/deploy_backend.sh build demo`, then `scripts/deploy_backend.sh <image-tag> personal` |
 | Frontend | `cd app/frontend && npm run build && firebase deploy --only hosting` |
+| Recorded demo (GitHub Pages) | Automatic on push to `main` ([`.github/workflows/pages.yml`](.github/workflows/pages.yml)); see [Try the recorded demo](#try-the-recorded-demo) |
 | Agent Registry sync | `venv/bin/python scripts/register_gcp_agents.py` |
 | Demo data reset (normally nightly via Scheduler) | `APP_ENV=demo venv/bin/python scripts/demo_reset.py` |
 

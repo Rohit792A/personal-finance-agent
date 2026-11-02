@@ -1,0 +1,254 @@
+{
+ "protocol_version": "2025-03-26",
+ "server": {"name": "personal-finance-ledger-mcp", "version": "3.0.0"},
+ "tools": [
+  {
+   "name": "get_financial_summary",
+   "domain": "ledger_db",
+   "description": "Retrieves real-time aggregated income, expense, and category totals from the financial summary view.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "month": {"type": "string", "description": "Optional calendar month filter in YYYY-MM format. If omitted, returns all-time aggregates."}
+    },
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "month": {"type": "string", "description": "Optional calendar month filter in YYYY-MM format. If omitted, returns all-time aggregates."}
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "get_recent_transactions",
+   "domain": "ledger_db",
+   "description": "Fetches the most recent verified financial transactions with optional category filtering.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "limit": {"type": "integer", "description": "Maximum number of transactions to return (default: 20, max: 100).", "default": 20},
+     "category": {"type": "string", "description": "Optional category filter (e.g. 'Food', 'Rent', 'Travel', 'SIP')."}
+    },
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "limit": {"type": "integer", "description": "Maximum number of transactions to return (default: 20, max: 100).", "default": 20},
+     "category": {"type": "string", "description": "Optional category filter (e.g. 'Food', 'Rent', 'Travel', 'SIP')."}
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "check_budget_health",
+   "domain": "ledger_db",
+   "description": "Calculates real-time category spending against monthly target limits and returns health indicators.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "category": {"type": "string", "description": "Specific category to check, or 'ALL' to evaluate the full portfolio.", "default": "ALL"},
+     "month": {"type": "string", "description": "Optional calendar month in YYYY-MM format."}
+    },
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "category": {"type": "string", "description": "Specific category to check, or 'ALL' to evaluate the full portfolio.", "default": "ALL"},
+     "month": {"type": "string", "description": "Optional calendar month in YYYY-MM format."}
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "get_learned_rules",
+   "domain": "ledger_db",
+   "description": "Returns user-confirmed payee/narration categorization rules learned by the Clarification Agent.",
+   "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   }
+  },
+  {
+   "name": "save_learned_rule",
+   "domain": "ledger_db",
+   "description": "Saves a user-confirmed payee/merchant categorization rule so future transactions are auto-categorized.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "pattern": {"type": "string", "description": "Normalized merchant or UPI narration substring (e.g. 'upi/rahul')."},
+     "category": {"type": "string", "description": "Verified category name (e.g. 'Rent', 'Food', 'Transfer')."},
+     "transaction_type": {"type": "string", "description": "Transaction type: EXPENSE, INCOME, or TRANSFER.", "default": "EXPENSE"}
+    },
+    "required": ["pattern", "category"]
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "pattern": {"type": "string", "description": "Normalized merchant or UPI narration substring (e.g. 'upi/rahul')."},
+     "category": {"type": "string", "description": "Verified category name (e.g. 'Rent', 'Food', 'Transfer')."},
+     "transaction_type": {"type": "string", "description": "Transaction type: EXPENSE, INCOME, or TRANSFER.", "default": "EXPENSE"}
+    },
+    "required": ["pattern", "category"]
+   }
+  },
+  {
+   "name": "resolve_and_update_transactions",
+   "domain": "ledger_db",
+   "description": "Batch-updates transaction categories, transaction types, and self-transfer flags in PostgreSQL and teaches reusable payee rules.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "updates": {
+      "type": "array",
+      "description": "List of transaction resolution objects [{'id': 1015, 'category': 'Food', 'transaction_type': 'EXPENSE', 'is_self_transfer': False, 'payee_pattern': 'BHARATPE', 'teach_rule': True}].",
+      "items": {"type": "object"}
+     }
+    },
+    "required": ["updates"]
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "updates": {
+      "type": "array",
+      "description": "List of transaction resolution objects [{'id': 1015, 'category': 'Food', 'transaction_type': 'EXPENSE', 'is_self_transfer': False, 'payee_pattern': 'BHARATPE', 'teach_rule': True}].",
+      "items": {"type": "object"}
+     }
+    },
+    "required": ["updates"]
+   }
+  },
+  {
+   "name": "list_statements",
+   "domain": "document_store",
+   "description": "Lists exported bank statement PDFs and their unlock/import status from the Document Store.",
+   "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   }
+  },
+  {
+   "name": "get_ingested_files",
+   "domain": "document_store",
+   "description": "Returns the cryptographic SHA-256 ledger of already-imported files to prevent duplicate processing.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "limit": {"type": "integer", "description": "Maximum number of file records to return (default: 20).", "default": 20}
+    },
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "limit": {"type": "integer", "description": "Maximum number of file records to return (default: 20).", "default": 20}
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "get_bank_sync_status",
+   "domain": "bank_connectors",
+   "description": "Returns the status of the automated Gmail Bank Alert & Statement IMAP connector.",
+   "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   }
+  },
+  {
+   "name": "calculate_balance_reconciliation",
+   "domain": "calculators",
+   "description": "Deterministically verifies that opening_balance + total_credits - total_debits == closing_balance.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "opening_balance": {"type": "number", "description": "Statement opening balance in INR."},
+     "closing_balance": {"type": "number", "description": "Statement closing balance in INR."},
+     "total_credits": {"type": "number", "description": "Sum of all credit/income rows in INR."},
+     "total_debits": {"type": "number", "description": "Sum of all debit/expense/transfer-out rows in INR."}
+    },
+    "required": ["opening_balance", "closing_balance", "total_credits", "total_debits"]
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "opening_balance": {"type": "number", "description": "Statement opening balance in INR."},
+     "closing_balance": {"type": "number", "description": "Statement closing balance in INR."},
+     "total_credits": {"type": "number", "description": "Sum of all credit/income rows in INR."},
+     "total_debits": {"type": "number", "description": "Sum of all debit/expense/transfer-out rows in INR."}
+    },
+    "required": ["opening_balance", "closing_balance", "total_credits", "total_debits"]
+   }
+  },
+  {
+   "name": "calculate_emi_and_shortfall",
+   "domain": "calculators",
+   "description": "Deterministically checks upcoming EMIs, rent, and recurring bills against available liquid balance to warn before a bounce or shortfall.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "current_balance": {"type": "number", "description": "Optional current liquid bank balance in INR. If omitted, uses net ledger surplus."},
+     "upcoming_commitments": {
+      "type": "array",
+      "description": "Optional list of upcoming bills [{'name': 'Rent', 'amount': 15000, 'due_day': 5}]. If omitted, derives from recurring ledger transactions.",
+      "items": {"type": "object"}
+     }
+    },
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "current_balance": {"type": "number", "description": "Optional current liquid bank balance in INR. If omitted, uses net ledger surplus."},
+     "upcoming_commitments": {
+      "type": "array",
+      "description": "Optional list of upcoming bills [{'name': 'Rent', 'amount': 15000, 'due_day': 5}]. If omitted, derives from recurring ledger transactions.",
+      "items": {"type": "object"}
+     }
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "project_savings_capacity",
+   "domain": "calculators",
+   "description": "Projects monthly surplus savings capacity and suggested SIP investment allocation based on real cash flow.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "month": {"type": "string", "description": "Optional calendar month in YYYY-MM format."}
+    },
+    "required": []
+   },
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "month": {"type": "string", "description": "Optional calendar month in YYYY-MM format."}
+    },
+    "required": []
+   }
+  }
+ ]
+}

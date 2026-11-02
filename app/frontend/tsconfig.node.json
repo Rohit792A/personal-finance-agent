@@ -21,5 +21,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["vite.config.ts", "tailwind.config.ts", "tailwind.legacy-theme.ts", "playwright.config.ts", "tests/**/*.ts"]
+  "include": [
+    "vite.config.ts",
+    "tailwind.config.ts",
+    "tailwind.legacy-theme.ts",
+    "playwright.config.ts",
+    "playwright.recorded.config.ts",
+    "tests/**/*.ts"
+  ]
 }
