@@ -19,6 +19,47 @@ Every time `agy` makes changes to the codebase, append or prepend an entry using
 
 > **ATS Resume Tailor decisions live in [`ats-resume-tailor/decision.md`](file:///home/rkushwaha8610/ats-resume-tailor/decision.md)** (moved there on 2026-10-20 at the owner's request: DEC-040, DEC-039, DEC-038, DEC-037, DEC-036, DEC-002). DEC numbers stay unique across both logs.
 
+### [DEC-064] Credit-End Backup: Read-Only Export of Both Google Cloud Projects to Local Disk, With a Reusable Script for the Final Run (`workspace`)
+- **Date**: `2026-11-02 08:45 UTC`
+- **Scope**: `workspace`
+  - Reads `ats-resume-tailor-510019` and `personal-finance-agent-507010`.
+  - Writes only under `~/backups/credit-end-2026-11/`, outside both git repos.
+  - No repo code, Google Cloud resource, API or IAM changed; no deploy.
+- **Request**: the free-trial credit is expected to end around 27 Nov 2026 and the owner won't upgrade, so services will stop and their data may later be deleted. Back up now everything that would be lost, and leave a script for a final run around 24 Nov.
+- **Files Changed** (created, outside both repos):
+  - [`export_gcp_data.sh`](file:///home/rkushwaha8610/backups/credit-end-2026-11/export_gcp_data.sh): wrapper that runs the exporter with the resume tailor's venv (it has `google-cloud-firestore`).
+  - [`export_gcp_data.py`](file:///home/rkushwaha8610/backups/credit-end-2026-11/export_gcp_data.py): the exporter.
+  - The first snapshot `20261102T083712Z/` (with `MANIFEST.md`, `RESTORE.md`, `SHA256SUMS`) and its `.tar.gz` (12.7 MiB). Folders are 700, files 600.
+- **Decision & Rationale**:
+  - **Read-only by construction**:
+    - gcloud calls go through an allow-list of list / describe / get-iam-policy commands.
+    - The only download command is `storage rsync` from a bucket to a local folder, without delete flags.
+    - Secret values can't be read.
+  - **Firestore is read with the Python client**, not `gcloud firestore export`, which writes to a bucket (a change on Google Cloud).
+  - **Everything is discovered at run time**: buckets, Cloud Run services and regions, Scheduler jobs in every location, secret names, Firestore databases, Artifact Registry. The final run picks up anything new.
+  - **Restorable without Google Cloud**: `local-restore/` matches the resume tailor's local file-storage mode and the finance app's local statement layout, and `RESTORE.md` gives the steps.
+  - **Comparable, repeatable runs**:
+    - Firestore JSON is written with sorted keys, because Firestore returns fields in a different order on each read.
+    - `MANIFEST.md` lists the files changed since the previous snapshot.
+    - Each run writes a new folder; a lock file blocks concurrent runs, and free space is checked first.
+  - **Rejected**:
+    - A managed Firestore export (changes Google Cloud).
+    - Downloading the container images: about 3.3 GB on a 4.8 GB disk, and they can be rebuilt.
+    - Exporting secret values.
+    - Dumping the Supabase databases: they're outside Google Cloud and survive. Optional `pg_dump` steps are in `RESTORE.md`.
+- **Verification**:
+  - Every bucket object matched Cloud Storage's size and MD5, `sha256sum -c` passed for every file, and the archive was re-hashed.
+  - The tracker records validate against the resume tailor's `ApplicationRecord`.
+  - Local mode was tested on a temporary copy: the tracker and its PDFs were served.
+  - `--dry-run` was tested, and the resume-tailor repo is unchanged.
+- **Follow-ups**:
+  - Download the archive off Cloud Shell, whose home directory is deleted after long inactivity.
+  - Keep the database and Gmail app passwords in a password manager; secret values aren't exported.
+  - Re-run around 24 Nov.
+- **Flow Impact**: added a "Credit-End Backup Tooling" section to [`flow.md`](file:///home/rkushwaha8610/flow.md).
+
+---
+
 ### [DEC-063] Real Google Cloud Governance Behind Flags: Model Armor API, Sensitive Data Protection, Cloud Trace Export and Explicit Context Caching (`personal-finance-agent`)
 - **Date**: `2026-11-02 08:27 UTC`
 - **Scope**: `personal-finance-agent` (security, telemetry and caching layers; with the four flags unset the behaviour is unchanged; no deploy, no API enabled, no IAM change)

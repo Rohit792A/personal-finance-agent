@@ -230,3 +230,23 @@ flowchart LR
 | [`AGENTS.md`](file:///home/rkushwaha8610/AGENTS.md) | Antigravity (`agy`) rule loader | Always-on workspace rule enforcing [`decision.md`](file:///home/rkushwaha8610/decision.md) and [`flow.md`](file:///home/rkushwaha8610/flow.md) updates and expanding [`agent.md`](file:///home/rkushwaha8610/agent.md) and the decision logs into `<user_rules>`. |
 | [`CLAUDE.md`](file:///home/rkushwaha8610/CLAUDE.md) | Claude Code CLI (`claude`) rule loader | Always-on workspace rule for Claude Code enforcing the same [`decision.md`](file:///home/rkushwaha8610/decision.md) / [`flow.md`](file:///home/rkushwaha8610/flow.md) protocol (with shared DEC numbers) and importing [`agent.md`](file:///home/rkushwaha8610/agent.md) via `@agent.md`. |
 | [`agent.md`](file:///home/rkushwaha8610/agent.md) | [`AGENTS.md`](file:///home/rkushwaha8610/AGENTS.md) (`@[agent.md]`), [`CLAUDE.md`](file:///home/rkushwaha8610/CLAUDE.md) (`@agent.md`) | Shared model-routing and division-of-labor instructions: routes architecture, deep reasoning, complex/multi-file/multimodal coding, complex debugging, and architectural QA to **Gemini 4 Argon (High)**; routes scoped 1–4 file coding, fast terminal TDD loops, and quick fixes to **Claude Code**; defines `invoke_subagent` `Model` tiering (`inherit`/`pro`, `flash`, `flash_lite`). |
+
+---
+
+## Workspace: Credit-End Backup Tooling (outside the repos; DEC-064)
+
+```mermaid
+flowchart LR
+  Wrap["backups/credit-end-2026-11/export_gcp_data.sh"] --> Exp["export_gcp_data.py"]
+  Exp -- "read-only gcloud (allow-list)" --> GCP[("Cloud Storage, Cloud Run, Cloud Scheduler, Secret Manager names, Artifact Registry, inventory checks")]
+  Exp -- "bq ls" --> BQ[("BigQuery dataset list")]
+  Exp -- "google-cloud-firestore (read-only)" --> FS[("Firestore: ats-resume-tailor-510019")]
+  Exp -- "reads RESUME_GCS_BUCKET only" --> Env["ats-resume-tailor/backend/.env"]
+  Exp -- "imports ApplicationRecord (validation only)" --> Sch["ats-resume-tailor/backend/app/schemas.py"]
+  Exp --> Out["backups/credit-end-2026-11/UTC-timestamp/ + .tar.gz"]
+```
+
+| File | Calls / Reads | Writes | Notes |
+| :--- | :--- | :--- | :--- |
+| [`export_gcp_data.sh`](file:///home/rkushwaha8610/backups/credit-end-2026-11/export_gcp_data.sh) | `export_gcp_data.py`, run with `ats-resume-tailor/backend/.venv/bin/python` (falls back to `python3`) | — | `umask 077`, no `.pyc` files, runs from `/` |
+| [`export_gcp_data.py`](file:///home/rkushwaha8610/backups/credit-end-2026-11/export_gcp_data.py) | gcloud (read-only allow-list), `bq ls`, the Firestore client; [`schemas.py`](file:///home/rkushwaha8610/ats-resume-tailor/backend/app/schemas.py) (`ApplicationRecord`, validation only); `ats-resume-tailor/backend/.env` (`RESUME_GCS_BUCKET` only) | `~/backups/credit-end-2026-11/<UTC>/`, `<UTC>.tar.gz` (+ `.sha256`), a lock file | Outside both git repos; no repo code imports or calls it |
