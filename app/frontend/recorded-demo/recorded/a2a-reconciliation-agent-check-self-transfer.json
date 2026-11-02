@@ -1,0 +1,9 @@
+{
+ "task_id": "f2f6bbf2",
+ "sender_agent": "orchestrator",
+ "target_agent": "reconciliation-agent",
+ "intent": "CHECK_SELF_TRANSFER",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "reconciliation-agent", "name": "Reconciliation Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/reconciliation-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/reconciliation-agent/tasks/send", "well_known_url": "/a2a/agents/reconciliation-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-reconciliation-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-reconciliation-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/reconciliation-agent", "skill_id": "CHECK_SELF_TRANSFER", "skill_name": "Self-Transfer & Own-Account Settlement Detector"},
+ "result": {"is_self_transfer": false, "recommended_category": "Uncategorized"}
+}

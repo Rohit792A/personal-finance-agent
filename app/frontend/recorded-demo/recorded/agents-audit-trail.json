@@ -1,0 +1,280 @@
+{
+ "audit_logs": [
+  {
+   "id": 98,
+   "trace_id": "6eb75cc9-c1ca-4f8b-b20f-7e65400f3b67",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.project_savings_capacity",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.860559+00:00"
+  },
+  {
+   "id": 97,
+   "trace_id": "b5fae88a-306d-4d96-8ac9-e4ee9d232aac",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.calculate_emi_and_shortfall",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.781222+00:00"
+  },
+  {
+   "id": 96,
+   "trace_id": "58f7abbc-a3b1-443b-bf22-1e8b66411611",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.calculate_balance_reconciliation",
+   "status": "OK",
+   "details": {
+    "arguments": {"opening_balance": 100000, "closing_balance": 110250.5, "total_credits": 50000, "total_debits": 39749.5}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.720560+00:00"
+  },
+  {
+   "id": 95,
+   "trace_id": "c6227c08-c856-46d2-88ff-214a3000f47b",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.get_bank_sync_status",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.672852+00:00"
+  },
+  {
+   "id": 94,
+   "trace_id": "38f5b3a2-dfa4-4b9a-ad04-8e94367cd24c",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.get_ingested_files",
+   "status": "OK",
+   "details": {
+    "arguments": {"limit": 10}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.631750+00:00"
+  },
+  {
+   "id": 93,
+   "trace_id": "ee4da594-eeeb-400f-adb6-a8fd4f444861",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.list_statements",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.585382+00:00"
+  },
+  {
+   "id": 92,
+   "trace_id": "fe83cc06-f3db-4afc-85c4-6d913274fcf9",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.resolve_and_update_transactions",
+   "status": "BLOCKED",
+   "details": {
+    "arguments": {},
+    "reason": "[AgentGateway PEP] Human approval required: agent 'orchestrator' cannot execute mutating tool 'resolve_and_update_transactions' without user confirmation (human_approved=True)."
+   },
+   "requires_approval": true,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.534702+00:00"
+  },
+  {
+   "id": 91,
+   "trace_id": "2887d76b-3738-4947-8094-78fdd8daf65b",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.save_learned_rule",
+   "status": "BLOCKED",
+   "details": {
+    "arguments": {},
+    "reason": "[AgentGateway PEP] Human approval required: agent 'orchestrator' cannot execute mutating tool 'save_learned_rule' without user confirmation (human_approved=True)."
+   },
+   "requires_approval": true,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.486399+00:00"
+  },
+  {
+   "id": 90,
+   "trace_id": "99635e5e-3083-4712-832f-73cb62d246ce",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.get_learned_rules",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.430478+00:00"
+  },
+  {
+   "id": 89,
+   "trace_id": "e329e68e-fcd0-4a27-8b83-02ca1db0516f",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.check_budget_health",
+   "status": "OK",
+   "details": {
+    "arguments": {"category": "ALL"}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.369791+00:00"
+  },
+  {
+   "id": 88,
+   "trace_id": "cf9307d4-4782-4311-b9c7-91fbb944a8ec",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.get_recent_transactions",
+   "status": "OK",
+   "details": {
+    "arguments": {"limit": 10}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.288058+00:00"
+  },
+  {
+   "id": 87,
+   "trace_id": "15597f5d-ffe9-4e0f-a7bd-70b6857d33eb",
+   "agent_id": "orchestrator",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+   "action": "mcp.tool.get_financial_summary",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.235175+00:00"
+  },
+  {
+   "id": 86,
+   "trace_id": "b97e307e-0994-46b5-a7d8-981ef12f7646",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "A2A_CARD:ASK_CFO",
+   "status": "COMPLETED",
+   "details": {"task_id": "963eb179", "sender_agent": "orchestrator", "agent_card_url": "/a2a/agents/advisor-agent/tasks/send", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "skill_id": "ASK_CFO"},
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:52.126528+00:00"
+  },
+  {
+   "id": 85,
+   "trace_id": "d1738904-6023-4eb3-a61b-e03f92ddc6c6",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "mcp.tool.calculate_emi_and_shortfall",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:42.427599+00:00"
+  },
+  {
+   "id": 84,
+   "trace_id": "2d1e0c95-7423-4897-a9d8-501acc3fe096",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "mcp.tool.project_savings_capacity",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:42.418057+00:00"
+  },
+  {
+   "id": 83,
+   "trace_id": "27af76ea-2e46-4730-a9f4-51119ba6ce54",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "mcp.tool.get_recent_transactions",
+   "status": "OK",
+   "details": {
+    "arguments": {"limit": 15}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:42.379867+00:00"
+  },
+  {
+   "id": 82,
+   "trace_id": "d9761810-be8d-4be0-9121-2a9987284fb2",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "mcp.tool.get_financial_summary",
+   "status": "OK",
+   "details": {
+    "arguments": {}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:42.361737+00:00"
+  },
+  {
+   "id": 81,
+   "trace_id": "418e9285-1e70-48bf-9198-8d633728819b",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "A2A_CARD:FORECAST_SAVINGS",
+   "status": "COMPLETED",
+   "details": {"task_id": "c2faebb0", "sender_agent": "orchestrator", "agent_card_url": "/a2a/agents/advisor-agent/tasks/send", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "skill_id": "FORECAST_SAVINGS"},
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:42.212625+00:00"
+  },
+  {
+   "id": 80,
+   "trace_id": "b3e7cee0-0763-438e-bf1b-de54b2d76a89",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "mcp.tool.project_savings_capacity",
+   "status": "OK",
+   "details": {
+    "arguments": {"month": null, "monthly_income": null, "monthly_expense": null}
+   },
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:42.210340+00:00"
+  },
+  {
+   "id": 79,
+   "trace_id": "562d0fd2-b4ca-40a6-ba6b-a480b8b53c97",
+   "agent_id": "advisor-agent",
+   "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+   "action": "A2A_CARD:CHECK_PROACTIVE_ALERTS",
+   "status": "COMPLETED",
+   "details": {"task_id": "8a6c341d", "sender_agent": "orchestrator", "agent_card_url": "/a2a/agents/advisor-agent/tasks/send", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent", "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json", "skill_id": "CHECK_PROACTIVE_ALERTS"},
+   "requires_approval": false,
+   "approved_by": null,
+   "created_at": "2026-11-02 09:11:42.060581+00:00"
+  }
+ ]
+}

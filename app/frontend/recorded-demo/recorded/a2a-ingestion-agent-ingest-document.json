@@ -1,0 +1,9 @@
+{
+ "task_id": "fc666c59",
+ "sender_agent": "orchestrator",
+ "target_agent": "ingestion-agent",
+ "intent": "INGEST_DOCUMENT",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "ingestion-agent", "name": "Ingestion Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/ingestion-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/ingestion-agent/tasks/send", "well_known_url": "/a2a/agents/ingestion-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-ingestion-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-ingestion-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/ingestion-agent", "skill_id": "INGEST_DOCUMENT", "skill_name": "Multimodal Document Extraction"},
+ "result": {"error": "Missing 'file_path' in INGEST_DOCUMENT payload."}
+}

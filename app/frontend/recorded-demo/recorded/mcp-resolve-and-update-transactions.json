@@ -1,0 +1,1 @@
+{"detail": "[AgentGateway PEP] Human approval required: agent 'orchestrator' cannot execute mutating tool 'resolve_and_update_transactions' without user confirmation (human_approved=True)."}

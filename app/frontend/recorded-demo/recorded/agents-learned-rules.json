@@ -1,0 +1,8 @@
+{
+ "rules": [
+  {"pattern": "upi/rahul", "payee_pattern": "UPI/RAHUL", "category": "Rent", "transaction_type": "EXPENSE", "is_self_transfer": false, "source": "voice_hitl", "hit_count": 0, "updated_at": "2026-11-02 09:11:52.878233+00:00"},
+  {"pattern": "zerodha broking", "payee_pattern": "ZERODHA BROKING", "category": "SIP", "transaction_type": "EXPENSE", "is_self_transfer": false, "source": "clarification_agent", "hit_count": 0, "updated_at": "2026-11-02 09:11:52.886537+00:00"},
+  {"pattern": "swiggy instamart", "payee_pattern": "SWIGGY INSTAMART", "category": "Food", "transaction_type": "EXPENSE", "is_self_transfer": false, "source": "manual_ui_edit", "hit_count": 0, "updated_at": "2026-11-02 09:11:52.892404+00:00"},
+  {"pattern": "bescom bangalore", "payee_pattern": "BESCOM BANGALORE", "category": "Utilities", "transaction_type": "EXPENSE", "is_self_transfer": false, "source": "clarification_agent", "hit_count": 0, "updated_at": "2026-11-02 09:11:52.898302+00:00"}
+ ]
+}

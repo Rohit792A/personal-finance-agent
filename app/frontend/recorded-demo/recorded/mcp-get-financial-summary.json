@@ -1,0 +1,44 @@
+{
+ "is_error": false,
+ "data": {
+  "month": "ALL_TIME",
+  "scope": "MULTI_MONTH_SUMMARY (18 months in ledger; use monthly_* fields for per-month figures)",
+  "active_months_count": 18,
+  "typical_monthly_salary": 147265.0,
+  "monthly_income": 147265.0,
+  "monthly_expense": 102451.37,
+  "monthly_surplus": 44813.63,
+  "latest_complete_month": {"month": "2026-11", "income": 140000.0, "expense": 50590.38, "surplus": 89409.62},
+  "total_income": 147265.0,
+  "total_expense": 102451.37,
+  "net_surplus": 44813.63,
+  "cumulative_all_months_income": 2650770.0,
+  "cumulative_all_months_expense": 1844124.74,
+  "cumulative_all_months_surplus": 806645.26,
+  "categories": [
+   {"category": "Paycheck", "transaction_type": "INCOME", "transaction_count": 18, "total_amount": 2421611.0, "cumulative_all_months_amount": 2421611.0, "monthly_avg_amount": 134533.94},
+   {"category": "Rent", "transaction_type": "EXPENSE", "transaction_count": 17, "total_amount": 469800.0, "cumulative_all_months_amount": 469800.0, "monthly_avg_amount": 26100.0},
+   {"category": "Food", "transaction_type": "EXPENSE", "transaction_count": 684, "total_amount": 275969.43, "cumulative_all_months_amount": 275969.43, "monthly_avg_amount": 15331.64},
+   {"category": "Bonus", "transaction_type": "INCOME", "transaction_count": 2, "total_amount": 212500.0, "cumulative_all_months_amount": 212500.0, "monthly_avg_amount": 11805.56},
+   {"category": "SIP", "transaction_type": "EXPENSE", "transaction_count": 34, "total_amount": 185000.0, "cumulative_all_months_amount": 185000.0, "monthly_avg_amount": 10277.78},
+   {"category": "Personal", "transaction_type": "EXPENSE", "transaction_count": 127, "total_amount": 148074.0, "cumulative_all_months_amount": 148074.0, "monthly_avg_amount": 8226.33},
+   {"category": "Home", "transaction_type": "EXPENSE", "transaction_count": 39, "total_amount": 129793.58, "cumulative_all_months_amount": 129793.58, "monthly_avg_amount": 7210.75},
+   {"category": "Debt", "transaction_type": "EXPENSE", "transaction_count": 17, "total_amount": 116450.0, "cumulative_all_months_amount": 116450.0, "monthly_avg_amount": 6469.44},
+   {"category": "Stocks", "transaction_type": "EXPENSE", "transaction_count": 3, "total_amount": 93000.0, "cumulative_all_months_amount": 93000.0, "monthly_avg_amount": 5166.67},
+   {"category": "Travel", "transaction_type": "EXPENSE", "transaction_count": 17, "total_amount": 88268.0, "cumulative_all_months_amount": 88268.0, "monthly_avg_amount": 4903.78},
+   {"category": "Other", "transaction_type": "EXPENSE", "transaction_count": 31, "total_amount": 86609.06, "cumulative_all_months_amount": 86609.06, "monthly_avg_amount": 4811.61},
+   {"category": "Transportation", "transaction_type": "EXPENSE", "transaction_count": 266, "total_amount": 82617.0, "cumulative_all_months_amount": 82617.0, "monthly_avg_amount": 4589.83},
+   {"category": "Utilities", "transaction_type": "EXPENSE", "transaction_count": 61, "total_amount": 66026.94, "cumulative_all_months_amount": 66026.94, "monthly_avg_amount": 3668.16},
+   {"category": "Health/Medical", "transaction_type": "EXPENSE", "transaction_count": 29, "total_amount": 58516.73, "cumulative_all_months_amount": 58516.73, "monthly_avg_amount": 3250.93},
+   {"category": "Savings", "transaction_type": "EXPENSE", "transaction_count": 17, "total_amount": 34000.0, "cumulative_all_months_amount": 34000.0, "monthly_avg_amount": 1888.89},
+   {"category": "Investment", "transaction_type": "EXPENSE", "transaction_count": 1, "total_amount": 10000.0, "cumulative_all_months_amount": 10000.0, "monthly_avg_amount": 555.56},
+   {"category": "Interest", "transaction_type": "INCOME", "transaction_count": 6, "total_amount": 8977.0, "cumulative_all_months_amount": 8977.0, "monthly_avg_amount": 498.72},
+   {"category": "Personal", "transaction_type": "INCOME", "transaction_count": 3, "total_amount": 4797.0, "cumulative_all_months_amount": 4797.0, "monthly_avg_amount": 266.5},
+   {"category": "Food", "transaction_type": "INCOME", "transaction_count": 3, "total_amount": 1635.0, "cumulative_all_months_amount": 1635.0, "monthly_avg_amount": 90.83},
+   {"category": "Other", "transaction_type": "INCOME", "transaction_count": 1, "total_amount": 1250.0, "cumulative_all_months_amount": 1250.0, "monthly_avg_amount": 69.44}
+  ]
+ },
+ "mcp_content": [
+  {"type": "text", "text": "{\"month\": \"ALL_TIME\", \"scope\": \"MULTI_MONTH_SUMMARY (18 months in ledger; use monthly_* fields for per-month figures)\", \"active_months_count\": 18, \"typical_monthly_salary\": 147265.0, \"monthly_income\": 147265.0, \"monthly_expense\": 102451.37, \"monthly_surplus\": 44813.63, \"latest_complete_month\": {\"month\": \"2026-11\", \"income\": 140000.0, \"expense\": 50590.38, \"surplus\": 89409.62}, \"total_income\": 147265.0, \"total_expense\": 102451.37, \"net_surplus\": 44813.63, \"cumulative_all_months_income\": 2650770.0, \"cumulative_all_months_expense\": 1844124.74, \"cumulative_all_months_surplus\": 806645.26, \"categories\": [{\"category\": \"Paycheck\", \"transaction_type\": \"INCOME\", \"transaction_count\": 18, \"total_amount\": 2421611.0, \"cumulative_all_months_amount\": 2421611.0, \"monthly_avg_amount\": 134533.94}, {\"category\": \"Rent\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 17, \"total_amount\": 469800.0, \"cumulative_all_months_amount\": 469800.0, \"monthly_avg_amount\": 26100.0}, {\"category\": \"Food\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 684, \"total_amount\": 275969.43, \"cumulative_all_months_amount\": 275969.43, \"monthly_avg_amount\": 15331.64}, {\"category\": \"Bonus\", \"transaction_type\": \"INCOME\", \"transaction_count\": 2, \"total_amount\": 212500.0, \"cumulative_all_months_amount\": 212500.0, \"monthly_avg_amount\": 11805.56}, {\"category\": \"SIP\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 34, \"total_amount\": 185000.0, \"cumulative_all_months_amount\": 185000.0, \"monthly_avg_amount\": 10277.78}, {\"category\": \"Personal\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 127, \"total_amount\": 148074.0, \"cumulative_all_months_amount\": 148074.0, \"monthly_avg_amount\": 8226.33}, {\"category\": \"Home\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 39, \"total_amount\": 129793.58, \"cumulative_all_months_amount\": 129793.58, \"monthly_avg_amount\": 7210.75}, {\"category\": \"Debt\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 17, \"total_amount\": 116450.0, \"cumulative_all_months_amount\": 116450.0, \"monthly_avg_amount\": 6469.44}, {\"category\": \"Stocks\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 3, \"total_amount\": 93000.0, \"cumulative_all_months_amount\": 93000.0, \"monthly_avg_amount\": 5166.67}, {\"category\": \"Travel\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 17, \"total_amount\": 88268.0, \"cumulative_all_months_amount\": 88268.0, \"monthly_avg_amount\": 4903.78}, {\"category\": \"Other\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 31, \"total_amount\": 86609.06, \"cumulative_all_months_amount\": 86609.06, \"monthly_avg_amount\": 4811.61}, {\"category\": \"Transportation\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 266, \"total_amount\": 82617.0, \"cumulative_all_months_amount\": 82617.0, \"monthly_avg_amount\": 4589.83}, {\"category\": \"Utilities\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 61, \"total_amount\": 66026.94, \"cumulative_all_months_amount\": 66026.94, \"monthly_avg_amount\": 3668.16}, {\"category\": \"Health/Medical\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 29, \"total_amount\": 58516.73, \"cumulative_all_months_amount\": 58516.73, \"monthly_avg_amount\": 3250.93}, {\"category\": \"Savings\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 17, \"total_amount\": 34000.0, \"cumulative_all_months_amount\": 34000.0, \"monthly_avg_amount\": 1888.89}, {\"category\": \"Investment\", \"transaction_type\": \"EXPENSE\", \"transaction_count\": 1, \"total_amount\": 10000.0, \"cumulative_all_months_amount\": 10000.0, \"monthly_avg_amount\": 555.56}, {\"category\": \"Interest\", \"transaction_type\": \"INCOME\", \"transaction_count\": 6, \"total_amount\": 8977.0, \"cumulative_all_months_amount\": 8977.0, \"monthly_avg_amount\": 498.72}, {\"category\": \"Personal\", \"transaction_type\": \"INCOME\", \"transaction_count\": 3, \"total_amount\": 4797.0, \"cumulative_all_months_amount\": 4797.0, \"monthly_avg_amount\": 266.5}, {\"category\": \"Food\", \"transaction_type\": \"INCOME\", \"transaction_count\": 3, \"total_amount\": 1635.0, \"cumulative_all_months_amount\": 1635.0, \"monthly_avg_amount\": 90.83}, {\"category\": \"Other\", \"transaction_type\": \"INCOME\", \"transaction_count\": 1, \"total_amount\": 1250.0, \"cumulative_all_months_amount\": 1250.0, \"monthly_avg_amount\": 69.44}]}", "annotations": null, "meta": null}
+ ]
+}

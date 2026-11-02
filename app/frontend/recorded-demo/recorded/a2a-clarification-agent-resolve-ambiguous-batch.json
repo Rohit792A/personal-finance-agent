@@ -1,0 +1,18 @@
+{
+ "task_id": "c576a66d",
+ "sender_agent": "orchestrator",
+ "target_agent": "clarification-agent",
+ "intent": "RESOLVE_AMBIGUOUS_BATCH",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "clarification-agent", "name": "Clarification & Memory Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/clarification-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/clarification-agent/tasks/send", "well_known_url": "/a2a/agents/clarification-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-clarification-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-clarification-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/clarification-agent", "skill_id": "RESOLVE_AMBIGUOUS_BATCH", "skill_name": "Learned-Rule Matching & HITL Clarification Gating"},
+ "result": {
+  "transactions": [
+   {"date": "2026-09-05", "amount": 45, "description": "HungerBox [Kotak Statement] UPI/HungerBox/090508936480", "category": "Other", "confidence": 50, "transaction_type": "EXPENSE", "requires_human_review": true, "clarification_question": "I found a ₹45.00 transaction for HungerBox [Kotak Statement] UPI/HungerBox/090508936480. The current category is Uncategorized, which needs clarification. What should I categorize this as?"}
+  ],
+  "resolved_by_learned_rules": 0,
+  "flagged_for_human_review": 1,
+  "questions": [
+   {"row_index": 0, "description": "HungerBox [Kotak Statement] UPI/HungerBox/090508936480", "payee_pattern": "UPI/HUNGERBOX", "amount": 45.0, "current_category": "Other", "confidence": 50.0, "question": "I found a ₹45.00 transaction for HungerBox [Kotak Statement] UPI/HungerBox/090508936480. The current category is Uncategorized, which needs clarification. What should I categorize this as?"}
+  ]
+ }
+}

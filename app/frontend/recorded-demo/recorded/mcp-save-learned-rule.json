@@ -1,0 +1,1 @@
+{"detail": "[AgentGateway PEP] Human approval required: agent 'orchestrator' cannot execute mutating tool 'save_learned_rule' without user confirmation (human_approved=True)."}

@@ -1,0 +1,222 @@
+{
+ "weakest_step": {"step_name": "vertex_ai_chat_turn", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 9696.04, "max_duration_ms": 9696.04},
+ "traces": {
+  "otel_sdk_active": true,
+  "total_traces_recorded": 79,
+  "global_weakest_step_to_fix_first": {"step_name": "mcp_tool_get_financial_summary", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 39.25, "max_duration_ms": 39.25},
+  "step_breakdown": [
+   {"step_name": "mcp_tool_get_financial_summary", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 39.25, "max_duration_ms": 39.25},
+   {"step_name": "mcp_tool_check_budget_health", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 36.44, "max_duration_ms": 36.44},
+   {"step_name": "mcp_tool_project_savings_capacity", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 32.77, "max_duration_ms": 32.77},
+   {"step_name": "mcp_tool_calculate_emi_and_shortfall", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 16.7, "max_duration_ms": 16.7},
+   {"step_name": "mcp_tool_get_recent_transactions", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 11.96, "max_duration_ms": 11.96},
+   {"step_name": "mcp_tool_get_bank_sync_status", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 6.79, "max_duration_ms": 6.79},
+   {"step_name": "mcp_tool_get_ingested_files", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 3.15, "max_duration_ms": 3.15},
+   {"step_name": "mcp_tool_list_statements", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 2.82, "max_duration_ms": 2.82},
+   {"step_name": "mcp_tool_get_learned_rules", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 2.69, "max_duration_ms": 2.69},
+   {"step_name": "mcp_tool_calculate_balance_reconciliation", "invocations": 1, "error_count": 0, "error_rate_pct": 0.0, "avg_duration_ms": 0.4, "max_duration_ms": 0.4}
+  ],
+  "recent_traces": [
+   {
+    "trace_id": "6eb75cc9-c1ca-4f8b-b20f-7e65400f3b67",
+    "workflow_name": "mcp_project_savings_capacity",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 32.77,
+    "weakest_step": {"step_name": "mcp_tool_project_savings_capacity", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 32.77},
+    "spans": [
+     {
+      "span_id": "d3dd53ac",
+      "trace_id": "6eb75cc9-c1ca-4f8b-b20f-7e65400f3b67",
+      "name": "mcp_tool_project_savings_capacity",
+      "start_time": 1793610712.8273325,
+      "end_time": 1793610712.860104,
+      "duration_ms": 32.77,
+      "attributes": {"caller_agent": "orchestrator", "tool": "project_savings_capacity", "trace_id": "6eb75cc9-c1ca-4f8b-b20f-7e65400f3b67"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "b5fae88a-306d-4d96-8ac9-e4ee9d232aac",
+    "workflow_name": "mcp_calculate_emi_and_shortfall",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 16.7,
+    "weakest_step": {"step_name": "mcp_tool_calculate_emi_and_shortfall", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 16.7},
+    "spans": [
+     {
+      "span_id": "a9947244",
+      "trace_id": "b5fae88a-306d-4d96-8ac9-e4ee9d232aac",
+      "name": "mcp_tool_calculate_emi_and_shortfall",
+      "start_time": 1793610712.7641003,
+      "end_time": 1793610712.7808025,
+      "duration_ms": 16.7,
+      "attributes": {"caller_agent": "orchestrator", "tool": "calculate_emi_and_shortfall", "trace_id": "b5fae88a-306d-4d96-8ac9-e4ee9d232aac"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "58f7abbc-a3b1-443b-bf22-1e8b66411611",
+    "workflow_name": "mcp_calculate_balance_reconciliation",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 0.4,
+    "weakest_step": {"step_name": "mcp_tool_calculate_balance_reconciliation", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 0.4},
+    "spans": [
+     {
+      "span_id": "c14687a1",
+      "trace_id": "58f7abbc-a3b1-443b-bf22-1e8b66411611",
+      "name": "mcp_tool_calculate_balance_reconciliation",
+      "start_time": 1793610712.717893,
+      "end_time": 1793610712.7182915,
+      "duration_ms": 0.4,
+      "attributes": {"caller_agent": "orchestrator", "tool": "calculate_balance_reconciliation", "trace_id": "58f7abbc-a3b1-443b-bf22-1e8b66411611"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "c6227c08-c856-46d2-88ff-214a3000f47b",
+    "workflow_name": "mcp_get_bank_sync_status",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 6.79,
+    "weakest_step": {"step_name": "mcp_tool_get_bank_sync_status", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 6.79},
+    "spans": [
+     {
+      "span_id": "6e36a177",
+      "trace_id": "c6227c08-c856-46d2-88ff-214a3000f47b",
+      "name": "mcp_tool_get_bank_sync_status",
+      "start_time": 1793610712.6656382,
+      "end_time": 1793610712.672424,
+      "duration_ms": 6.79,
+      "attributes": {"caller_agent": "orchestrator", "tool": "get_bank_sync_status", "trace_id": "c6227c08-c856-46d2-88ff-214a3000f47b"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "38f5b3a2-dfa4-4b9a-ad04-8e94367cd24c",
+    "workflow_name": "mcp_get_ingested_files",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 3.15,
+    "weakest_step": {"step_name": "mcp_tool_get_ingested_files", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 3.15},
+    "spans": [
+     {
+      "span_id": "7d621eb1",
+      "trace_id": "38f5b3a2-dfa4-4b9a-ad04-8e94367cd24c",
+      "name": "mcp_tool_get_ingested_files",
+      "start_time": 1793610712.628167,
+      "end_time": 1793610712.6313212,
+      "duration_ms": 3.15,
+      "attributes": {"caller_agent": "orchestrator", "tool": "get_ingested_files", "trace_id": "38f5b3a2-dfa4-4b9a-ad04-8e94367cd24c"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "ee4da594-eeeb-400f-adb6-a8fd4f444861",
+    "workflow_name": "mcp_list_statements",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 2.82,
+    "weakest_step": {"step_name": "mcp_tool_list_statements", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 2.82},
+    "spans": [
+     {
+      "span_id": "f652cb60",
+      "trace_id": "ee4da594-eeeb-400f-adb6-a8fd4f444861",
+      "name": "mcp_tool_list_statements",
+      "start_time": 1793610712.5821726,
+      "end_time": 1793610712.5849948,
+      "duration_ms": 2.82,
+      "attributes": {"caller_agent": "orchestrator", "tool": "list_statements", "trace_id": "ee4da594-eeeb-400f-adb6-a8fd4f444861"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "99635e5e-3083-4712-832f-73cb62d246ce",
+    "workflow_name": "mcp_get_learned_rules",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 2.69,
+    "weakest_step": {"step_name": "mcp_tool_get_learned_rules", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 2.69},
+    "spans": [
+     {
+      "span_id": "96bc15a6",
+      "trace_id": "99635e5e-3083-4712-832f-73cb62d246ce",
+      "name": "mcp_tool_get_learned_rules",
+      "start_time": 1793610712.4273179,
+      "end_time": 1793610712.4300096,
+      "duration_ms": 2.69,
+      "attributes": {"caller_agent": "orchestrator", "tool": "get_learned_rules", "trace_id": "99635e5e-3083-4712-832f-73cb62d246ce"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "e329e68e-fcd0-4a27-8b83-02ca1db0516f",
+    "workflow_name": "mcp_check_budget_health",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 36.44,
+    "weakest_step": {"step_name": "mcp_tool_check_budget_health", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 36.44},
+    "spans": [
+     {
+      "span_id": "f57ad399",
+      "trace_id": "e329e68e-fcd0-4a27-8b83-02ca1db0516f",
+      "name": "mcp_tool_check_budget_health",
+      "start_time": 1793610712.3298085,
+      "end_time": 1793610712.3662498,
+      "duration_ms": 36.44,
+      "attributes": {"caller_agent": "orchestrator", "tool": "check_budget_health", "trace_id": "e329e68e-fcd0-4a27-8b83-02ca1db0516f"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "cf9307d4-4782-4311-b9c7-91fbb944a8ec",
+    "workflow_name": "mcp_get_recent_transactions",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 11.96,
+    "weakest_step": {"step_name": "mcp_tool_get_recent_transactions", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 11.96},
+    "spans": [
+     {
+      "span_id": "a5f6a41c",
+      "trace_id": "cf9307d4-4782-4311-b9c7-91fbb944a8ec",
+      "name": "mcp_tool_get_recent_transactions",
+      "start_time": 1793610712.2756596,
+      "end_time": 1793610712.2876232,
+      "duration_ms": 11.96,
+      "attributes": {"caller_agent": "orchestrator", "tool": "get_recent_transactions", "trace_id": "cf9307d4-4782-4311-b9c7-91fbb944a8ec"},
+      "status": "OK"
+     }
+    ]
+   },
+   {
+    "trace_id": "15597f5d-ffe9-4e0f-a7bd-70b6857d33eb",
+    "workflow_name": "mcp_get_financial_summary",
+    "otel_sdk_active": true,
+    "total_spans": 1,
+    "total_duration_ms": 39.25,
+    "weakest_step": {"step_name": "mcp_tool_get_financial_summary", "reason": "Highest latency bottleneck in trajectory", "status": "OK", "duration_ms": 39.25},
+    "spans": [
+     {
+      "span_id": "834c0fa5",
+      "trace_id": "15597f5d-ffe9-4e0f-a7bd-70b6857d33eb",
+      "name": "mcp_tool_get_financial_summary",
+      "start_time": 1793610712.1954315,
+      "end_time": 1793610712.2346814,
+      "duration_ms": 39.25,
+      "attributes": {"caller_agent": "orchestrator", "tool": "get_financial_summary", "trace_id": "15597f5d-ffe9-4e0f-a7bd-70b6857d33eb"},
+      "status": "OK"
+     }
+    ]
+   }
+  ]
+ }
+}

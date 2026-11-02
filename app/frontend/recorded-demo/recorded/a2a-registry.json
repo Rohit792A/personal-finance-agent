@@ -1,0 +1,275 @@
+{
+ "registry_status": "ONLINE",
+ "gcp_project_id": "personal-finance-agent-507010",
+ "gcp_agent_registry_api": "agentregistry.googleapis.com/v1alpha",
+ "total_agents": 5,
+ "agent_cards": [
+  {
+   "agent_id": "orchestrator",
+   "name": "Agentic AI CFO Orchestrator",
+   "description": "Root ADK Orchestrator that plans multi-step financial jobs, discovers specialist agents in Google Cloud Agent Registry via their Agent Cards, and delegates tasks over A2A.",
+   "version": "3.0.0",
+   "protocolVersion": "0.3.0",
+   "preferredTransport": "HTTP+JSON",
+   "url": "/a2a/agents/orchestrator/tasks/send",
+   "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/orchestrator/tasks/send",
+   "well_known_url": "/.well-known/agent.json",
+   "gcp_service_id": "pfa-orchestrator",
+   "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-orchestrator",
+   "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-orchestrator",
+   "gcp_registry_resource": "",
+   "status": "ONLINE",
+   "provider": {"organization": "Personal Finance Agentic AI CFO", "url": "https://finance-backend-4yilcu24gq-an.a.run.app"},
+   "capabilities": {"streaming": false, "pushNotifications": false, "stateTransitionHistory": true},
+   "authentication": {
+    "schemes": ["SPIFFE-WIF", "Bearer"],
+    "spiffe_id": "spiffe://finance-agent.internal/sa/orchestrator",
+    "allowed_mcp_tools": ["get_financial_summary", "get_recent_transactions", "check_budget_health", "project_savings_capacity", "calculate_balance_reconciliation", "calculate_emi_and_shortfall", "get_learned_rules", "save_learned_rule", "resolve_and_update_transactions", "list_statements", "get_ingested_files", "get_bank_sync_status"],
+    "approval_required_tools": ["save_learned_rule", "resolve_and_update_transactions"]
+   },
+   "defaultInputModes": ["application/json", "text/plain"],
+   "defaultOutputModes": ["application/json", "text/plain"],
+   "skills": [
+    {
+     "id": "RUN_FOUR_AGENT_WORKFLOW",
+     "name": "End-to-End 4-Agent CFO Pipeline",
+     "description": "Coordinates Ingestion, Reconciliation, Clarification, and Advisor specialist agents via their Agent Cards.",
+     "tags": ["orchestration", "cfo", "workflow"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "MASTER_RESOLVE_TRANSACTIONS",
+     "name": "Master Category Resolution & Data-Driven Decision Engine",
+     "description": "Orchestrates all 4 specialist agents to analyze unverified or 'Other' ledger transactions using cross-row reimbursement correlation, VPA/merchant history, bank sweep logic, and Gemini reasoning.",
+     "tags": ["master-agent", "resolution", "categorization", "reconciliation"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "APPLY_MASTER_RESOLUTIONS",
+     "name": "Commit Master Agent Category Decisions & Teach Rules",
+     "description": "Atomically updates approved transaction categories/types in PostgreSQL and teaches reusable payee patterns via MCP.",
+     "tags": ["master-agent", "mutation", "hitl-gate", "learned-rules"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "OMNIPRESENT_JARVIS_COMMAND",
+     "name": "Omnipresent Jarvis Voice & Text Master Assistant",
+     "description": "Context-aware global assistant across all web app screens that answers questions, walks through page metrics, reconciles balances, and updates categories/rules over A2A & MCP.",
+     "tags": ["jarvis", "voice", "orchestrator", "global-copilot"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    }
+   ],
+   "supported_intents": ["RUN_FOUR_AGENT_WORKFLOW", "MASTER_RESOLVE_TRANSACTIONS", "APPLY_MASTER_RESOLUTIONS", "OMNIPRESENT_JARVIS_COMMAND"],
+   "registered_at": "2026-11-02T09:08:56.825160+00:00",
+   "invocations": 0
+  },
+  {
+   "agent_id": "ingestion-agent",
+   "name": "Ingestion Specialist Agent",
+   "description": "Fetches, unlocks, screens (Model Armor + Cloud DLP), and reads any financial document (PDF statements, receipts, spreadsheets, bank alerts).",
+   "version": "3.0.0",
+   "protocolVersion": "0.3.0",
+   "preferredTransport": "HTTP+JSON",
+   "url": "/a2a/agents/ingestion-agent/tasks/send",
+   "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/ingestion-agent/tasks/send",
+   "well_known_url": "/a2a/agents/ingestion-agent/.well-known/agent.json",
+   "gcp_service_id": "pfa-ingestion-agent",
+   "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-ingestion-agent",
+   "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-ingestion-agent",
+   "gcp_registry_resource": "",
+   "status": "ONLINE",
+   "provider": {"organization": "Personal Finance Agentic AI CFO", "url": "https://finance-backend-4yilcu24gq-an.a.run.app"},
+   "capabilities": {"streaming": false, "pushNotifications": false, "stateTransitionHistory": true},
+   "authentication": {
+    "schemes": ["SPIFFE-WIF", "Bearer"],
+    "spiffe_id": "spiffe://finance-agent.internal/sa/ingestion-agent",
+    "allowed_mcp_tools": ["list_statements", "get_ingested_files", "get_bank_sync_status"],
+    "approval_required_tools": []
+   },
+   "defaultInputModes": ["application/json", "text/plain"],
+   "defaultOutputModes": ["application/json", "text/plain"],
+   "skills": [
+    {
+     "id": "SCREEN_AND_SANITIZE_TRANSACTIONS",
+     "name": "Model Armor & Cloud DLP Batch Screening",
+     "description": "Screens extracted transaction descriptions for indirect prompt injection and masks PII while preserving 12-digit UPI/IMPS references.",
+     "tags": ["ingestion", "security", "dlp", "model-armor"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "INGEST_DOCUMENT",
+     "name": "Multimodal Document Extraction",
+     "description": "Extracts structured transactions from PDF statements, receipt images, or Excel spreadsheets.",
+     "tags": ["ingestion", "ocr", "pdf", "receipt", "excel"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    }
+   ],
+   "supported_intents": ["SCREEN_AND_SANITIZE_TRANSACTIONS", "INGEST_DOCUMENT"],
+   "registered_at": "2026-11-02T09:08:56.825331+00:00",
+   "invocations": 0
+  },
+  {
+   "agent_id": "reconciliation-agent",
+   "name": "Reconciliation Specialist Agent",
+   "description": "Matches rows across Gmail alerts and bank statements, marks self-transfers between own accounts, deduplicates batches, and verifies balance math.",
+   "version": "3.0.0",
+   "protocolVersion": "0.3.0",
+   "preferredTransport": "HTTP+JSON",
+   "url": "/a2a/agents/reconciliation-agent/tasks/send",
+   "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/reconciliation-agent/tasks/send",
+   "well_known_url": "/a2a/agents/reconciliation-agent/.well-known/agent.json",
+   "gcp_service_id": "pfa-reconciliation-agent",
+   "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-reconciliation-agent",
+   "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-reconciliation-agent",
+   "gcp_registry_resource": "",
+   "status": "ONLINE",
+   "provider": {"organization": "Personal Finance Agentic AI CFO", "url": "https://finance-backend-4yilcu24gq-an.a.run.app"},
+   "capabilities": {"streaming": false, "pushNotifications": false, "stateTransitionHistory": true},
+   "authentication": {
+    "schemes": ["SPIFFE-WIF", "Bearer"],
+    "spiffe_id": "spiffe://finance-agent.internal/sa/reconciliation-agent",
+    "allowed_mcp_tools": ["calculate_balance_reconciliation", "get_recent_transactions", "get_ingested_files"],
+    "approval_required_tools": []
+   },
+   "defaultInputModes": ["application/json", "text/plain"],
+   "defaultOutputModes": ["application/json", "text/plain"],
+   "skills": [
+    {
+     "id": "CHECK_SELF_TRANSFER",
+     "name": "Self-Transfer & Own-Account Settlement Detector",
+     "description": "Identifies transfers between the user's own bank accounts or credit-card bill settlements so they are not double-counted as spending.",
+     "tags": ["reconciliation", "self-transfer", "dedupe"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "VERIFY_MATH_INTEGRITY",
+     "name": "Statement Balance Math Verification",
+     "description": "Verifies that opening_balance + total_credits - total_debits == closing_balance via the deterministic MCP calculator.",
+     "tags": ["reconciliation", "math", "audit"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "RECONCILE_BATCH",
+     "name": "Cross-Source Batch Reconciliation",
+     "description": "Deduplicates rows within a batch, merges rows matching existing Gmail alerts by 12-digit reference ID, marks self-transfers, and checks balance math.",
+     "tags": ["reconciliation", "alerts", "batch"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    }
+   ],
+   "supported_intents": ["CHECK_SELF_TRANSFER", "VERIFY_MATH_INTEGRITY", "RECONCILE_BATCH"],
+   "registered_at": "2026-11-02T09:08:56.825401+00:00",
+   "invocations": 0
+  },
+  {
+   "agent_id": "clarification-agent",
+   "name": "Clarification & Memory Specialist Agent",
+   "description": "Applies learned user payee rules, asks via voice/text when confidence < 85%, and persists new learned rules upon human confirmation.",
+   "version": "3.0.0",
+   "protocolVersion": "0.3.0",
+   "preferredTransport": "HTTP+JSON",
+   "url": "/a2a/agents/clarification-agent/tasks/send",
+   "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/clarification-agent/tasks/send",
+   "well_known_url": "/a2a/agents/clarification-agent/.well-known/agent.json",
+   "gcp_service_id": "pfa-clarification-agent",
+   "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-clarification-agent",
+   "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-clarification-agent",
+   "gcp_registry_resource": "",
+   "status": "ONLINE",
+   "provider": {"organization": "Personal Finance Agentic AI CFO", "url": "https://finance-backend-4yilcu24gq-an.a.run.app"},
+   "capabilities": {"streaming": false, "pushNotifications": false, "stateTransitionHistory": true},
+   "authentication": {
+    "schemes": ["SPIFFE-WIF", "Bearer"],
+    "spiffe_id": "spiffe://finance-agent.internal/sa/clarification-agent",
+    "allowed_mcp_tools": ["get_learned_rules", "save_learned_rule", "resolve_and_update_transactions", "get_recent_transactions"],
+    "approval_required_tools": ["save_learned_rule", "resolve_and_update_transactions"]
+   },
+   "defaultInputModes": ["application/json", "text/plain"],
+   "defaultOutputModes": ["application/json", "text/plain"],
+   "skills": [
+    {
+     "id": "RESOLVE_AMBIGUOUS_BATCH",
+     "name": "Learned-Rule Matching & HITL Clarification Gating",
+     "description": "Auto-categorizes transactions matching learned user rules (e.g. 'UPI/RAHUL' -> 'Rent') and generates spoken/text clarification prompts for remaining <85% confidence rows.",
+     "tags": ["clarification", "memory", "hitl", "voice"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "LEARN_USER_RULE",
+     "name": "Persistent Payee Rule Learner",
+     "description": "Extracts a reusable payee pattern from a transaction narration and saves the user's confirmed category via MCP (requires human_approved=True).",
+     "tags": ["clarification", "learning", "hitl-gate"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    }
+   ],
+   "supported_intents": ["RESOLVE_AMBIGUOUS_BATCH", "LEARN_USER_RULE"],
+   "registered_at": "2026-11-02T09:08:56.825453+00:00",
+   "invocations": 0
+  },
+  {
+   "agent_id": "advisor-agent",
+   "name": "Strategic CFO Advisor Agent",
+   "description": "Answers financial questions over read-only MCP tools, forecasts savings capacity, and raises proactive EMI/rent cash-shortfall alerts before due dates.",
+   "version": "3.0.0",
+   "protocolVersion": "0.3.0",
+   "preferredTransport": "HTTP+JSON",
+   "url": "/a2a/agents/advisor-agent/tasks/send",
+   "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/advisor-agent/tasks/send",
+   "well_known_url": "/a2a/agents/advisor-agent/.well-known/agent.json",
+   "gcp_service_id": "pfa-advisor-agent",
+   "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-advisor-agent",
+   "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-advisor-agent",
+   "gcp_registry_resource": "",
+   "status": "ONLINE",
+   "provider": {"organization": "Personal Finance Agentic AI CFO", "url": "https://finance-backend-4yilcu24gq-an.a.run.app"},
+   "capabilities": {"streaming": false, "pushNotifications": false, "stateTransitionHistory": true},
+   "authentication": {
+    "schemes": ["SPIFFE-WIF", "Bearer"],
+    "spiffe_id": "spiffe://finance-agent.internal/sa/advisor-agent",
+    "allowed_mcp_tools": ["get_financial_summary", "get_recent_transactions", "check_budget_health", "project_savings_capacity", "calculate_balance_reconciliation", "calculate_emi_and_shortfall", "get_learned_rules", "list_statements", "get_bank_sync_status"],
+    "approval_required_tools": []
+   },
+   "defaultInputModes": ["application/json", "text/plain"],
+   "defaultOutputModes": ["application/json", "text/plain"],
+   "skills": [
+    {
+     "id": "CHECK_PROACTIVE_ALERTS",
+     "name": "Proactive EMI/Rent Cash-Shortfall Alerting",
+     "description": "Checks upcoming recurring commitments against liquid balance via MCP calculators to warn before a shortfall or bounce.",
+     "tags": ["advisor", "shortfall", "emi", "alerts"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "FORECAST_SAVINGS",
+     "name": "Savings & SIP Capacity Forecaster",
+     "description": "Projects monthly surplus savings capacity and recommended SIP allocation.",
+     "tags": ["advisor", "forecast", "sip"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    },
+    {
+     "id": "ASK_CFO",
+     "name": "Conversational Fiduciary Q&A",
+     "description": "Answers natural-language financial planning questions grounded in live MCP ledger snapshots with prefix caching.",
+     "tags": ["advisor", "chat", "fiduciary"],
+     "inputModes": ["application/json"],
+     "outputModes": ["application/json"]
+    }
+   ],
+   "supported_intents": ["CHECK_PROACTIVE_ALERTS", "FORECAST_SAVINGS", "ASK_CFO"],
+   "registered_at": "2026-11-02T09:08:56.825512+00:00",
+   "invocations": 0
+  }
+ ]
+}

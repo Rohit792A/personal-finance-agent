@@ -1,0 +1,20 @@
+{
+ "is_error": false,
+ "data": {
+  "available_balance": 806645.26,
+  "upcoming_commitments": [
+   {"name": "ACH D- BAJAJ FINANCE LTD-P400PL07385516", "category": "Debt", "amount": 6850.0, "frequency": 17},
+   {"name": "ACH D- INDIAN CLEARING CORP-ICCL0000ZRD4471209", "category": "SIP", "amount": 5000.0, "frequency": 17},
+   {"name": "POS 4521XXXXXXXX1234 ACT FIBERNET BANGALORE", "category": "Utilities", "amount": 1179.0, "frequency": 17},
+   {"name": "POS 4521XXXXXXXX1234 AIRTEL POSTPAID BLR", "category": "Utilities", "amount": 706.82, "frequency": 17}
+  ],
+  "total_upcoming_due": 13735.82,
+  "projected_balance_after_bills": 792909.44,
+  "shortfall_amount": 0.0,
+  "will_fall_short": false,
+  "alerts": []
+ },
+ "mcp_content": [
+  {"type": "text", "text": "{\"available_balance\": 806645.26, \"upcoming_commitments\": [{\"name\": \"ACH D- BAJAJ FINANCE LTD-P400PL07385516\", \"category\": \"Debt\", \"amount\": 6850.0, \"frequency\": 17}, {\"name\": \"ACH D- INDIAN CLEARING CORP-ICCL0000ZRD4471209\", \"category\": \"SIP\", \"amount\": 5000.0, \"frequency\": 17}, {\"name\": \"POS 4521XXXXXXXX1234 ACT FIBERNET BANGALORE\", \"category\": \"Utilities\", \"amount\": 1179.0, \"frequency\": 17}, {\"name\": \"POS 4521XXXXXXXX1234 AIRTEL POSTPAID BLR\", \"category\": \"Utilities\", \"amount\": 706.82, \"frequency\": 17}], \"total_upcoming_due\": 13735.82, \"projected_balance_after_bills\": 792909.44, \"shortfall_amount\": 0.0, \"will_fall_short\": false, \"alerts\": []}", "annotations": null, "meta": null}
+ ]
+}

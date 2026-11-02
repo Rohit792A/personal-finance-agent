@@ -1,0 +1,7 @@
+{
+ "is_error": false,
+ "data": {"configured": false, "auto_sync_enabled": false},
+ "mcp_content": [
+  {"type": "text", "text": "{\"configured\": false, \"auto_sync_enabled\": false}", "annotations": null, "meta": null}
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "email": "demo@example.com",
+ "uid": "recorded-demo-user",
+ "provider": "password",
+ "environment": "demo",
+ "features": {"gmail_sync": false, "uploads": true, "ai": true},
+ "ai_limits": null,
+ "data_resets_daily": true
+}

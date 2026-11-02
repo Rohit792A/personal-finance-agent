@@ -1,0 +1,16 @@
+{
+ "task_id": "f247de4a",
+ "sender_agent": "orchestrator",
+ "target_agent": "ingestion-agent",
+ "intent": "SCREEN_AND_SANITIZE_TRANSACTIONS",
+ "status": "COMPLETED",
+ "agent_card": {"agent_id": "ingestion-agent", "name": "Ingestion Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/ingestion-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/ingestion-agent/tasks/send", "well_known_url": "/a2a/agents/ingestion-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-ingestion-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-ingestion-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/ingestion-agent", "skill_id": "SCREEN_AND_SANITIZE_TRANSACTIONS", "skill_name": "Model Armor & Cloud DLP Batch Screening"},
+ "result": {
+  "transactions": [
+   {"date": "2026-10-25", "amount": 450, "description": "UPI/SWIGGY/987654321098/Lunch PAN [PAN_1]", "category": "Food", "transaction_type": "EXPENSE"}
+  ],
+  "total_rows": 1,
+  "model_armor": {"screened": 1, "flagged": 0},
+  "dlp_redacted_rows": 1
+ }
+}

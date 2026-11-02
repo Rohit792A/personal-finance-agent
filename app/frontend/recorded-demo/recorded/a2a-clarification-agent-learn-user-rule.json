@@ -1,0 +1,9 @@
+{
+ "task_id": "4e62fe5d",
+ "sender_agent": "orchestrator",
+ "target_agent": "clarification-agent",
+ "intent": "LEARN_USER_RULE",
+ "status": "FAILED",
+ "agent_card": {"agent_id": "clarification-agent", "name": "Clarification & Memory Specialist Agent", "version": "3.0.0", "protocolVersion": "0.3.0", "endpoint_url": "/a2a/agents/clarification-agent/tasks/send", "cloud_run_url": "https://finance-backend-4yilcu24gq-an.a.run.app/a2a/agents/clarification-agent/tasks/send", "well_known_url": "/a2a/agents/clarification-agent/.well-known/agent.json", "gcp_service_name": "projects/personal-finance-agent-507010/locations/global/services/pfa-clarification-agent", "gcp_agent_urn": "urn:agent:projects-328452160072:projects:328452160072:locations:global:agentregistry:services:pfa-clarification-agent", "spiffe_id": "spiffe://finance-agent.internal/sa/clarification-agent", "skill_id": "LEARN_USER_RULE", "skill_name": "Persistent Payee Rule Learner"},
+ "error": "[AgentGateway PEP] Human approval required: agent 'clarification-agent' cannot execute mutating tool 'save_learned_rule' without user confirmation (human_approved=True)."
+}

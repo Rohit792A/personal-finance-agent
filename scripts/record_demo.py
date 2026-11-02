@@ -678,6 +678,12 @@ def record_copilot(rec: Recorder) -> None:
     file_name = f"copilot-{len(rec.copilot) + 1:02d}.json"
     rec.save(file_name, body)
     rec.copilot.append({"message": COPILOT_AUDIT_PROMPT, "file": file_name, "status": status})
+    report = body.get("master_report") if isinstance(body, dict) else None
+    if isinstance(report, dict) and report.get("applied_result"):
+        # The resolver run with auto-apply on the whole ledger: what the Agent Registry screen's
+        # "Auto-Resolve & Update All" (POST /agents/master-resolve, auto_apply=true) answers.
+        rec.save("agents-master-resolve-applied.json", report)
+        rec.datasets["master_resolve_applied"] = "agents-master-resolve-applied.json"
 
 
 def record_upload(rec: Recorder) -> None:
@@ -833,6 +839,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if out_dir.exists():
         shutil.rmtree(out_dir)
+    staging.chmod(0o755)
     staging.rename(out_dir)
     files = sorted(out_dir.glob("*.json"))
     size_kb = sum(f.stat().st_size for f in files) / 1024

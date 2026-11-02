@@ -1,0 +1,7 @@
+{
+ "status": "success",
+ "message": "Successfully processed 'Kotak_Bank_2026-04_statement.pdf'",
+ "new_transactions": 12,
+ "total_transactions": 1424,
+ "notifications": ["Found 12 transactions in the PDF (2 pages).", "File 'Kotak_Bank_2026-04_statement.pdf' successfully uploaded and verified.", "AI document parser completed extraction (12 new entries recorded).", "Financial ledger and category summaries updated."]
+}
