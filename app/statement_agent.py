@@ -47,7 +47,7 @@ from vertexai.generative_models import GenerativeModel, Part
 
 from config import PROJECT_ID, LOCATION, MODEL_NAME
 from date_guard import fix_years, prompt_context
-from gemini import reply_text
+from gemini import generate_with_timeout, reply_text
 from models import StatementData
 from exceptions import ExtractionError, PasswordRequiredError
 from telemetry.tracer import model_call_span
@@ -92,11 +92,20 @@ _TRANSIENT_ERRORS = tuple(
 # A text line that starts a transaction row: an optional serial number (Kotak's "#" column),
 # then a date such as 01-04-2026, 01/04/26, 01-Apr-26 or 01 Apr 2026, then more text. Used only
 # to notice a reply that left rows out; it never decides what is imported.
-_ROW_START = re.compile(
-    r"^\s*(?:\d{1,5}\s+)?"
+_DATE_TOKEN = (
     r"(?:\d{1,2}[-/.](?:\d{1,2}|[A-Za-z]{3,9})[-/.](?:\d{4}|\d{2})"
     r"|\d{1,2}\s+[A-Za-z]{3,9},?\s+(?:\d{4}|\d{2}))"
-    r"\s+\S"
+)
+_ROW_START = re.compile(rf"^\s*(?:\d{{1,5}}\s+)?{_DATE_TOKEN}\s+(.*\S)\s*$")
+# Wrapped Value-Date continuation line (e.g. "01/07/25 16007.82 709173.07", DEC-072): a long
+# reference wraps before the Value Dt cell, leaving a date followed only by decimal amounts/balances.
+_VALUE_DATE_AMOUNTS_ONLY = re.compile(
+    r"^[\s\-–—]*(?:(?:INR|Rs\.?|₹)?\s*[\d,]+\.\d{2}(?:\s*\(?(?:Dr|Cr)\.?\)?)?[\s\-–—]*)+$",
+    re.IGNORECASE,
+)
+_BALANCE_SUMMARY_LINE = re.compile(
+    r"^(?:opening|closing|brought\s+forward|carried\s+forward|b/f|c/f)\s+balance\b",
+    re.IGNORECASE,
 )
 
 STATEMENT_PROMPT = """
@@ -118,7 +127,16 @@ STATEMENT_PROMPT = """
 
 def count_row_lines(text: str) -> int:
     """How many lines of a page's text look like the start of a transaction row."""
-    return sum(1 for line in (text or "").splitlines() if _ROW_START.match(line))
+    count = 0
+    for line in (text or "").splitlines():
+        match = _ROW_START.match(line)
+        if not match:
+            continue
+        rest = match.group(1)
+        if _VALUE_DATE_AMOUNTS_ONLY.match(rest) or _BALANCE_SUMMARY_LINE.match(rest):
+            continue
+        count += 1
+    return count
 
 
 def allowed_gap(expected: int) -> int:
@@ -406,7 +424,8 @@ class StatementExtractor:
                 # One span per Gemini call, with its token usage (DEC-063).
                 with model_call_span("vertex_ai.statement_reader", MODEL_NAME, "statement_reader",
                                      {"pages": label, "attempt": attempt}) as call:
-                    response = self.model.generate_content(
+                    response = generate_with_timeout(
+                        self.model,
                         [document_part, prompt],
                         generation_config={"response_mime_type": "application/json",
                                            "max_output_tokens": MAX_OUTPUT_TOKENS},

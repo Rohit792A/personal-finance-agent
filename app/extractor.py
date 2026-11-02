@@ -17,7 +17,7 @@ from pydantic import ValidationError
 
 from config import PROJECT_ID, LOCATION, MODEL_NAME
 from date_guard import fix_years, prompt_context
-from gemini import reply_text
+from gemini import generate_with_timeout, reply_text
 from models import ReceiptData
 from exceptions import ExtractionError
 from telemetry.tracer import model_call_span
@@ -68,9 +68,10 @@ class ReceiptExtractor:
 
             # One span per Gemini call, with its token usage (DEC-063).
             with model_call_span("vertex_ai.receipt_reader", MODEL_NAME, "receipt_reader") as call:
-                response = self.model.generate_content(
+                response = generate_with_timeout(
+                    self.model,
                     [image_part, prompt],
-                    generation_config={"response_mime_type": "application/json"}
+                    generation_config={"response_mime_type": "application/json"},
                 )
                 call.record(response)
 

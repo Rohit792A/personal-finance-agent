@@ -22,8 +22,9 @@ from vertexai.generative_models import GenerativeModel
 from config import LOCATION, MODEL_NAME, PROJECT_ID
 from database import DatabaseManager
 from date_guard import fix_years, prompt_context
-from gemini import reply_text
+from gemini import generate_with_timeout, reply_text
 from models import StatementData
+from pydantic import ValidationError
 from voice_agent import VoiceAgent
 from exceptions import ExtractionError
 from telemetry.tracer import model_call_span
@@ -134,16 +135,32 @@ class AISpreadsheetImporter:
         """
 
         logger.info(f" Sending sheet to Gemini ({MODEL_NAME}) for table-aware parsing...")
-        # One span per Gemini call, with its token usage (DEC-063).
-        with model_call_span("vertex_ai.spreadsheet_importer", MODEL_NAME, "spreadsheet_importer") as call:
-            response = self.model.generate_content(
-                prompt,
-                generation_config={"response_mime_type": "application/json"}
-            )
-            call.record(response)
+        try:
+            # One span per Gemini call, with its token usage (DEC-063).
+            with model_call_span("vertex_ai.spreadsheet_importer", MODEL_NAME, "spreadsheet_importer") as call:
+                response = generate_with_timeout(
+                    self.model,
+                    prompt,
+                    generation_config={"response_mime_type": "application/json"},
+                )
+                call.record(response)
 
-        raw_json = json.loads(reply_text(response))
-        validated_data = StatementData(**raw_json)
+            raw_json = json.loads(reply_text(response))
+            rows = raw_json.get("transactions") if isinstance(raw_json, dict) else raw_json
+            if not isinstance(rows, list):
+                raise ExtractionError("Extracted spreadsheet data did not match required schema")
+            validated_data = StatementData(transactions=rows)
+        except ExtractionError:
+            raise
+        except json.JSONDecodeError as e:
+            logger.error(f"Gemini returned invalid JSON for spreadsheet: {e}")
+            raise ExtractionError("Invalid JSON from LLM") from e
+        except ValidationError as e:
+            logger.error(f"Spreadsheet data validation failed: {e}")
+            raise ExtractionError("Extracted spreadsheet data did not match required schema") from e
+        except Exception as e:
+            logger.error(f"Spreadsheet extraction failed: {e}")
+            raise ExtractionError("Spreadsheet extraction failed") from e
 
         # A year the model filled in on its own is put back in the file's period (DEC-035).
         date_notes = fix_years(validated_data.transactions, excel_file_path)

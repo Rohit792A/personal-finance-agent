@@ -17,11 +17,22 @@ class ReceiptData(BaseModel):
     transaction_date: date = Field(..., alias="date")
     amount: float
     description: str
-    category: str
+    category: str = "Other"
     confidence: float = 100.0
     is_self_transfer : bool = False  #Explicit flag for self_tranfers
     requires_human_review : bool = False  # Flag for frontend UI
     transaction_type: str = Field(default="EXPENSE", alias="type")
+
+    @field_validator("category", mode="before")
+    @classmethod
+    def normalize_category(cls, value):
+        """Defaults null or blank categories (e.g. bank XLSX exports without a category column) to 'Other'."""
+        if value is None:
+            return "Other"
+        if isinstance(value, str):
+            cleaned = value.strip()
+            return cleaned if cleaned else "Other"
+        raise ValueError("Category must be a string or null")
 
     @field_validator("confidence", mode="before")
     @classmethod
