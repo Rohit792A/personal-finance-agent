@@ -55,7 +55,7 @@
 **Agents and governance**
 - **A four-agent workflow**: ingestion, reconciliation, clarification and advisor agents, behind an orchestrator. They talk over an Agent2Agent (A2A) bus with published Agent Cards and are mirrored to Google Cloud Agent Registry.
 - **A Ledger MCP server** (official `mcp` SDK, JSON-RPC 2.0) that exposes the ledger as tools.
-- **Guardrails**: per-agent identities with least-privilege tool allowlists, human approval for writes, an audit log, prompt-injection screening (Model Armor), PII masking before prompts (DLP), OpenTelemetry-style traces and an autorater against a golden dataset.
+- **Guardrails**: per-agent identities with least-privilege tool allowlists (HMAC-signed workload tokens, a local stand-in for SPIFFE), human approval for writes, an audit log, prompt-injection screening (local regex; plus the Google Cloud Model Armor API on prompts, document text and replies when configured), PII masking before prompts (local regex with reversible tokens; plus Sensitive Data Protection when enabled), OpenTelemetry traces (optionally exported to Cloud Trace) and an autorater against a golden dataset.
 
 **Two environments from one codebase**
 - **Personal**: Google sign-in, owner only.
@@ -95,12 +95,13 @@ Inside the backend, uploads flow through `main.process_file` (unlock, hash check
 | Layer | Technology |
 | --- | --- |
 | Backend | Python 3.12, FastAPI, Uvicorn, SQLAlchemy 2 + `pg8000`, Pydantic 2 |
-| AI | Gemini 3.5 Flash and Flash-Lite on Vertex AI (`google-genai`, global endpoint), Cloud Speech-to-Text, Text-to-Speech |
+| AI | Gemini 3.5 Flash and Flash-Lite on Vertex AI (`vertexai` SDK from `google-cloud-aiplatform`, global endpoint), Cloud Speech-to-Text, Text-to-Speech |
 | Documents | `pypdf` (page splitting, decryption), pandas + openpyxl/xlrd (spreadsheets), Pillow (images) |
 | Agents | Official `mcp` SDK (MCP server and JSON-RPC), A2A Agent Cards, Google Cloud Agent Registry |
 | Frontend | React 19, TypeScript 5.9, Vite 5, Tailwind CSS 3, React Router 7, Firebase Auth, DOMPurify + marked |
 | Data | Supabase Postgres (row-level security on every table), Cloud Storage for statement PDFs |
 | Platform | Cloud Run (two services, one image), Cloud Build, Artifact Registry, Secret Manager, Cloud Scheduler, Firebase Hosting |
+| Governance (opt-in) | Model Armor API, Sensitive Data Protection (Cloud DLP API), Cloud Trace via OpenTelemetry; each behind a flag (see [Configuration](#configuration)) |
 | Quality | pytest, ESLint (`typescript-eslint` strict, type-checked), Playwright + axe-core, GitHub Actions |
 
 ---
@@ -192,6 +193,12 @@ The backend reads environment variables, plus an optional git-ignored `.env` in 
 | `STATEMENT_BUCKET` | (local disk) | Private Cloud Storage bucket for statement PDFs |
 | `STATEMENT_PAGES_PER_CALL` / `STATEMENT_PARALLEL_CALLS` | `2` / `6` | Statement reading chunk size and parallelism |
 | `OWNER_PROFILE_PATH` | `app/private/owner_profile.json` | Owner-only data (see below) |
+| `MODEL_ARMOR_TEMPLATE` | (off) | Full Model Armor template name, `projects/{p}/locations/{l}/templates/{id}`. Turns on the Model Armor API for chat prompts, document text and the advisor's replies, after the regex screen (the fallback if the API fails). `MODEL_ARMOR_TIMEOUT_SECONDS` (default 5) bounds each call |
+| `SDP_ENABLED` | `0` | `1` adds Sensitive Data Protection (Cloud DLP API) findings to the regex PII redaction; 12-digit reference numbers in statement rows are kept. Tuning: `SDP_INFO_TYPES`, `SDP_MIN_LIKELIHOOD` (`LIKELY`), `SDP_LOCATION` (`global`), `SDP_TIMEOUT_SECONDS` (10) |
+| `ENABLE_CLOUD_TRACE` | `0` | `1` also exports the OpenTelemetry spans (one trace per chat, insights request or upload) to Cloud Trace |
+| `ENABLE_VERTEX_CONTEXT_CACHE` | `0` | `1` puts the advisor's static persona in an explicit Vertex AI cache per model. gemini-3.5-flash only caches 4,096+ tokens, so with today's ~170-token persona creation fails once and requests go out as usual. Token usage (including implicit-cache hits) is recorded regardless |
+
+The Google APIs above stay off until their flags are set, and the app behaves exactly as without them. Each service account then needs the matching role: `roles/modelarmor.user`, `roles/dlp.user`, `roles/cloudtrace.agent`.
 
 **Secrets** live in Google Secret Manager and are never committed: `pfa-db-password-personal`, `pfa-db-password-demo`, `pfa-gmail-app-password`, `pfa-statement-passwords`. Store one with `scripts/set_secret.sh <name>`. The script uses a hidden prompt, so the value never appears in shell history.
 
@@ -244,7 +251,7 @@ Each deploy records its image tag and a one-line rollback command in [decision.m
 - **No credentials in code.** Database, Gmail and statement passwords come from Secret Manager. Cloud Run mounts the database password as a secret.
 - **The database is locked down.** Every table has row-level security, Supabase's anon and authenticated roles get no access, and views run as the caller (`security_invoker`).
 - **Uploads are constrained**: a type allowlist, a 25 MB cap, a random folder per upload and sanitised file names. PDF passwords stay in memory only.
-- **AI guardrails**: prompt-injection screening, PII masking before prompts, least-privilege agent tools and human approval for writes.
+- **AI guardrails**: prompt-injection screening (local regex, plus the Model Armor API when `MODEL_ARMOR_TEMPLATE` is set), PII masking before prompts (local regex, plus Sensitive Data Protection when `SDP_ENABLED=1`), least-privilege agent tools and human approval for writes.
 - **Personal data stays out of git.** Statements (`data/`), uploads, screenshots of real transactions and the owner profile (`app/private/`) are all git-ignored. The public history starts from a scrubbed snapshot.
 
 Found a vulnerability? Please follow [SECURITY.md](SECURITY.md) and don't open a public issue.

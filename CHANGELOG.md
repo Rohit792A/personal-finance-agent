@@ -4,6 +4,19 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+### Added
+- Opt-in Google Cloud governance (DEC-063), each off by default:
+  - `MODEL_ARMOR_TEMPLATE`: the Model Armor API screens chat prompts, statement and receipt text, and the advisor's replies, after the local regex screen.
+  - `SDP_ENABLED=1`: Sensitive Data Protection findings are added to the local PII tokens, and statement reference numbers are kept.
+  - `ENABLE_CLOUD_TRACE=1`: the OpenTelemetry spans are exported to Cloud Trace.
+  - If one of these APIs fails, the local layer's result is used.
+- Every Gemini reply's token usage, including tokens served from a cache, is recorded on its trace span and in `PrefixContextCacheManager.get_stats()`.
+
+### Changed
+- `ENABLE_VERTEX_CONTEXT_CACHE=1` now creates one explicit Vertex AI cache per model and actually passes it to the advisor's Gemini calls. Today's persona is below gemini-3.5-flash's 4,096-token minimum, so the advisor falls back to normal requests.
+- Each chat, insights request and upload is one trace, with the Model Armor, DLP, MCP tool and Gemini calls as child spans.
+- The in-memory span store is bounded.
+
 ## 2026-11-02: First public release (DEC-062)
 
 ### Added
