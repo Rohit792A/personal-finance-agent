@@ -26,6 +26,7 @@ from gemini import reply_text
 from models import StatementData
 from voice_agent import VoiceAgent
 from exceptions import ExtractionError
+from telemetry.tracer import model_call_span
 
 logger = logging.getLogger(__name__)
 
@@ -133,10 +134,13 @@ class AISpreadsheetImporter:
         """
 
         logger.info(f" Sending sheet to Gemini ({MODEL_NAME}) for table-aware parsing...")
-        response = self.model.generate_content(
-            prompt,
-            generation_config={"response_mime_type": "application/json"}
-        )
+        # One span per Gemini call, with its token usage (DEC-063).
+        with model_call_span("vertex_ai.spreadsheet_importer", MODEL_NAME, "spreadsheet_importer") as call:
+            response = self.model.generate_content(
+                prompt,
+                generation_config={"response_mime_type": "application/json"}
+            )
+            call.record(response)
 
         raw_json = json.loads(reply_text(response))
         validated_data = StatementData(**raw_json)

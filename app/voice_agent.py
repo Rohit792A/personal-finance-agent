@@ -22,6 +22,7 @@ from typing import Optional
 
 from config import PROJECT_ID, LOCATION, MODEL_LITE
 from gemini import reply_text
+from telemetry.tracer import model_call_span
 
 logger = logging.getLogger(__name__)
 
@@ -299,7 +300,9 @@ class VoiceAgent:
                     "Transcribe the spoken audio reply verbatim. "
                     "Return ONLY the transcribed text without quotes or explanations."
                 )
-                response = self.model.generate_content([audio_part, prompt])
+                with model_call_span("vertex_ai.voice_transcription", MODEL_LITE, "voice_transcription") as call:
+                    response = self.model.generate_content([audio_part, prompt])
+                    call.record(response)
                 transcript = reply_text(response).strip()
                 logger.info(f"Gemini Multimodal transcribed text: '{transcript}'")
                 return transcript
@@ -359,7 +362,9 @@ class VoiceAgent:
                 - If the reply refers to vacation, hotel, flight, map to 'Travel'.
                 - If unsure, return 'Other'.
                 """
-                response = self.model.generate_content(prompt)
+                with model_call_span("vertex_ai.voice_category", MODEL_LITE, "voice_category") as call:
+                    response = self.model.generate_content(prompt)
+                    call.record(response)
                 raw_category = reply_text(response).strip().strip("'\"").strip()
 
                 for valid in VALID_CATEGORIES:
