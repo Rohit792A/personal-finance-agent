@@ -4,8 +4,7 @@ The frontend is a **React 19 + TypeScript** single-page app built with **Vite 5*
 **Firebase Authentication** for sign-in and **react-router 7** for URL state. It is hosted on Firebase Hosting.
 
 Seven of the eight screens are still the original vanilla-JS components (`src/components/*.js`). Since Phase 1 they
-run inside the React shell with small integration hooks, and each moves to React in Phase 3 (see
-`docs/OVERHAUL_PLAN.md`). The Agent Registry screen (`/agents`, DEC-052) is React.
+run inside the React shell with small integration hooks. The Agent Registry screen (`/agents`) is React.
 
 ---
 

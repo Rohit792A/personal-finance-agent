@@ -55,9 +55,19 @@ nohup.out
 app/private/
 
 # ---------------------------------------------------------------------------
-# Personal notes kept on disk but out of the public repository (DEC-062).
+# Personal notes, internal workspace logs, legacy files, and one-off migration
+# scripts kept on local disk but out of the public repository (DEC-062, DEC-068).
 # ---------------------------------------------------------------------------
+decision.md
+flow.md
 docs/INTERVIEW_PREPARATION_GUIDE.md
 docs/RESUME_PROJECT_DOCUMENTATION.md
-# Its placeholder rows reused real figures.
-docs/assets/ux-audit/mockup_transactions_light.jpg
+docs/GCP_ARCHITECTURE_PITCH_GUIDE.md
+docs/OVERHAUL_PLAN.md
+docs/PRODUCTION_HANDOVER_AND_SIGN_OFF.md
+docs/UX_ENTERPRISE_AUDIT.md
+docs/assets/
+app/frontend.py
+app/config.toml
+scripts/phase0_db_migration.py
+scripts/phase1_move_statements_to_gcs.py

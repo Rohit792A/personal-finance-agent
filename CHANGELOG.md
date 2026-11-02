@@ -1,10 +1,12 @@
 # Changelog
 
-Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The app deploys continuously from `main` rather than in numbered releases, so entries are grouped by milestone and date. `DEC-NNN` numbers point to the full write-up in [decision.md](decision.md).
+Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The app deploys continuously from `main` rather than in numbered releases, so entries are grouped by milestone and date.
 
 ## [Unreleased]
 
 ### Added
+- Senior-developer documentation in `docs/API.md` (complete HTTP, MCP JSON-RPC, and A2A route & schema reference) and `docs/DEVELOPMENT.md` (entry points, module maps, local Postgres workflow, test tiers, extension recipes, and troubleshooting).
+- Static recorded demo mode (`npm run build:recorded`, `scripts/record_demo.py`, `.github/workflows/pages.yml`) for zero-backend replay on GitHub Pages.
 - Opt-in Google Cloud governance (DEC-063), off by default locally and enabled on both deployed Cloud Run backends in DEC-065 (`us-central1` Model Armor templates `pfa-guard-personal` and `pfa-guard-demo`):
   - `MODEL_ARMOR_TEMPLATE`: the Model Armor API screens chat prompts, statement and receipt text, and the advisor's replies, after the local regex screen.
   - `SDP_ENABLED=1`: Sensitive Data Protection findings are added to the local PII tokens, and statement reference numbers are kept.

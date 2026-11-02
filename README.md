@@ -11,7 +11,7 @@
 
 **Live app:** [personal-finance-agent-507010.web.app](https://personal-finance-agent-507010.web.app) (sign-in required). A demo account with synthetic data is available on request.
 
-**Recorded demo:** [OWNER.github.io/personal-finance-agent](https://OWNER.github.io/personal-finance-agent/) (placeholder until the first GitHub Pages deployment). No sign-in and no backend: it replays responses recorded from the real backend and Gemini. See [Try the recorded demo](#try-the-recorded-demo).
+**Recorded demo:** [rohit792a.github.io/personal-finance-agent](https://rohit792a.github.io/personal-finance-agent/) (available once GitHub Pages is enabled in repository settings). No sign-in and no backend: it replays responses recorded from the real backend and Gemini. See [Try the recorded demo](#try-the-recorded-demo).
 
 > [!NOTE]
 > This is a personal project that runs in production for its author. The code is published so you can read and evaluate it; it is **not open source** (see [License](#license)). Real financial data never enters this repository: statements, uploads and owner-specific values are git-ignored (see [Privacy](#security-and-privacy)).
@@ -90,7 +90,7 @@ flowchart LR
     P -.->|"sync Agent Cards"| AR["Agent Registry"]
 ```
 
-Inside the backend, uploads flow through `main.process_file` (hash check, unlock, extraction, date guard, narration screening, reconciliation, batch save). The agents in `mcp/` make their ledger writes through the MCP server's tools, where the allowlist and approval checks apply; some reads (the master resolver's ledger scan, learned rules, reconciled balances) query the database directly. [docs/APPLICATION_ARCHITECTURE.md](docs/APPLICATION_ARCHITECTURE.md) has the detailed diagrams. [flow.md](flow.md) maps every file-to-file connection.
+Inside the backend, [`app/api.py`](app/api.py) is the FastAPI server entry point (`uvicorn api:app`), while [`app/main.py`](app/main.py) (`process_file`) is the document import pipeline (hash check, unlock, extraction, date guard, narration screening, reconciliation, batch save). The agents in `mcp/` make their ledger writes through the MCP server's tools, where the allowlist and approval checks apply; some reads (the master resolver's ledger scan, learned rules, reconciled balances) query the database directly. [docs/APPLICATION_ARCHITECTURE.md](docs/APPLICATION_ARCHITECTURE.md) has the detailed diagrams, and [docs/API.md](docs/API.md) documents every HTTP endpoint.
 
 ---
 
@@ -130,15 +130,12 @@ Inside the backend, uploads flow through `main.process_file` (hash check, unlock
 │   ├── security/               # Agent identities, Model Armor screening, DLP masking
 │   ├── mcp/                    # Ledger MCP server, A2A bus, orchestrator, Agent Registry
 │   ├── telemetry/, eval/       # Traces; autorater and golden dataset
-│   ├── frontend.py             # Legacy Streamlit dashboard (not used by the deployed app)
 │   └── frontend/               # React + TypeScript SPA (Vite), Firebase Hosting config, Playwright tests
 │       ├── src/recorded/       # Recorded demo mode: replays recorded responses, no sign-in or backend
 │       └── recorded-demo/      # The recorded responses (written by scripts/record_demo.py)
 ├── tests/                      # pytest suite (unit, Postgres-backed, opt-in live suite)
-├── scripts/                    # Infra, deploy, secrets, demo reset and recording, dedupe and migration tools
-├── docs/                       # Architecture, audit, overhaul plan, handover, examples
-├── decision.md                 # Architecture decision log (DEC-001 …)
-├── flow.md                     # File-to-file code flow diagrams
+├── scripts/                    # Infra, deploy, secrets, demo reset and recording, and dedupe tools
+├── docs/                       # Architecture, API reference, developer guide, and examples
 ├── Dockerfile                  # Backend image (non-root, one image for both environments)
 ├── requirements.txt            # Pinned runtime dependencies (what the image installs)
 ├── requirements-dev.txt        # + test tools (pytest)
@@ -170,7 +167,7 @@ cp .env.example .env            # optional: local overrides, see Configuration
 ./start_services.sh stop
 ```
 
-`start_services.sh` runs `uvicorn api:app` from `app/`. Secrets are read from Secret Manager with your gcloud login. To skip Secret Manager, set `DB_PASS` (and `DATABASE_URL` for a local Postgres) in `.env`. Every route except `/health` needs a Firebase sign-in, so use the web app or send a real ID token.
+`start_services.sh` runs `uvicorn api:app` from `app/` ([`app/api.py`](app/api.py) is the HTTP server entry point; [`app/main.py`](app/main.py) is the document import pipeline called on uploads and statement syncs). Secrets are read from Secret Manager with your gcloud login. To skip Secret Manager, set `DB_PASS` (and `DATABASE_URL` for a local Postgres) in `.env`. Every route except `/health` needs a Firebase sign-in, so use the web app or send a real ID token. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for local Postgres setup and development workflows.
 
 ### Frontend
 
@@ -187,7 +184,7 @@ Or start the demo backend and the dev server together with `./start_services.sh 
 
 ## Try the recorded demo
 
-**[Open the recorded demo](https://OWNER.github.io/personal-finance-agent/)** (placeholder: replace `OWNER` once GitHub Pages has deployed it). No sign-in needed.
+**[Open the recorded demo](https://rohit792a.github.io/personal-finance-agent/)** (live once GitHub Pages is enabled in repository settings). No sign-in needed.
 
 The recorded demo is this React app built so that it needs no backend, no Firebase and no Google Cloud, so it keeps working after the Cloud Run services are switched off. It is a static site on GitHub Pages.
 
@@ -247,7 +244,7 @@ The backend reads environment variables, plus an optional git-ignored `.env` in 
 | `ENABLE_CLOUD_TRACE` | `0` | `1` also exports the OpenTelemetry spans (one trace per chat, insights request or upload) to Cloud Trace |
 | `ENABLE_VERTEX_CONTEXT_CACHE` | `0` | `1` puts the advisor's static persona in an explicit Vertex AI cache per model. gemini-3.5-flash only caches 4,096+ tokens, so with today's ~170-token persona creation fails once and requests go out as usual. Token usage (including implicit-cache hits) is recorded regardless |
 
-The Google APIs above stay off until their flags are set, and the app behaves exactly as without them. None of the four flags is set on the deployed Cloud Run services yet ([`scripts/deploy_backend.sh`](scripts/deploy_backend.sh)), so production runs the local regex layers and keeps its spans in memory. Each service account then needs the matching role: `roles/modelarmor.user`, `roles/dlp.user`, `roles/cloudtrace.agent`.
+The Google APIs above stay off locally until their flags are set, and the app behaves the same without them. On the deployed Cloud Run services (`scripts/deploy_backend.sh`), `MODEL_ARMOR_TEMPLATE`, `SDP_ENABLED=1` and `ENABLE_CLOUD_TRACE=1` are enabled, while `ENABLE_VERTEX_CONTEXT_CACHE` stays unset because today's persona is under the 4,096-token minimum. Each service account has the matching roles: `roles/modelarmor.user`, `roles/dlp.user`, `roles/cloudtrace.agent`.
 
 **Secrets** live in Google Secret Manager and are never committed: `pfa-db-password-personal`, `pfa-db-password-demo`, `pfa-gmail-app-password`, `pfa-statement-passwords`. Store one with `scripts/set_secret.sh <name>`. The script uses a hidden prompt, so the value never appears in shell history.
 
@@ -291,7 +288,7 @@ GitHub Actions runs the backend unit tests and the frontend type-check, lint and
 | Agent Registry sync | `venv/bin/python scripts/register_gcp_agents.py` |
 | Demo data reset (normally nightly via Scheduler) | `APP_ENV=demo venv/bin/python scripts/demo_reset.py` |
 
-Each deploy records its image tag and a one-line rollback command in [decision.md](decision.md). [docs/PRODUCTION_HANDOVER_AND_SIGN_OFF.md](docs/PRODUCTION_HANDOVER_AND_SIGN_OFF.md) has the runbook.
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#deployment-and-rollback) for deployment verification and rollback commands.
 
 ---
 
@@ -302,7 +299,7 @@ Each deploy records its image tag and a one-line rollback command in [decision.m
 - **The database is locked down.** Every table has row-level security, Supabase's anon and authenticated roles get no access, and views run as the caller (`security_invoker`).
 - **Uploads are constrained**: a type allowlist, a 25 MB cap, a random folder per upload and sanitised file names. PDF passwords stay in memory only.
 - **AI guardrails**: prompt-injection screening (local regex, plus the Model Armor API when `MODEL_ARMOR_TEMPLATE` is set), PII masking of chat messages before they reach Gemini and of extracted narrations before they're saved (local regex, plus Sensitive Data Protection when `SDP_ENABLED=1`), least-privilege agent tools and an approval flag on writes. Uploaded documents themselves go to Gemini unredacted; the screening applies to the text read from them.
-- **Personal data stays out of git.** Statements (`data/`), uploads, screenshots of real transactions and the owner profile (`app/private/`) are all git-ignored. The public history starts from a scrubbed snapshot.
+- **Personal data stays out of git.** Statements (`data/`), uploads, screenshots of real transactions, internal workspace logs, and the owner profile (`app/private/`) are all git-ignored. The public history starts from a scrubbed snapshot.
 
 Found a vulnerability? Please follow [SECURITY.md](SECURITY.md) and don't open a public issue.
 
@@ -312,25 +309,20 @@ Found a vulnerability? Please follow [SECURITY.md](SECURITY.md) and don't open a
 
 | Document | What's in it |
 | --- | --- |
+| [docs/API.md](docs/API.md) | Complete HTTP, MCP JSON-RPC, and A2A endpoint & request-body reference |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Entry points (`app/api.py` vs `app/main.py`), module maps, local Postgres setup, test tiers, extension recipes, and troubleshooting |
 | [docs/APPLICATION_ARCHITECTURE.md](docs/APPLICATION_ARCHITECTURE.md) | System diagrams, agent workflows, data model, idempotency design |
 | [docs/FDE_ENTERPRISE_ARCHITECTURE.md](docs/FDE_ENTERPRISE_ARCHITECTURE.md) | The Build / Govern / Scale / Optimize design: MCP, A2A, identity, evaluation, model tiering |
-| [docs/GCP_ARCHITECTURE_PITCH_GUIDE.md](docs/GCP_ARCHITECTURE_PITCH_GUIDE.md) | Every Google Cloud service used and why |
-| [docs/PRODUCTION_HANDOVER_AND_SIGN_OFF.md](docs/PRODUCTION_HANDOVER_AND_SIGN_OFF.md) | Infrastructure inventory, runbook, acceptance matrix |
-| [docs/UX_ENTERPRISE_AUDIT.md](docs/UX_ENTERPRISE_AUDIT.md) and [docs/OVERHAUL_PLAN.md](docs/OVERHAUL_PLAN.md) | The UX audit and the phased plan that followed it |
-| [app/frontend/FRONTEND_GUIDE.md](app/frontend/FRONTEND_GUIDE.md) | Frontend structure, styling and sanitisation |
-| [decision.md](decision.md) | Every architectural and operational decision, newest first |
-| [flow.md](flow.md) | File-to-file code flow diagrams and connection tables |
+| [app/frontend/FRONTEND_GUIDE.md](app/frontend/FRONTEND_GUIDE.md) | Frontend structure, styling, recorded demo mode, and sanitisation |
 | [CHANGELOG.md](CHANGELOG.md) | Notable changes by milestone |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Development workflow and conventions |
-
-> [!TIP]
-> Links in `decision.md`, `flow.md` and the two dated planning documents (`docs/UX_ENTERPRISE_AUDIT.md`, `docs/OVERHAUL_PLAN.md`) use local `file:///` paths for the author's editor. On GitHub they show as plain text, and every path is relative to the repository root.
+| [SECURITY.md](SECURITY.md) | Security architecture and vulnerability reporting |
 
 ---
 
 ## Project status
 
-The project is in active development. Phases 0 (security and correctness) and 1 (sign-in, two environments, React shell) of the [overhaul plan](docs/OVERHAUL_PLAN.md) are complete, along with the agent platform, statement reconciliation and import hardening that followed (see [CHANGELOG.md](CHANGELOG.md)).
+The project is in active development. Core security hardening, Firebase authentication, dual Cloud Run environments (personal + demo), static recorded demo mode, the MCP/A2A agent platform, and multi-page statement reconciliation are complete (see [CHANGELOG.md](CHANGELOG.md)).
 
 ---
 

@@ -10,6 +10,6 @@
 
 - [ ] Linked to an agreed issue
 - [ ] Tests added or updated; `pytest tests -q`, `npm run typecheck`, `npm run lint` and `npm run build` pass
-- [ ] `decision.md` (new `DEC-NNN` entry) and `flow.md` updated where relevant
+- [ ] Documentation (`docs/API.md`, `docs/DEVELOPMENT.md`, `README.md`) updated where relevant
 - [ ] No personal data, secrets or real statements in the diff (synthetic values only)
 - [ ] User-visible changes noted in `CHANGELOG.md` under *Unreleased*

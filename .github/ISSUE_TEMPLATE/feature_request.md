@@ -15,4 +15,4 @@ labels: enhancement
 **Alternatives you considered**
 
 
-**Anything else** (mockups, links, related decisions in decision.md)
+**Anything else** (mockups, links, or related context)

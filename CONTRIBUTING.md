@@ -40,14 +40,7 @@ For changes to reconciliation, deduplication or imports, also run the Postgres-b
 - **No secrets in code or config.** Credentials go to Secret Manager (`scripts/set_secret.sh <name>`). If a secret is ever committed, rotate it first, then clean the history.
 - **Python**: type hints on public functions, docstrings that say *why*, `logging` (not `print`) in `app/`, and no network calls at import time.
 - **Frontend**: TypeScript strict, ESLint `strictTypeChecked` with zero warnings, and sanitise any HTML built from user or AI content.
-- **Commits**: small and focused, in the imperative mood. The history mostly uses an optional type prefix (`feat(ledger): …`, `fix(api): …`, `docs: …`, `ci: …`) and mentions the decision number (`(DEC-062)`) when there is one.
-
-## Decision log and code flow
-
-This repository keeps two living documents, and changes are expected to update them:
-
-- **[decision.md](decision.md)**: add a `[DEC-NNN]` entry at the top of *Decision History* for any non-trivial change: the problem, the decision and the alternatives rejected, the files changed, the verification and, for deploys, the image tag and a rollback command. Use the next free number.
-- **[flow.md](flow.md)**: if a change adds or removes a file, or changes how one file imports, calls or routes into another, update the Mermaid diagrams and the connection tables.
+- **Commits**: small and focused, in the imperative mood, with an optional type prefix (`feat(ledger): …`, `fix(api): …`, `docs: …`, `ci: …`).
 
 ## Pull request checklist
 
@@ -55,6 +48,6 @@ The [pull request template](.github/PULL_REQUEST_TEMPLATE.md) repeats this list:
 
 - [ ] Linked to an agreed issue
 - [ ] Tests added or updated; all checks above pass
-- [ ] `decision.md` / `flow.md` updated where relevant
+- [ ] Documentation ([docs/API.md](docs/API.md), [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)) updated where relevant
 - [ ] No personal data, secrets or real statements in the diff
 - [ ] User-visible changes noted in [CHANGELOG.md](CHANGELOG.md) under *Unreleased*
