@@ -121,6 +121,24 @@ def test_every_month_has_its_analytics_and_budgets(manifest):
         assert key in keys
 
 
+def test_all_time_budgets_scale_the_monthly_caps(manifest):
+    """All Time compares the whole ledger's spending with each monthly cap times the months that have
+    expenses (DEC-073), and agrees with the per-month budget responses."""
+    all_time = load("budgets-all.json")
+    ledger = load(manifest["datasets"]["ledger"])["transactions"]
+    months = all_time["months_count"]
+    assert months == len({row["date"][:7] for row in ledger if row["type"] == "EXPENSE"}) > 1
+    per_month = [load(f"budgets-{m['month']}.json") for m in load("transactions-months.json")["months"]]
+    assert all(response["months_count"] == 1 for response in per_month)
+    for row in all_time["categories"]:
+        same = [next(c for c in response["categories"] if c["category"] == row["category"]) for response in per_month]
+        assert all(c["budget"] == c["monthly_budget"] == row["monthly_budget"] for c in same)
+        assert row["budget"] == pytest.approx(row["monthly_budget"] * months)
+        assert row["spent"] == pytest.approx(sum(c["spent"] for c in same), abs=0.01)
+    assert all_time["total_budget"] == pytest.approx(all_time["monthly_total_budget"] * months)
+    assert all_time["total_spent"] == pytest.approx(sum(row["spent"] for row in all_time["categories"]), abs=0.01)
+
+
 def test_the_ledger_holds_every_transaction(manifest):
     ledger = load(manifest["datasets"]["ledger"])
     months = load("transactions-months.json")["months"]

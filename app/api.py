@@ -1671,18 +1671,34 @@ def get_future_cost_forecast():
         db.close()
 
 
+def _budget_utilization(spent: float, cap: float) -> float:
+    """Percent of a budget cap used, to one decimal. Spending still under the cap never shows as 100%
+    (99.97% is 99.9, not a rounded-up 100.0 that would read as over budget)."""
+    if cap <= 0:
+        return 0.0
+    pct = round(spent / cap * 100, 1)
+    return min(pct, 99.9) if spent < cap else pct
+
+
 @app.get("/budgets")
 def get_budgets(month: Optional[str] = None):
     """
-    Compare spending against monthly category budgets.
-    Returns budgeted amount, actual spend, utilization %, and warning indicators.
+    Compare spending against the category budgets, for one month or for All Time.
+
+    Budgets are monthly caps. For one month (`?month=YYYY-MM`) each category's cap is its monthly
+    budget. All Time (no `month`, or `month=ALL`) adds up the spending of every month in the ledger,
+    so each cap is the monthly budget times the number of months that have expenses
+    (`months_count`); comparing many months of spending with one month's cap would always read as
+    far over budget. `monthly_budget` is always the stored monthly cap (what POST /budgets sets).
+    Returns the cap, actual spend, utilization %, and warning status per category.
     """
     db = DatabaseManager()
     try:
         with db.pool.connect() as conn:
             where_sql = ""
             params = {}
-            if month and month.upper() != "ALL":
+            all_time = not month or month.upper() == "ALL"
+            if not all_time:
                 where_sql = "WHERE TO_CHAR(t.transaction_date, 'YYYY-MM') = :month AND UPPER(t.transaction_type) = 'EXPENSE'"
                 params["month"] = month.strip()
             else:
@@ -1697,19 +1713,34 @@ def get_budgets(month: Optional[str] = None):
             """)
             spent_map = {row[0]: float(row[1]) for row in conn.execute(query, params).fetchall()}
 
+            # All Time spending covers every month that has expenses (the same rows as the spend
+            # query), so the monthly caps are scaled by that many months. At least 1, so an empty
+            # ledger still shows the monthly caps.
+            months_count = 1
+            if all_time:
+                months_count = max(1, int(conn.execute(sqlalchemy.text(f"""
+                    SELECT COUNT(DISTINCT TO_CHAR(t.transaction_date, 'YYYY-MM'))
+                    FROM transactions t
+                    JOIN categories c ON t.category_id = c.id
+                    {where_sql}
+                """)).scalar() or 0))
+
             # Budgets live in the database since Phase 1 (they used to be lost on restart).
             budget_rows = conn.execute(sqlalchemy.text(
                 "SELECT category, monthly_budget FROM budgets ORDER BY category"
             )).fetchall()
 
             budget_list = []
+            monthly_total_budget = 0.0
             total_budget = 0.0
             total_spent = 0.0
 
-            for cat, allocated_raw in budget_rows:
-                allocated = float(allocated_raw)
+            for cat, monthly_raw in budget_rows:
+                monthly_budget = float(monthly_raw)
+                allocated = round(monthly_budget * months_count, 2)
                 spent = spent_map.get(cat, 0.0)
-                utilization = round((spent / allocated * 100), 1) if allocated > 0 else 0.0
+                utilization = _budget_utilization(spent, allocated)
+                monthly_total_budget += monthly_budget
                 total_budget += allocated
                 total_spent += spent
 
@@ -1722,19 +1753,24 @@ def get_budgets(month: Optional[str] = None):
                 budget_list.append({
                     "category": cat,
                     "budget": allocated,
+                    "monthly_budget": monthly_budget,
                     "spent": spent,
-                    "remaining": max(0.0, allocated - spent),
+                    "remaining": round(max(0.0, allocated - spent), 2),
                     "utilization_pct": utilization,
                     "status": status
                 })
 
             budget_list.sort(key=lambda x: x["spent"], reverse=True)
 
+            total_budget = round(total_budget, 2)
+            total_spent = round(total_spent, 2)
             return {
                 "month": month or "ALL",
+                "months_count": months_count,
+                "monthly_total_budget": round(monthly_total_budget, 2),
                 "total_budget": total_budget,
                 "total_spent": total_spent,
-                "overall_utilization_pct": round((total_spent / total_budget * 100), 1) if total_budget > 0 else 0,
+                "overall_utilization_pct": _budget_utilization(total_spent, total_budget),
                 "categories": budget_list
             }
     finally:

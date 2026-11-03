@@ -118,5 +118,13 @@
  "not_recorded": [
   {"what": "orchestrator:OMNIPRESENT_JARVIS_COMMAND", "why": "The Agent Registry screen sends it an empty command; the Jarvis copilot (bottom right) replays real commands instead."}
  ],
- "scrubbed": {}
+ "scrubbed": {},
+ "amended": [
+  {
+   "at": "2026-11-03T21:11:43Z",
+   "files": ["budgets-2025-06.json", "budgets-2025-07.json", "budgets-2025-08.json", "budgets-2025-09.json", "budgets-2025-10.json", "budgets-2025-11.json", "budgets-2025-12.json", "budgets-2026-01.json", "budgets-2026-02.json", "budgets-2026-03.json", "budgets-2026-04.json", "budgets-2026-05.json", "budgets-2026-06.json", "budgets-2026-07.json", "budgets-2026-08.json", "budgets-2026-09.json", "budgets-2026-10.json", "budgets-2026-11.json", "budgets-all.json"],
+   "why": "GET /budgets scales the All Time caps by the months that have expenses (DEC-073).",
+   "how": "Re-recorded with scripts/record_demo.py's setup (throwaway PostgreSQL, APP_ENV=demo, Gemini off) from the same seed (seed_today 2026-11-02) and the backend of the commit that adds this entry; the re-seeded ledger matched transactions-all.json exactly. Every other file is from the original recording."
+  }
+ ]
 }

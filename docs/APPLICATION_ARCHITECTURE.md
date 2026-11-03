@@ -377,7 +377,7 @@ Every route needs a Firebase ID token from an allowlisted account except `/healt
 | `GET` | `/analytics/summary` | Totals, category breakdown, start and end-of-month balances | `month` (optional, default all time) | 200 OK |
 | `GET` | `/recurring` | List identified recurring expenses | None | 200 OK |
 | `GET` | `/forecast` | Rule-based cost forecast from the last 7 days, last month and the same months last year | None | 200 OK |
-| `GET` | `/budgets` | Category spending limits vs. current utilization | `month` (optional) | 200 OK |
+| `GET` | `/budgets` | Category spending limits vs. utilization (All Time multiplies the monthly limits by the months that have expenses) | `month` (optional) | 200 OK |
 | `POST`| `/budgets` | Set or update the budget for a category | JSON (`category`, `monthly_budget`) | 200 OK |
 | `GET` | `/insights` † | Three AI CFO recommendations | None | 200 OK |
 | `POST`| `/insights/chat` † | Multi-turn stateless conversation with the AI CFO advisor | JSON (`message: str`, `history: List[Dict]`) | 200 OK (`{"reply": str}`) |

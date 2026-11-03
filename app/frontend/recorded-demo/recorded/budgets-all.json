@@ -1,16 +1,18 @@
 {
  "month": "ALL",
- "total_budget": 52000.0,
+ "months_count": 18,
+ "monthly_total_budget": 52000.0,
+ "total_budget": 936000.0,
  "total_spent": 935874.74,
- "overall_utilization_pct": 1799.8,
+ "overall_utilization_pct": 99.9,
  "categories": [
-  {"category": "Food", "budget": 16000.0, "spent": 275969.43, "remaining": 0.0, "utilization_pct": 1724.8, "status": "exceeded"},
-  {"category": "Personal", "budget": 9000.0, "spent": 148074.0, "remaining": 0.0, "utilization_pct": 1645.3, "status": "exceeded"},
-  {"category": "Home", "budget": 6500.0, "spent": 129793.58, "remaining": 0.0, "utilization_pct": 1996.8, "status": "exceeded"},
-  {"category": "Travel", "budget": 4000.0, "spent": 88268.0, "remaining": 0.0, "utilization_pct": 2206.7, "status": "exceeded"},
-  {"category": "Other", "budget": 5000.0, "spent": 86609.06, "remaining": 0.0, "utilization_pct": 1732.2, "status": "exceeded"},
-  {"category": "Transportation", "budget": 4000.0, "spent": 82617.0, "remaining": 0.0, "utilization_pct": 2065.4, "status": "exceeded"},
-  {"category": "Utilities", "budget": 4500.0, "spent": 66026.94, "remaining": 0.0, "utilization_pct": 1467.3, "status": "exceeded"},
-  {"category": "Health/Medical", "budget": 3000.0, "spent": 58516.73, "remaining": 0.0, "utilization_pct": 1950.6, "status": "exceeded"}
+  {"category": "Food", "budget": 288000.0, "monthly_budget": 16000.0, "spent": 275969.43, "remaining": 12030.57, "utilization_pct": 95.8, "status": "warning"},
+  {"category": "Personal", "budget": 162000.0, "monthly_budget": 9000.0, "spent": 148074.0, "remaining": 13926.0, "utilization_pct": 91.4, "status": "warning"},
+  {"category": "Home", "budget": 117000.0, "monthly_budget": 6500.0, "spent": 129793.58, "remaining": 0.0, "utilization_pct": 110.9, "status": "exceeded"},
+  {"category": "Travel", "budget": 72000.0, "monthly_budget": 4000.0, "spent": 88268.0, "remaining": 0.0, "utilization_pct": 122.6, "status": "exceeded"},
+  {"category": "Other", "budget": 90000.0, "monthly_budget": 5000.0, "spent": 86609.06, "remaining": 3390.94, "utilization_pct": 96.2, "status": "warning"},
+  {"category": "Transportation", "budget": 72000.0, "monthly_budget": 4000.0, "spent": 82617.0, "remaining": 0.0, "utilization_pct": 114.7, "status": "exceeded"},
+  {"category": "Utilities", "budget": 81000.0, "monthly_budget": 4500.0, "spent": 66026.94, "remaining": 14973.06, "utilization_pct": 81.5, "status": "warning"},
+  {"category": "Health/Medical", "budget": 54000.0, "monthly_budget": 3000.0, "spent": 58516.73, "remaining": 0.0, "utilization_pct": 108.4, "status": "exceeded"}
  ]
 }

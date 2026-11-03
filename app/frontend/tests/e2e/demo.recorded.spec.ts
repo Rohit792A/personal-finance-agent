@@ -92,6 +92,29 @@ test('a deep link with a month opens directly and survives a reload', async ({ p
   expect(errors).toEqual([]);
 });
 
+test('All Time budgets multiply the monthly caps by the months with spending', async ({ page }) => {
+  const errors = trackConsoleErrors(page);
+  const response = await page.request.get('recorded/budgets-all.json');
+  expect(response.ok()).toBe(true);
+  const allTime = (await response.json()) as { months_count: number; overall_utilization_pct: number };
+  expect(allTime.months_count).toBeGreaterThan(1);
+
+  await page.goto('budgets');
+  await waitForScreen(page, 'budgets');
+  const screen = page.locator('#legacy-screen-budgets');
+  await expect(screen.locator('#budget-month-select')).toHaveValue('ALL');
+  await expect(screen.locator('#budget-period-note')).toContainText(`/month × ${allTime.months_count} months`);
+  await expect(screen).toContainText(`${allTime.overall_utilization_pct}% Utilized`);
+  await expect(screen.locator('.budget-cap-scaling').first()).toContainText(`/mo × ${allTime.months_count}`);
+
+  // One month compares with the monthly caps as they are.
+  await page.goto('budgets?month=2026-10');
+  await waitForScreen(page, 'budgets');
+  await expect(screen.locator('#budget-period-note')).toHaveCount(0);
+  await expect(screen.locator('.budget-cap-scaling')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test('the AI CFO replays recorded answers and explains other questions', async ({ page }) => {
   const errors = trackConsoleErrors(page);
   const urls = trackRequests(page);

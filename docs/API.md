@@ -164,7 +164,7 @@ Rows the extractors weren't sure about (confidence below 85, or an unknown categ
 | `GET` | `/analytics/summary` | KPIs for a month (`?month=YYYY-MM`) or all time: `{selected_month, kpis, expense_categories, income_categories, monthly_trends}`. |
 | `GET` | `/recurring` | Detected recurring payments (subscriptions, utilities, habitual spending): `{total_recurring_items, estimated_monthly_burn, items}`. |
 | `GET` | `/forecast` | Spending forecast and preparedness plan: `{reference_date, horizons, preparedness_plan, upcoming_predictions, category_forecasts}`. Each category's 30-day figure weights the previous month at 45%, the historical monthly average at 35% and the same month last year at 20%. |
-| `GET` | `/budgets` | Budget against actual for a month (`?month=YYYY-MM`): `{month, total_budget, total_spent, overall_utilization_pct, categories}`. |
+| `GET` | `/budgets` | Budget against actual for a month (`?month=YYYY-MM`) or All Time (no `month`, or `month=ALL`): `{month, months_count, monthly_total_budget, total_budget, total_spent, overall_utilization_pct, categories}`. Each category has `budget` (the cap for the period), `monthly_budget`, `spent`, `remaining`, `utilization_pct` and `status` (`warning` from 80%, `exceeded` from 100%; spending under the cap never shows as 100%). Budgets are monthly caps, so All Time multiplies each by `months_count`, the number of months that have expenses (DEC-073). |
 | `POST` | `/budgets` | Sets a category's monthly budget. Body: [`BudgetUpdate`](#request-bodies). Returns `{status, message}`. `400` for a negative or too-large amount (over 1e9), or a category name that isn't 1 to 100 characters. |
 
 ### AI CFO

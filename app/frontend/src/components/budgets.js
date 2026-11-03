@@ -178,6 +178,12 @@ export class BudgetsComponent {
 
     const { categories = [], total_budget, total_spent, overall_utilization_pct } = this.data;
     const isOverOverall = overall_utilization_pct >= 100;
+    const isNearOverall = !isOverOverall && overall_utilization_pct >= 80;
+    // Budgets are monthly caps. All Time compares the whole ledger's spending with each cap times the
+    // months that have expenses (GET /budgets returns months_count); one month uses the caps as they are.
+    const monthsCount = Number(this.data.months_count) > 1 ? Number(this.data.months_count) : 1;
+    const monthlyTotalBudget = Number(this.data.monthly_total_budget ?? total_budget) || 0;
+    const monthlyCap = (cat) => Number(cat.monthly_budget ?? cat.budget) || 0;
 
     body.innerHTML = `
       <div class="space-y-6 animate-fade-in">
@@ -190,14 +196,23 @@ export class BudgetsComponent {
                 <h3 class="text-3xl font-extrabold text-white">${formatCurrency(total_spent)}</h3>
                 <span class="text-sm text-slate-400">spent of ${formatCurrency(total_budget)} budgeted</span>
               </div>
+              ${
+                monthsCount > 1
+                  ? `<p
+                      id="budget-period-note"
+                      class="text-xs text-slate-500 mt-1"
+                      title="All Time adds up the spending of the ${monthsCount} months that have expenses, so each monthly budget is multiplied by ${monthsCount}."
+                    >${formatCurrency(monthlyTotalBudget)}/month × ${monthsCount} months</p>`
+                  : ''
+              }
             </div>
 
             <div class="flex items-center gap-3">
               <div class="text-right">
-                <span class="text-xs font-bold font-mono ${isOverOverall ? 'text-rose-400' : 'text-emerald-400'}">
+                <span class="text-xs font-bold font-mono ${isOverOverall ? 'text-rose-400' : isNearOverall ? 'text-amber-400' : 'text-emerald-400'}">
                   ${overall_utilization_pct}% Utilized
                 </span>
-                <p class="text-[11px] text-slate-400">${isOverOverall ? 'Over Budget' : 'Safe Runway'}</p>
+                <p class="text-[11px] text-slate-400">${isOverOverall ? 'Over Budget' : isNearOverall ? 'Near Limit' : 'Safe Runway'}</p>
               </div>
             </div>
           </div>
@@ -253,6 +268,11 @@ export class BudgetsComponent {
                     <div class="text-right">
                       <p class="text-sm font-semibold font-mono text-slate-300">${formatCurrency(cat.budget)}</p>
                       <p class="text-[11px] text-slate-500">Target Cap</p>
+                      ${
+                        monthsCount > 1
+                          ? `<p class="budget-cap-scaling text-[10px] font-mono text-slate-500">${formatCurrency(monthlyCap(cat))}/mo × ${monthsCount}</p>`
+                          : ''
+                      }
                     </div>
                   </div>
 
@@ -273,7 +293,7 @@ export class BudgetsComponent {
                   <button
                     type="button"
                     data-cat="${escapeHtml(cat.category)}"
-                    data-budget="${cat.budget}"
+                    data-budget="${monthlyCap(cat)}"
                     class="adjust-budget-btn text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <span>Adjust Target</span>

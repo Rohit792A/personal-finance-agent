@@ -1,16 +1,18 @@
 {
  "month": "2026-05",
+ "months_count": 1,
+ "monthly_total_budget": 52000.0,
  "total_budget": 52000.0,
  "total_spent": 37660.6,
  "overall_utilization_pct": 72.4,
  "categories": [
-  {"category": "Food", "budget": 16000.0, "spent": 17253.78, "remaining": 0.0, "utilization_pct": 107.8, "status": "exceeded"},
-  {"category": "Personal", "budget": 9000.0, "spent": 6888.0, "remaining": 2112.0, "utilization_pct": 76.5, "status": "ok"},
-  {"category": "Home", "budget": 6500.0, "spent": 5000.0, "remaining": 1500.0, "utilization_pct": 76.9, "status": "ok"},
-  {"category": "Utilities", "budget": 4500.0, "spent": 4158.82, "remaining": 341.1800000000003, "utilization_pct": 92.4, "status": "warning"},
-  {"category": "Transportation", "budget": 4000.0, "spent": 2360.0, "remaining": 1640.0, "utilization_pct": 59.0, "status": "ok"},
-  {"category": "Other", "budget": 5000.0, "spent": 2000.0, "remaining": 3000.0, "utilization_pct": 40.0, "status": "ok"},
-  {"category": "Health/Medical", "budget": 3000.0, "spent": 0.0, "remaining": 3000.0, "utilization_pct": 0.0, "status": "ok"},
-  {"category": "Travel", "budget": 4000.0, "spent": 0.0, "remaining": 4000.0, "utilization_pct": 0.0, "status": "ok"}
+  {"category": "Food", "budget": 16000.0, "monthly_budget": 16000.0, "spent": 17253.78, "remaining": 0.0, "utilization_pct": 107.8, "status": "exceeded"},
+  {"category": "Personal", "budget": 9000.0, "monthly_budget": 9000.0, "spent": 6888.0, "remaining": 2112.0, "utilization_pct": 76.5, "status": "ok"},
+  {"category": "Home", "budget": 6500.0, "monthly_budget": 6500.0, "spent": 5000.0, "remaining": 1500.0, "utilization_pct": 76.9, "status": "ok"},
+  {"category": "Utilities", "budget": 4500.0, "monthly_budget": 4500.0, "spent": 4158.82, "remaining": 341.18, "utilization_pct": 92.4, "status": "warning"},
+  {"category": "Transportation", "budget": 4000.0, "monthly_budget": 4000.0, "spent": 2360.0, "remaining": 1640.0, "utilization_pct": 59.0, "status": "ok"},
+  {"category": "Other", "budget": 5000.0, "monthly_budget": 5000.0, "spent": 2000.0, "remaining": 3000.0, "utilization_pct": 40.0, "status": "ok"},
+  {"category": "Health/Medical", "budget": 3000.0, "monthly_budget": 3000.0, "spent": 0.0, "remaining": 3000.0, "utilization_pct": 0.0, "status": "ok"},
+  {"category": "Travel", "budget": 4000.0, "monthly_budget": 4000.0, "spent": 0.0, "remaining": 4000.0, "utilization_pct": 0.0, "status": "ok"}
  ]
 }
